@@ -8,24 +8,10 @@ import navigator from './annotations/property/navigator'
 import Relationship from './annotations/relationship'
 
 describe('EntitySet', () => {
-  // const toPrimaryKeys = (id: number) => ({
-  //   condition: { id }
-  // })
-  // const toParameter = (condition: {}, pageIndex: number, pageSize: number) => ({
-  //   condition: {
-  //     ...condition
-  //   },
-  //   page: {
-  //     index: pageIndex,
-  //     pageSize: pageSize
-  //   }
-  // })
-  // const toResult = (response: { data: [] }) => response.data
-
   const domain = 'http://localhost:3000'
 
-  @behavior('loadAll', `${domain}/bar`, 'GET')
-  @behavior('load', `${domain}/bar/:id`, 'GET')
+  @behavior('loadAll', `${domain}/bar`, 'GET', a => a, a => a)
+  @behavior('load', `${domain}/bar/:id`, 'GET', a => a, a => a)
   class Bar {
     @primary()
     @member()
@@ -36,10 +22,10 @@ describe('EntitySet', () => {
     name: string = ''
   }
 
-  @behavior('loadAll', `${domain}/jar`, 'GET')
-  @behavior('load', `${domain}/jar/:id`, 'GET')
+  @behavior('loadAll', `${domain}/jar`, 'GET', a => a, a => a)
+  @behavior('load', `${domain}/jar/:id`, 'GET', a => a, a => a)
   class Jar {
-    @primary()
+    @primary('id')
     @member()
     id: number = 0
 
@@ -258,12 +244,13 @@ describe('EntitySet', () => {
     expect(foo!.jar).toHaveLength(2)
   })
 
-  it.only('loadAll: without any parameters', async () => {
+  it('loadAll: without any parameters', async () => {
     await ctx.foo.include('bar').include('jar').loadAll()
     const foo = ctx.foo.find(1)
     expect(foo).toHaveProperty('id', 1)
     expect(foo!.bar).not.toBeUndefined()
     expect(foo!.jar).not.toBeUndefined()
+    expect(foo!.jar).toHaveLength(2)
   })
 
   it('rawFetch', () => {})

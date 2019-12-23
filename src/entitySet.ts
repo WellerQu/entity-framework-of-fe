@@ -112,11 +112,6 @@ export default class EntitySet<T extends Object> {
       throw new Error('没有配置Load behavior')
     }
 
-    // const foreignKeys = this.ctx.metadata
-    //   .getForeignKeys(this.entityMetadata.type.prototype)
-    //   .filter(key => !!this.includes[key.navigatorName])
-    // const requests = foreignKeys.map(key => this.includes[key.navigatorName]).filter(item => !!item)
-
     // MOCK: 模拟返回数据
     const data = {
       id: 1,
@@ -124,6 +119,17 @@ export default class EntitySet<T extends Object> {
       bid: 1,
       bName: 'bbb'
     } as any
+
+    const thenable = new Promise<any>((resolve) => {
+      const params = queryMeta.mapRequestParameters ? queryMeta.mapRequestParameters(...args) : {}
+      // TODO: 发起请求
+      console.log(`[${queryMeta.method}] fetch by ${queryMeta.url} ${JSON.stringify(params)}`)
+
+      resolve({
+        code: 0,
+        data
+      })
+    })
 
     const attach = (/* data */) => {
       const Type = this.entityMetadata.type
@@ -154,22 +160,11 @@ export default class EntitySet<T extends Object> {
       return data
     }
 
-    const thenable = new Promise<any>((resolve) => {
-      const params = queryMeta.mapRequestParameters ? queryMeta.mapRequestParameters(...args) : {}
-      // TODO: 发起请求
-      console.log(`[${queryMeta.method}] fetch by ${queryMeta.url} ${JSON.stringify(params)}`)
-
-      resolve({
-        code: 0,
-        data
-      })
-    })
-
-    if (!queryMeta || !queryMeta.mapResponseData) {
+    if (!queryMeta.mapEntityData) {
       return thenable.then(attach)
     }
 
-    return thenable.then(queryMeta.mapResponseData).then(attach)
+    return thenable.then(queryMeta.mapEntityData).then(attach)
   }
 
   public loadAll<R = any> (...args: any[]): Promise<R[]> {
@@ -181,21 +176,20 @@ export default class EntitySet<T extends Object> {
     const thenable = new Promise<any>((resolve, reject) => {
       const params = queryMeta.mapRequestParameters ? queryMeta.mapRequestParameters(...args) : {}
       // TODO: 发起请求
+      // console.log(`[${queryMeta.method}] fetch by ${queryMeta.url} ${JSON.stringify(params)}`)
       resolve({
         code: 0,
         data: [{
           id: 1
         }]
       })
-
-      // console.log(`[${queryMeta.method}] fetch by ${queryMeta.url} ${JSON.stringify(params)}`)
     })
 
-    if (!queryMeta || !queryMeta.mapResponseData) {
+    if (!queryMeta || !queryMeta.mapEntityData) {
       return thenable
     }
 
-    return thenable.then(queryMeta.mapResponseData)
+    return thenable.then(queryMeta.mapEntityData)
   }
 
   public include (navigatorName: string): this {
@@ -223,12 +217,27 @@ export default class EntitySet<T extends Object> {
       const parameters = getRequestParameters(entity)
 
       // 发起请求
-      return entitySet.load(...parameters).then((data) => {
-        const target = entitySet.find(...parameters)
-        Reflect.set(entity, navigatorName, target)
+      if (navigator.relationship === Relationship.One) {
+        return entitySet.load(...parameters).then((data) => {
+          const relatedEntity = entitySet.find(...parameters)
 
-        resolve(data)
-      }, reject)
+          Reflect.set(entity, navigatorName, relatedEntity)
+
+          resolve(data)
+        }, reject)
+      } else if (navigator.relationship === Relationship.Many) {
+        return Promise.all(parameters.map(params => entitySet.load(...params))).then((res) => {
+          res.forEach(relatedEntity => {
+            const collection = Reflect.get(entity, navigatorName) || []
+            collection.push(relatedEntity)
+
+            Reflect.set(entity, navigatorName, collection)
+          })
+          resolve(res)
+        })
+      } else {
+        throw new Error('未定义的Relationship')
+      }
     })
 
     this.includes[navigatorName] = request

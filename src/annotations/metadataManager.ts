@@ -22,7 +22,7 @@ export interface Behavior {
   url: string;
   method: Method;
   mapRequestParameters?: (...args: any[]) => any,
-  mapResponseData?: (...args: any[]) => any
+  mapEntityData?: (...args: any[]) => any
 }
 
 export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE'

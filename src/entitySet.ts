@@ -104,6 +104,40 @@ export default class EntitySet<T extends Object> {
     return Array.from(this.set).map(item => Object.freeze(item.object))
   }
 
+  private attachDataToEntitySet (data: T) {
+    const Type = this.entityMetadata.type
+    const includes = this.includes
+
+    const entity = new Type()
+    Reflect.ownKeys(data).forEach(key => {
+      Reflect.set(entity, key, Reflect.get(data, key))
+    })
+
+    this.clear()
+    this.attach(entity)
+
+    const requests = Reflect.ownKeys(includes)
+      .map(navigatorName => {
+        const navigator = this.ctx.metadata.getNavigator(Type.prototype, navigatorName as string)
+        if (!navigator) {
+          return null
+        }
+
+        return includes[navigatorName as string]
+      })
+      .filter(item => item !== null)
+
+    return new Promise<T>((resolve, reject) => {
+      if (requests.length > 0) {
+        Promise.all(requests.map(fn => fn!(entity))).then(() => {
+          resolve(data)
+        }, reject)
+      } else {
+        resolve(data)
+      }
+    })
+  }
+
   public load (...args: any[]): Promise<T> {
     const queryMeta = this.ctx.metadata
       .getBehavior(this.entityMetadata.type.prototype, 'load')
@@ -115,62 +149,21 @@ export default class EntitySet<T extends Object> {
     const params = queryMeta.mapRequestParameters ? queryMeta.mapRequestParameters(...args) : args
     const thenable = this.ctx.configuration.fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
 
-    const attachData = (data: T) => new Promise<T>((resolve, reject) => {
-      const Type = this.entityMetadata.type
-      const entity = new Type()
-      const includes = this.includes
-
-      Reflect.ownKeys(data).forEach(key => {
-        Reflect.set(entity, key, Reflect.get(data, key))
-      })
-
-      this.clear()
-      this.attach(entity)
-
-      const requests = Reflect.ownKeys(includes)
-        .map(navigatorName => {
-          const navigator = this.ctx.metadata.getNavigator(this.entityMetadata.type.prototype, navigatorName as string)
-          if (!navigator) {
-            return null
-          }
-
-          return includes[navigatorName as string]
-        })
-        .filter(item => item !== null)
-
-      if (requests.length > 0) {
-        Promise.all(requests.map(fn => fn!(entity))).then(() => {
-          resolve(data)
-        }, reject)
-      } else {
-        resolve(data)
-      }
-    })
-
     if (!queryMeta.mapEntityData) {
-      return thenable.then(attachData)
+      return thenable.then((data) => this.attachDataToEntitySet(data))
     }
 
-    return thenable.then(queryMeta.mapEntityData).then(attachData)
+    return thenable.then(queryMeta.mapEntityData).then(data => this.attachDataToEntitySet(data))
   }
 
-  public loadAll<R = any> (...args: any[]): Promise<R[]> {
+  public loadAll (...args: any[]): Promise<T[]> {
     const queryMeta = this.ctx.metadata.getBehavior(this.entityMetadata.type.prototype, 'loadAll')
     if (!queryMeta) {
       throw new Error('没有配置LoadAll behavior')
     }
 
-    const thenable = new Promise<any>((resolve, reject) => {
-      const params = queryMeta.mapRequestParameters ? queryMeta.mapRequestParameters(...args) : {}
-      // TODO: 发起请求
-      // console.log(`[${queryMeta.method}] fetch by ${queryMeta.url} ${JSON.stringify(params)}`)
-      resolve({
-        code: 0,
-        data: [{
-          id: 1
-        }]
-      })
-    })
+    const params = queryMeta.mapRequestParameters ? queryMeta.mapRequestParameters(...args) : {}
+    const thenable = this.ctx.configuration.fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
 
     if (!queryMeta || !queryMeta.mapEntityData) {
       return thenable

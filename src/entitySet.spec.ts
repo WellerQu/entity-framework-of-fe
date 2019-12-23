@@ -24,7 +24,7 @@ describe('EntitySet', () => {
 
   const domain = 'http://localhost:3000'
 
-  @behavior('loadAll', `${domain}/bar`, 'POST')
+  @behavior('loadAll', `${domain}/bar`, 'GET')
   @behavior('load', `${domain}/bar/:id`, 'GET')
   class Bar {
     @primary()
@@ -36,7 +36,7 @@ describe('EntitySet', () => {
     name: string = ''
   }
 
-  @behavior('loadAll', `${domain}/jar`, 'POST')
+  @behavior('loadAll', `${domain}/jar`, 'GET')
   @behavior('load', `${domain}/jar/:id`, 'GET')
   class Jar {
     @primary()
@@ -47,7 +47,7 @@ describe('EntitySet', () => {
     name: string = ''
   }
 
-  @behavior('loadAll', `${domain}/foo`, 'POST')
+  @behavior('loadAll', `${domain}/foo`, 'GET')
   @behavior('load', `${domain}/foo/:id`, 'GET')
   class Foo {
     @primary()
@@ -257,11 +257,15 @@ describe('EntitySet', () => {
     expect(foo!.jar).toHaveLength(2)
   })
 
-  it.skip('loadAll', async () => {
-    await ctx.foo.loadAll()
+  it('loadAll: without any parameters', async () => {
+    const originData = await ctx.foo.loadAll()
+    expect(originData).toHaveProperty(['0', 'id'], 1)
+    expect(originData).toHaveProperty(['1', 'id'], 2)
+    expect(originData).toHaveProperty(['2', 'id'], 3)
 
-    const result = await ctx.foo.loadAll(1, 1, 10)
-    expect(result).toHaveProperty(['0', 'id'], 1)
+    const foo = ctx.foo.findAll((n) => n.id <= 2)
+    expect(foo).toHaveProperty(['0', 'id'], 1)
+    expect(foo).toHaveProperty(['1', 'id'], 2)
   })
 
   it('rawFetch', () => {})

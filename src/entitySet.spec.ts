@@ -226,8 +226,9 @@ describe('EntitySet', () => {
   })
 
   it('load', async () => {
-    const result = await ctx.foo.load(1)
-    expect(result).toHaveProperty(['id'], 1)
+    await ctx.foo.load(1)
+    const foo = ctx.foo.find(1)
+    expect(foo).toHaveProperty(['id'], 1)
   })
 
   it('include: one to one', async () => {
@@ -258,14 +259,11 @@ describe('EntitySet', () => {
   })
 
   it('loadAll: without any parameters', async () => {
-    const originData = await ctx.foo.loadAll()
-    expect(originData).toHaveProperty(['0', 'id'], 1)
-    expect(originData).toHaveProperty(['1', 'id'], 2)
-    expect(originData).toHaveProperty(['2', 'id'], 3)
-
-    const foo = ctx.foo.findAll((n) => n.id <= 2)
-    expect(foo).toHaveProperty(['0', 'id'], 1)
-    expect(foo).toHaveProperty(['1', 'id'], 2)
+    await ctx.foo.include('bar').include('jar').loadAll()
+    const foo = ctx.foo.find(1)
+    expect(foo).toHaveProperty('id', 1)
+    expect(foo!.bar).not.toBeUndefined()
+    expect(foo!.jar).not.toBeUndefined()
   })
 
   it('rawFetch', () => {})

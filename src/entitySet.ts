@@ -104,38 +104,41 @@ export default class EntitySet<T extends Object> {
     return Array.from(this.set).map(item => Object.freeze(item.object))
   }
 
-  private attachDataToEntitySet (data: T) {
+  private attachDataToEntitySet (...originData: T[]): Promise<T[]> {
     const Type = this.entityMetadata.type
     const includes = this.includes
 
-    const entity = new Type()
-    Reflect.ownKeys(data).forEach(key => {
-      Reflect.set(entity, key, Reflect.get(data, key))
-    })
-
     this.clear()
-    this.attach(entity)
 
-    const requests = Reflect.ownKeys(includes)
-      .map(navigatorName => {
-        const navigator = this.ctx.metadata.getNavigator(Type.prototype, navigatorName as string)
-        if (!navigator) {
-          return null
-        }
-
-        return includes[navigatorName as string]
+    return Promise.all(originData.map(data => {
+      const entity = new Type()
+      Reflect.ownKeys(data).forEach(key => {
+        Reflect.set(entity, key, Reflect.get(data, key))
       })
-      .filter(item => item !== null)
 
-    return new Promise<T>((resolve, reject) => {
-      if (requests.length > 0) {
-        Promise.all(requests.map(fn => fn!(entity))).then(() => {
+      this.attach(entity)
+
+      const requests = Reflect.ownKeys(includes)
+        .map(navigatorName => {
+          const navigator = this.ctx.metadata.getNavigator(Type.prototype, navigatorName as string)
+          if (!navigator) {
+            return null
+          }
+
+          return includes[navigatorName as string]
+        })
+        .filter(item => item !== null)
+
+      return new Promise<T>((resolve, reject) => {
+        if (requests.length > 0) {
+          Promise.all(requests.map(fn => fn!(entity))).then(() => {
+            resolve(data)
+          }, reject)
+        } else {
           resolve(data)
-        }, reject)
-      } else {
-        resolve(data)
-      }
-    })
+        }
+      })
+    }))
   }
 
   public load (...args: any[]): Promise<T> {
@@ -150,10 +153,10 @@ export default class EntitySet<T extends Object> {
     const thenable = this.ctx.configuration.fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
 
     if (!queryMeta.mapEntityData) {
-      return thenable.then((data) => this.attachDataToEntitySet(data))
+      return thenable.then((data) => this.attachDataToEntitySet(data).then(res => res[0]))
     }
 
-    return thenable.then(queryMeta.mapEntityData).then(data => this.attachDataToEntitySet(data))
+    return thenable.then(queryMeta.mapEntityData).then(data => this.attachDataToEntitySet(data).then(res => res[0]))
   }
 
   public loadAll (...args: any[]): Promise<T[]> {
@@ -165,11 +168,11 @@ export default class EntitySet<T extends Object> {
     const params = queryMeta.mapRequestParameters ? queryMeta.mapRequestParameters(...args) : {}
     const thenable = this.ctx.configuration.fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
 
-    if (!queryMeta || !queryMeta.mapEntityData) {
-      return thenable
+    if (!queryMeta.mapEntityData) {
+      return thenable.then((data) => this.attachDataToEntitySet(...data))
     }
 
-    return thenable.then(queryMeta.mapEntityData)
+    return thenable.then(queryMeta.mapEntityData).then(data => this.attachDataToEntitySet(...data))
   }
 
   public include (navigatorName: string): this {

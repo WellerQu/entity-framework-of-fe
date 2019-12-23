@@ -1,11 +1,23 @@
+import isEmpty from './utils/isEmpty'
+
 export default class EntityConfiguration {
   public fetch = window.fetch || require('node-fetch')
 
-  private parseUrl (url: string, params: {}) {
+  private parseUrl (url: string, params: any) {
+    if (isEmpty(params)) {
+      return url
+    }
+
+    const isBaseType = !(Object.getPrototypeOf(params) === Array.prototype || Object.getPrototypeOf(params) === Object.prototype)
     let newUrl = url
-    Object.keys(params).forEach((key) => {
-      newUrl = newUrl.replace(/\/(:[^/]+)/i, `/${Reflect.get(params, key)}`)
-    })
+
+    if (isBaseType) {
+      newUrl = newUrl.replace(/\/(:[^/]+)/i, `/${params}`)
+    } else {
+      Object.keys(params).forEach((key) => {
+        newUrl = newUrl.replace(/\/(:[^/]+)/i, `/${Reflect.get(params, key)}`)
+      })
+    }
 
     return newUrl
   }

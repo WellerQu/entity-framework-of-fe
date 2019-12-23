@@ -165,7 +165,7 @@ export default class EntitySet<T extends Object> {
       throw new Error('没有配置LoadAll behavior')
     }
 
-    const params = queryMeta.mapRequestParameters ? queryMeta.mapRequestParameters(...args) : {}
+    const params = queryMeta.mapRequestParameters ? queryMeta.mapRequestParameters(...args) : args
     const thenable = this.ctx.configuration.fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
 
     if (!queryMeta.mapEntityData) {

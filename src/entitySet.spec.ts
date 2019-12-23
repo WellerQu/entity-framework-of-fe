@@ -47,8 +47,8 @@ describe('EntitySet', () => {
     name: string = ''
   }
 
-  @behavior('loadAll', `${domain}/foo`, 'GET')
-  @behavior('load', `${domain}/foo/:id`, 'GET')
+  @behavior('loadAll', `${domain}/foo`, 'GET', a => a, a => a)
+  @behavior('load', `${domain}/foo/:id`, 'GET', a => a, a => a)
   class Foo {
     @primary()
     @member()
@@ -258,7 +258,7 @@ describe('EntitySet', () => {
     expect(foo!.jar).toHaveLength(2)
   })
 
-  it('loadAll: without any parameters', async () => {
+  it.only('loadAll: without any parameters', async () => {
     await ctx.foo.include('bar').include('jar').loadAll()
     const foo = ctx.foo.find(1)
     expect(foo).toHaveProperty('id', 1)

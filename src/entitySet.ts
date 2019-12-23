@@ -40,10 +40,11 @@ export default class EntitySet<T extends Object> {
   }
 
   public remove (entity?: T): this {
-    const stateTrace = Array.from(this.set).find(item => item.object === entity)
+    const stateTrace = Array.from(this.set).find(item => item.object === entity && item.state !== EntityState.Deleted)
 
     if (stateTrace) {
       stateTrace.state = EntityState.Deleted
+      stateTrace.offPropertyChange(this.onPropertyChanged)
       stateTrace.revoke()
     }
 
@@ -62,7 +63,7 @@ export default class EntitySet<T extends Object> {
   }
 
   public detach (entity?: T): this {
-    const stateTrace = Array.from(this.set).find(item => item.object === entity)
+    const stateTrace = Array.from(this.set).find(item => item.object === entity && item.state !== EntityState.Detached)
 
     if (stateTrace) {
       stateTrace.state = EntityState.Detached

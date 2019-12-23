@@ -1,9 +1,9 @@
- enum EntityState {
-  Added = 4,
-  Deleted = 8,
-  Detached = 1,
-  Modified = 16,
-  Unchanged = 2
+enum EntityState {
+  Added = 1,
+  Deleted = 2,
+  Detached = 4,
+  Modified = 8,
+  Unchanged = 16
 }
 
 export default EntityState

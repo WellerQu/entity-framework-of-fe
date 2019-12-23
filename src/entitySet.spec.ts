@@ -253,5 +253,12 @@ describe('EntitySet', () => {
     expect(foo!.jar).toHaveLength(2)
   })
 
+  it('change property', () => {
+    const foo = ctx.foo.find(1)
+    foo!.name = 'fuck off'
+
+    expect(foo!.name).toEqual('fuck off')
+  })
+
   it('rawFetch', () => {})
 })

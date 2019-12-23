@@ -1,0 +1,14 @@
+# project
+/build
+/dist
+/logo
+/favicon.ico
+
+# node
+/node_modules
+
+# jest
+/coverage
+
+# Mac OS
+.DS_Store

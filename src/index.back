@@ -1,0 +1,34 @@
+
+/*
+const entity = <T>(target: { new(): T }) => {
+  console.log(target)
+}
+
+const property = (target: Object, property: string) => {
+  console.log(target, property)
+}
+
+const parameter = (target: Object, key: string, index: number) => {
+  console.log(target, key, index)
+}
+
+const behavior = (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+  console.log(target, propertyKey, descriptor)
+
+  return descriptor
+}
+
+@entity
+class Foo extends EntityContext implements Model.Foo {
+  @property
+  bar: number = 0
+  jes: string = ''
+
+  @behavior
+  do (@parameter a: string) {
+    console.log(a)
+  }
+}
+*/
+
+export {}

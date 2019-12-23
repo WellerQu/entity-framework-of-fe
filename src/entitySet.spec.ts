@@ -8,22 +8,24 @@ import navigator from './annotations/property/navigator'
 import Relationship from './annotations/relationship'
 
 describe('EntitySet', () => {
-  const toPrimaryKeys = (id: number) => ({
-    condition: { id }
-  })
-  const toParameter = (condition: {}, pageIndex: number, pageSize: number) => ({
-    condition: {
-      ...condition
-    },
-    page: {
-      index: pageIndex,
-      pageSize: pageSize
-    }
-  })
-  const toResult = (response: { data: [] }) => response.data
+  // const toPrimaryKeys = (id: number) => ({
+  //   condition: { id }
+  // })
+  // const toParameter = (condition: {}, pageIndex: number, pageSize: number) => ({
+  //   condition: {
+  //     ...condition
+  //   },
+  //   page: {
+  //     index: pageIndex,
+  //     pageSize: pageSize
+  //   }
+  // })
+  // const toResult = (response: { data: [] }) => response.data
 
-  @behavior('loadAll', '/bars', 'POST', toParameter, toResult)
-  @behavior('load', '/bars/:id', 'GET', toPrimaryKeys, toResult)
+  const domain = 'http://localhost:3000'
+
+  @behavior('loadAll', `${domain}/bar`, 'POST')
+  @behavior('load', `${domain}/bar/:id`, 'GET')
   class Bar {
     @primary()
     @member()
@@ -34,8 +36,8 @@ describe('EntitySet', () => {
     name: string = ''
   }
 
-  @behavior('loadAll', '/jars', 'POST', toParameter, toResult)
-  @behavior('load', '/jars/:id', 'GET', toPrimaryKeys, toResult)
+  @behavior('loadAll', `${domain}/jar`, 'POST')
+  @behavior('load', `${domain}/jar/:id`, 'GET')
   class Jar {
     @primary()
     @member()
@@ -45,8 +47,8 @@ describe('EntitySet', () => {
     name: string = ''
   }
 
-  @behavior('loadAll', '/foo', 'POST', toParameter, toResult)
-  @behavior('load', '/foo/:id', 'GET', toPrimaryKeys, toResult)
+  @behavior('loadAll', `${domain}/foo`, 'POST')
+  @behavior('load', `${domain}/foo/:id`, 'GET')
   class Foo {
     @primary()
     @member()
@@ -224,24 +226,42 @@ describe('EntitySet', () => {
   })
 
   it('load', async () => {
-    await ctx.foo.load()
-
     const result = await ctx.foo.load(1)
     expect(result).toHaveProperty(['id'], 1)
   })
 
-  it('loadAll', async () => {
+  it('include: one to one', async () => {
+    await ctx.foo.include('bar').load(1)
+    const foo = ctx.foo.find(1)
+    expect(foo).not.toBeUndefined()
+    expect(foo).toHaveProperty('bar')
+    expect(foo!.bar).toHaveProperty('id', 1)
+  })
+
+  it('include: one to many', async () => {
+    await ctx.foo.include('jar').load(1)
+    const foo = ctx.foo.find(1)
+    expect(foo).not.toBeUndefined()
+    expect(foo).toHaveProperty('jar')
+    expect(foo!.jar).toHaveLength(2)
+  })
+
+  it('include: more fields', async () => {
+    await ctx.foo.include('bar').include('jar').load(1)
+    const foo = ctx.foo.find(1)
+    expect(foo).not.toBeUndefined()
+    expect(foo).toHaveProperty('bar')
+    expect(foo!.bar).toHaveProperty('id', 1)
+    expect(foo).not.toBeUndefined()
+    expect(foo).toHaveProperty('jar')
+    expect(foo!.jar).toHaveLength(2)
+  })
+
+  it.skip('loadAll', async () => {
     await ctx.foo.loadAll()
 
     const result = await ctx.foo.loadAll(1, 1, 10)
     expect(result).toHaveProperty(['0', 'id'], 1)
-  })
-
-  it('include', async () => {
-    await ctx.foo.include('bar').load(1)
-    // await ctx.foo.include('jar').loadAll()
-    // await ctx.foo.include('bar').include('jar').loadAll()
-    ctx.foo.find(1)
   })
 
   it('rawFetch', () => {})

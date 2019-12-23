@@ -4,6 +4,7 @@ export default (constructor: { new(): {} }, navigatorName: string, fieldName?: s
   manager.register<ForeignKey>(target, MetadataType.ForeignKey, {
     fieldName: fieldName || property,
     constructor,
-    navigatorName
+    navigatorName,
+    propertyName: property
   })
 }

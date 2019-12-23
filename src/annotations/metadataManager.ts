@@ -3,6 +3,7 @@ import Relationship from './relationship'
 
 export interface Member {
   fieldName: string;
+  propertyName: string;
 }
 
 export interface PrimaryKey extends Member { }

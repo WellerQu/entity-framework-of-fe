@@ -1,5 +1,5 @@
 import manager, { MetadataType, PrimaryKey } from '../metadataManager'
 
-export default (fieldName?: string) => (target: Object, property: string) => {
-  manager.register<PrimaryKey>(target, MetadataType.PrimaryKey, { fieldName: fieldName || property })
+export default (fieldName?: string) => (target: Object, propertyName: string) => {
+  manager.register<PrimaryKey>(target, MetadataType.PrimaryKey, { fieldName: fieldName || propertyName, propertyName })
 }

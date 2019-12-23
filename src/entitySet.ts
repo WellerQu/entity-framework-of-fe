@@ -104,7 +104,7 @@ export default class EntitySet<T extends Object> {
     return Array.from(this.set).map(item => Object.freeze(item.object))
   }
 
-  public load<R = any> (...args: any[]): Promise<R> {
+  public load (...args: any[]): Promise<T> {
     const queryMeta = this.ctx.metadata
       .getBehavior(this.entityMetadata.type.prototype, 'load')
 
@@ -112,28 +112,13 @@ export default class EntitySet<T extends Object> {
       throw new Error('没有配置Load behavior')
     }
 
-    // MOCK: 模拟返回数据
-    const data = {
-      id: 1,
-      name: 'aaa',
-      bid: 1,
-      bName: 'bbb'
-    } as any
+    const params = queryMeta.mapRequestParameters ? queryMeta.mapRequestParameters(...args) : args
+    const thenable = this.ctx.configuration.fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
 
-    const thenable = new Promise<any>((resolve) => {
-      const params = queryMeta.mapRequestParameters ? queryMeta.mapRequestParameters(...args) : {}
-      // TODO: 发起请求
-      console.log(`[${queryMeta.method}] fetch by ${queryMeta.url} ${JSON.stringify(params)}`)
-
-      resolve({
-        code: 0,
-        data
-      })
-    })
-
-    const attach = (/* data */) => {
+    const attachData = (data: T) => new Promise<T>((resolve, reject) => {
       const Type = this.entityMetadata.type
       const entity = new Type()
+      const includes = this.includes
 
       Reflect.ownKeys(data).forEach(key => {
         Reflect.set(entity, key, Reflect.get(data, key))
@@ -142,29 +127,31 @@ export default class EntitySet<T extends Object> {
       this.clear()
       this.attach(entity)
 
-      const requests = Reflect.ownKeys(this.includes)
+      const requests = Reflect.ownKeys(includes)
         .map(navigatorName => {
           const navigator = this.ctx.metadata.getNavigator(this.entityMetadata.type.prototype, navigatorName as string)
           if (!navigator) {
             return null
           }
 
-          return this.includes[navigatorName as string]
+          return includes[navigatorName as string]
         })
         .filter(item => item !== null)
 
       if (requests.length > 0) {
-        return Promise.all(requests.map(fn => fn!(entity)))
+        Promise.all(requests.map(fn => fn!(entity))).then(() => {
+          resolve(data)
+        }, reject)
+      } else {
+        resolve(data)
       }
-
-      return data
-    }
+    })
 
     if (!queryMeta.mapEntityData) {
-      return thenable.then(attach)
+      return thenable.then(attachData)
     }
 
-    return thenable.then(queryMeta.mapEntityData).then(attach)
+    return thenable.then(queryMeta.mapEntityData).then(attachData)
   }
 
   public loadAll<R = any> (...args: any[]): Promise<R[]> {
@@ -211,34 +198,37 @@ export default class EntitySet<T extends Object> {
       .getForeignKeys(this.entityMetadata.type.prototype)
       .filter(key => key.navigatorName === navigatorName)
 
-    const getRequestParameters = (entity: T) => foreignKeys.map(key => Reflect.get(entity, key.fieldName))
+    const getRequestParameters = (entity: T) => foreignKeys.map(key => Reflect.get(entity, key.propertyName))
 
-    const request = (entity: T) => new Promise((resolve, reject) => {
+    const request = (entity: T) => {
       const parameters = getRequestParameters(entity)
 
       // 发起请求
       if (navigator.relationship === Relationship.One) {
         return entitySet.load(...parameters).then((data) => {
           const relatedEntity = entitySet.find(...parameters)
-
           Reflect.set(entity, navigatorName, relatedEntity)
 
-          resolve(data)
-        }, reject)
+          return data
+        })
       } else if (navigator.relationship === Relationship.Many) {
-        return Promise.all(parameters.map(params => entitySet.load(...params))).then((res) => {
+        const allRequests = parameters
+          .map(params => params.map((primaryKey: any) => entitySet.load(primaryKey)))
+          .reduce((acc, val) => acc.concat(val))
+        return Promise.all(allRequests).then((res) => {
           res.forEach(relatedEntity => {
             const collection = Reflect.get(entity, navigatorName) || []
             collection.push(relatedEntity)
 
             Reflect.set(entity, navigatorName, collection)
           })
-          resolve(res)
+
+          return res
         })
       } else {
         throw new Error('未定义的Relationship')
       }
-    })
+    }
 
     this.includes[navigatorName] = request
 

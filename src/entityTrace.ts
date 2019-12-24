@@ -6,8 +6,10 @@ export interface PropertyChangeEvent<T extends Object, P = any> {
   newValue: P;
 }
 
+export type PropertyChangeHandler<T> = (tracer: EntityTrace<T>, e: PropertyChangeEvent<T>) => void
+
 export default class EntityTrace<T extends Object> {
-  constructor (origin: T, public state: EntityState = EntityState.Unchanged) {
+  constructor (private origin: T, public state: EntityState = EntityState.Unchanged) {
     const propertyChange = (propertyName: string, value: any, newValue: any) => {
       const event = {
         propertyName,
@@ -38,15 +40,19 @@ export default class EntityTrace<T extends Object> {
     return this.proxy
   }
 
+  public get rawObject () {
+    return this.origin
+  }
+
   private proxy: T
   public revoke: () => void
 
-  private propertyChangeHandlers: ((tracer: EntityTrace<T>, e: PropertyChangeEvent<T>) => void)[] = []
+  private propertyChangeHandlers: PropertyChangeHandler<T>[] = []
 
-  public onPropertyChange (handler: (tracer: EntityTrace<T>, e: PropertyChangeEvent<T>) => void) {
+  public onPropertyChange (handler: PropertyChangeHandler<T>) {
     this.propertyChangeHandlers.push(handler)
   }
-  public offPropertyChange (handler: (tracer: EntityTrace<T>, e: PropertyChangeEvent<T>) => void) {
+  public offPropertyChange (handler: PropertyChangeHandler<T>) {
     this.propertyChangeHandlers = this.propertyChangeHandlers.filter(item => item !== handler)
   }
 }

@@ -18,15 +18,16 @@ export interface Navigator extends Member {
   navigatorName: string
 }
 
+export type BehaviorName = 'load' | 'loadAll' | 'add' | 'delete' | 'update'
 export interface Behavior {
-  behaviorName: string;
+  behaviorName: BehaviorName;
   url: string;
   method: Method;
   mapRequestParameters?: (...args: any[]) => any,
   mapEntityData?: (...args: any[]) => any
 }
 
-export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE'
+export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
 
 type Behaviors = Record<string, Behavior>
 type Navigators = Record<string, Navigator>
@@ -100,7 +101,7 @@ class MetadataManager {
     return this.managed.get(prototype)!.foreignKeys
   }
 
-  getBehavior (prototype: Object, behaviorName: keyof Behaviors): Behavior | undefined {
+  getBehavior (prototype: Object, behaviorName: BehaviorName): Behavior | undefined {
     if (!this.managed.has(prototype)) {
       return
     }

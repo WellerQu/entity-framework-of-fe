@@ -1,6 +1,6 @@
 import EntityContext from './entityContext'
 import EntityState from './entityState'
-import EntityTrace, { PropertyChangeEvent } from './entityTrace'
+import EntityTrace from './entityTrace'
 import Relationship from './annotations/relationship'
 import isEmpty from './utils/isEmpty'
 
@@ -10,6 +10,7 @@ export default class EntitySet<T extends Object> {
     this.includedNavigators = {}
     this.otherNavigators = []
     this.entityMetadata = { type }
+    this.onPropertyChanged = this.onPropertyChanged.bind(this)
   }
 
   private set: Set<EntityTrace<T>>
@@ -41,12 +42,12 @@ export default class EntitySet<T extends Object> {
   }
 
   public remove (entity?: T): this {
-    const stateTrace = Array.from(this.set).find(item => item.object === entity && item.state !== EntityState.Deleted)
+    const tracer = Array.from(this.set).find(item => item.object === entity && item.state !== EntityState.Deleted)
 
-    if (stateTrace) {
-      stateTrace.state = EntityState.Deleted
-      stateTrace.offPropertyChange(this.onPropertyChanged)
-      stateTrace.revoke()
+    if (tracer) {
+      tracer.state = EntityState.Deleted
+      tracer.offPropertyChange(this.onPropertyChanged)
+      tracer.revoke()
     }
 
     return this
@@ -129,7 +130,7 @@ export default class EntitySet<T extends Object> {
       .getBehavior(this.entityMetadata.type.prototype, 'load')
 
     if (!queryMeta) {
-      throw new Error('没有配置Load behavior')
+      throw new Error(`${this.entityMetadata.type.name} 没有配置Load behavior`)
     }
 
     const params = queryMeta.mapRequestParameters ? queryMeta.mapRequestParameters(...args) : args
@@ -154,7 +155,7 @@ export default class EntitySet<T extends Object> {
     const queryMeta = this.ctx.metadata
       .getBehavior(this.entityMetadata.type.prototype, 'loadAll')
     if (!queryMeta) {
-      throw new Error('没有配置LoadAll behavior')
+      throw new Error(`${this.entityMetadata.type.name} 没有配置LoadAll behavior`)
     }
 
     const params = queryMeta.mapRequestParameters ? queryMeta.mapRequestParameters(...args) : args
@@ -247,8 +248,87 @@ export default class EntitySet<T extends Object> {
     throw new Error('Not implemented')
   }
 
-  private onPropertyChanged (tracer: EntityTrace<T>, e: PropertyChangeEvent<T, EntityState>) {
-    console.log(`${e.value} -> ${e.newValue}`) // eslint-disable-line no-console
+  private onPropertyChanged (tracer: EntityTrace<T>/*, e: PropertyChangeEvent<T, EntityState> */) {
     tracer.state = EntityState.Modified
+  }
+
+  public synchronizeState (): Promise<any>[] {
+    return Array.from(this.set)
+      .filter(item => item.state === EntityState.Added ||
+        item.state === EntityState.Modified ||
+        item.state === EntityState.Deleted ||
+        item.state === EntityState.Detached)
+      .map(async tracer => {
+        const state = tracer.state
+        const object = tracer.rawObject
+
+        if (state === EntityState.Added) {
+          const members = this.ctx.metadata.getMembers(object.constructor.prototype)
+          const behavior = this.ctx.metadata.getBehavior(object.constructor.prototype, 'add')
+
+          if (!behavior) {
+            return Promise.reject(new Error(`${object.constructor.name} 没有配置Add behavior`))
+          }
+
+          const mapRequestParameters = behavior.mapRequestParameters || (a => a)
+
+          const params = mapRequestParameters(members.reduce((params, m) => {
+            Reflect.set(params, m.fieldName, Reflect.get(object, m.fieldName))
+            return params
+          }, {}))
+
+          return this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params)
+            .then(res => {
+              tracer.state = EntityState.Unchanged
+              return res
+            })
+        }
+
+        if (state === EntityState.Deleted) {
+          const primaryKeys = this.ctx.metadata.getPrimaryKeys(object.constructor.prototype)
+          const behavior = this.ctx.metadata.getBehavior(object.constructor.prototype, 'delete')
+
+          if (!behavior) {
+            return Promise.reject(new Error(`${object.constructor.name} 没有配置Delete behavior`))
+          }
+
+          const params = primaryKeys.reduce((params, m) => {
+            Reflect.set(params, m.fieldName, Reflect.get(object, m.fieldName))
+            return params
+          })
+
+          return this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params)
+            .then(res => {
+              this.set.delete(tracer)
+              return res
+            })
+        }
+
+        if (state === EntityState.Modified) {
+          const members = this.ctx.metadata.getMembers(object.constructor.prototype)
+          const behavior = this.ctx.metadata.getBehavior(object.constructor.prototype, 'update')
+
+          if (!behavior) {
+            return Promise.reject(new Error(`${object.constructor.name} 没有配置Update behavior`))
+          }
+
+          const params = members.reduce((params, m) => {
+            Reflect.set(params, m.fieldName, Reflect.get(object, m.fieldName))
+            return params
+          })
+
+          return this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params).then(res => {
+            tracer.state = EntityState.Unchanged
+            return res
+          })
+        }
+
+        if (state === EntityState.Detached) {
+          return Promise.resolve().then(() => {
+            this.set.delete(tracer)
+            return true
+          })
+        }
+      })
   }
 }

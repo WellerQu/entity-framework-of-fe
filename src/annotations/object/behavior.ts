@@ -1,7 +1,7 @@
-import manager, { MetadataType, Method, Behavior } from '../metadataManager'
+import manager, { MetadataType, Method, Behavior, BehaviorName } from '../metadataManager'
 
 export default (
-  behaviorName: 'load' | 'loadAll',
+  behaviorName: BehaviorName,
   url: string,
   method: Method = 'GET',
   mapRequestParameters?: (...args: any[]) => any,

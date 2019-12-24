@@ -50,8 +50,17 @@ describe('EntitySet', () => {
     name: string = ''
   }
 
+  const mapRequestParameters = (entity: Foo) => {
+    if (entity.id === 0) {
+      delete entity.id
+    }
+
+    return entity
+  }
+
   @behavior('loadAll', `${domain}/foo`, 'GET', a => a, a => a)
   @behavior('load', `${domain}/foo/:id`, 'GET', a => a, a => a)
+  @behavior('add', `${domain}/foo`, 'POST', mapRequestParameters, a => a.json())
   class Foo {
     @primary()
     @member()
@@ -90,7 +99,7 @@ describe('EntitySet', () => {
 
   const ctx = new Context()
 
-  describe('local data', () => {
+  describe('query local data', () => {
     beforeEach(() => {
       const foo1 = new Foo()
       foo1.id = 1
@@ -243,7 +252,7 @@ describe('EntitySet', () => {
     })
   })
 
-  describe('remote data', () => {
+  describe('query remote data', () => {
     afterEach(() => {
       ctx.foo.clear()
       ctx.bar.clear()
@@ -352,6 +361,53 @@ describe('EntitySet', () => {
 
       expect(foo!.bar).not.toBeUndefined()
       expect(foo!.bar!.zar).not.toBeUndefined()
+    })
+  })
+
+  describe('save changes', () => {
+    beforeEach(() => {
+      const foo = new Foo()
+      foo.id = 1
+      foo.name = 'Hello'
+
+      ctx.foo.attach(foo)
+    })
+
+    it('synchronizeState: UnChanged', () => {
+      return expect(ctx.saveChanges()).resolves.toStrictEqual([])
+    })
+
+    it.skip('synchronizeState: Add', () => {
+      const foo = new Foo()
+      foo.name = 'World'
+
+      ctx.foo.add(foo)
+
+      return expect(ctx.saveChanges()).resolves.toStrictEqual([{ id: 2, name: 'World' }])
+    })
+
+    it.skip('synchronizeState: Update', async () => {
+      await ctx.foo.load(1)
+      const case1 = ctx.foo.find(1)
+      case1!.name = 'Hoha'
+
+      return expect(ctx.saveChanges()).resolves.toStrictEqual([])
+    })
+
+    it.skip('synchronizeState: Update', async () => {
+      await ctx.foo.include('bar').include('zar').load(1)
+      const case1 = ctx.foo.find(1)
+      case1!.bar!.zar!.name = 'ooooops'
+
+      return expect(ctx.saveChanges()).resolves.toStrictEqual([])
+    })
+
+    it.skip('synchronizeState: Delete', async () => {
+      await ctx.foo.include('bar').include('zar').load(1)
+      const case1 = ctx.foo.find(1)
+      ctx.zar.remove(case1!.bar!.zar)
+
+      return expect(ctx.saveChanges()).resolves.toStrictEqual([])
     })
   })
 

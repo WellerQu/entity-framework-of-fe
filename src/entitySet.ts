@@ -93,7 +93,7 @@ export default class EntitySet<T extends Object> {
     return stateTrace.object
   }
 
-  public findAll (fn: (n: T) => boolean): T[] {
+  public filter (fn: (n: T) => boolean): T[] {
     const stateTraces = Array.from(this.set).filter(item => {
       return fn(Object.freeze(item.object))
     })
@@ -142,7 +142,7 @@ export default class EntitySet<T extends Object> {
     }))
   }
 
-  public load (...args: any[]): Promise<T> {
+  public async load (...args: any[]): Promise<T> {
     const queryMeta = this.ctx.metadata
       .getBehavior(this.entityMetadata.type.prototype, 'load')
 
@@ -160,7 +160,7 @@ export default class EntitySet<T extends Object> {
     return thenable.then(queryMeta.mapEntityData).then(data => this.attachDataToEntitySet(data).then(res => res[0]))
   }
 
-  public loadAll (...args: any[]): Promise<T[]> {
+  public async loadAll (...args: any[]): Promise<T[]> {
     const queryMeta = this.ctx.metadata.getBehavior(this.entityMetadata.type.prototype, 'loadAll')
     if (!queryMeta) {
       throw new Error('没有配置LoadAll behavior')

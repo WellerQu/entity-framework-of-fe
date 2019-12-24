@@ -7,7 +7,7 @@ export interface PropertyChangeEvent<T extends Object, P = any> {
 }
 
 export default class EntityTrace<T extends Object> {
-  constructor (origin: T, state?: EntityState) {
+  constructor (origin: T, public state: EntityState = EntityState.Unchanged) {
     const propertyChange = (propertyName: string, value: any, newValue: any) => {
       const event = {
         propertyName,
@@ -32,23 +32,14 @@ export default class EntityTrace<T extends Object> {
 
     this.proxy = proxy
     this.revoke = revoke
-    this.state = state || EntityState.Unchanged
   }
 
   public get object () {
     return this.proxy
   }
 
-  private _state: EntityState = EntityState.Unchanged
-  public set state (newState: EntityState) {
-    this._state = newState
-  }
-  public get state () {
-    return this._state
-  }
-
   private proxy: T
-  public revoke: any
+  public revoke: () => void
 
   private propertyChangeHandlers: ((tracer: EntityTrace<T>, e: PropertyChangeEvent<T>) => void)[] = []
 

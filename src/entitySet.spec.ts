@@ -153,8 +153,8 @@ describe('EntitySet', () => {
     expect(undefinedFoo).toBeUndefined()
   })
 
-  it('findAll', () => {
-    const fooList = ctx.foo.findAll(n => n.id === 1 || n.id === 2)
+  it('filter', () => {
+    const fooList = ctx.foo.filter(n => n.id === 1 || n.id === 2)
     expect(fooList).toHaveLength(2)
   })
 
@@ -256,8 +256,12 @@ describe('EntitySet', () => {
   it('change property', () => {
     const foo = ctx.foo.find(1)
     foo!.name = 'fuck off'
-
     expect(foo!.name).toEqual('fuck off')
+
+    ctx.foo.remove(foo)
+    expect(() => {
+      foo!.name = 'asshole'
+    }).toThrowError(/has been revoked/)
   })
 
   it('rawFetch', () => {})

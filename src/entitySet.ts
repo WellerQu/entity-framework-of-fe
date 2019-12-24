@@ -2,6 +2,7 @@ import EntityContext from './entityContext'
 import EntityState from './entityState'
 import EntityTrace, { PropertyChangeEvent } from './entityTrace'
 import Relationship from './annotations/relationship'
+import isEmpty from './utils/isEmpty'
 
 export default class EntitySet<T extends Object> {
   constructor (private ctx: EntityContext, type: { new(): T}) {
@@ -111,6 +112,11 @@ export default class EntitySet<T extends Object> {
 
     this.clear()
 
+    // 无数据
+    if (isEmpty(originData)) {
+      return Promise.resolve([])
+    }
+
     return Promise.all(originData.map(data => {
       const entity = new Type()
       Reflect.ownKeys(data).forEach(key => {
@@ -181,14 +187,14 @@ export default class EntitySet<T extends Object> {
       return this
     }
 
-    const navigator = this.ctx.metadata.getNavigator(this.entityMetadata.type.prototype, navigatorName as string)
-    if (!navigator) {
-      throw new Error(`没有配置Navigator "${navigatorName}" 属性成员`)
-    }
-
     const entitySet = Reflect.get(this.ctx, navigatorName) as EntitySet<any>
     if (!entitySet) {
       throw new Error(`当前上下文中没有配置EntitySet "${navigatorName}"`)
+    }
+
+    const navigator = this.ctx.metadata.getNavigator(this.entityMetadata.type.prototype, navigatorName as string)
+    if (!navigator) {
+      throw new Error(`没有配置Navigator "${navigatorName}" 属性成员`)
     }
 
     const foreignKeys = this.ctx.metadata

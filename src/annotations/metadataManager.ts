@@ -28,14 +28,6 @@ export interface Behavior {
 
 export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
-// export type Behaviors = {
-//   query?: Behavior,
-//   detail?: Behavior,
-//   add?: Behavior,
-//   update?: Behavior,
-//   delete?: Behavior,
-//   [t: string]: Behavior | undefined
-// }
 type Behaviors = Record<string, Behavior>
 type Navigators = Record<string, Navigator>
 

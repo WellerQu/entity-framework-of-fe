@@ -7,14 +7,14 @@ import isEmpty from './utils/isEmpty'
 export default class EntitySet<T extends Object> {
   constructor (private ctx: EntityContext, type: { new(): T}) {
     this.set = new Set<EntityTrace<T>>()
-    this.includes = {}
-    this.entityMetadata = {
-      type
-    }
+    this.includedNavigators = {}
+    this.otherNavigators = []
+    this.entityMetadata = { type }
   }
 
   private set: Set<EntityTrace<T>>
-  private includes: Record <string, (entity: T) => Promise < any >>
+  private includedNavigators: Record<string, (entity: T | null) => Promise<any>>
+  private otherNavigators: string[]
   private entityMetadata: {
     type: { new() : T },
   }
@@ -26,7 +26,7 @@ export default class EntitySet<T extends Object> {
   public clear (): this {
     Array.from(this.set).forEach(item => item.offPropertyChange(this.onPropertyChanged))
     this.set.clear()
-    this.includes = {}
+    this.includedNavigators = {}
 
     return this
   }
@@ -106,46 +106,22 @@ export default class EntitySet<T extends Object> {
     return Array.from(this.set).map(item => Object.freeze(item.object))
   }
 
-  private attachDataToEntitySet (...originData: T[]): Promise<T[]> {
-    const Type = this.entityMetadata.type
-    const includes = this.includes
-
-    this.clear()
-
+  private attachDataToEntitySet (originData: T): T | null {
     // 无数据
     if (isEmpty(originData)) {
-      return Promise.resolve([])
+      return null
     }
 
-    return Promise.all(originData.map(data => {
-      const entity = new Type()
-      Reflect.ownKeys(data).forEach(key => {
-        Reflect.set(entity, key, Reflect.get(data, key))
-      })
+    const Type = this.entityMetadata.type
+    const entity = new Type()
 
-      this.attach(entity)
+    Reflect.ownKeys(originData).forEach(key => {
+      Reflect.set(entity, key, Reflect.get(originData, key))
+    })
 
-      const requests = Reflect.ownKeys(includes)
-        .map(navigatorName => {
-          const navigator = this.ctx.metadata.getNavigator(Type.prototype, navigatorName as string)
-          if (!navigator) {
-            return null
-          }
+    this.attach(entity)
 
-          return includes[navigatorName as string]
-        })
-        .filter(item => item !== null)
-
-      return new Promise<T>((resolve, reject) => {
-        if (requests.length > 0) {
-          Promise.all(requests.map(fn => fn!(entity))).then(() => {
-            resolve(data)
-          }, reject)
-        } else {
-          resolve(data)
-        }
-      })
-    }))
+    return entity
   }
 
   public async load (...args: any[]): Promise<T> {
@@ -157,33 +133,53 @@ export default class EntitySet<T extends Object> {
     }
 
     const params = queryMeta.mapRequestParameters ? queryMeta.mapRequestParameters(...args) : args
-    const thenable = this.ctx.configuration.fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
+    const requests = Object.values(this.includedNavigators)
 
-    if (!queryMeta.mapEntityData) {
-      return thenable.then((data) => this.attachDataToEntitySet(data).then(res => res[0]))
-    }
+    this.clear()
 
-    return thenable.then(queryMeta.mapEntityData).then(data => this.attachDataToEntitySet(data).then(res => res[0]))
+    return new Promise<T>((resolve, reject) => {
+      this.ctx.configuration
+        .fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
+        .then(queryMeta.mapEntityData || (anything => anything), reject)
+        .then(data => {
+          const entity = this.attachDataToEntitySet(data)
+          Promise.all(requests.map(fn => fn(entity))).then(() => {
+            resolve(data)
+          })
+        })
+    })
   }
 
   public async loadAll (...args: any[]): Promise<T[]> {
-    const queryMeta = this.ctx.metadata.getBehavior(this.entityMetadata.type.prototype, 'loadAll')
+    const queryMeta = this.ctx.metadata
+      .getBehavior(this.entityMetadata.type.prototype, 'loadAll')
     if (!queryMeta) {
       throw new Error('没有配置LoadAll behavior')
     }
 
     const params = queryMeta.mapRequestParameters ? queryMeta.mapRequestParameters(...args) : args
-    const thenable = this.ctx.configuration.fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
+    const requests = Object.values(this.includedNavigators)
 
-    if (!queryMeta.mapEntityData) {
-      return thenable.then((data) => this.attachDataToEntitySet(...data))
-    }
+    this.clear()
 
-    return thenable.then(queryMeta.mapEntityData).then(data => this.attachDataToEntitySet(...data))
+    return new Promise<T[]>((resolve, reject) => {
+      this.ctx.configuration
+        .fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
+        .then(queryMeta.mapEntityData || (anything => anything), reject)
+        .then((data: T[]) => {
+          const promises = data
+            .map(item => this.attachDataToEntitySet(item))
+            .map(entity => requests.map(fn => fn(entity)))
+            .reduce((acc, val) => acc.concat(val))
+          Promise.all(promises).then(() => {
+            resolve(data)
+          })
+        })
+    })
   }
 
   public include (navigatorName: string): this {
-    if (this.includes[navigatorName]) {
+    if (this.includedNavigators[navigatorName]) {
       return this
     }
 
@@ -194,31 +190,38 @@ export default class EntitySet<T extends Object> {
 
     const navigator = this.ctx.metadata.getNavigator(this.entityMetadata.type.prototype, navigatorName as string)
     if (!navigator) {
-      throw new Error(`没有配置Navigator "${navigatorName}" 属性成员`)
+      this.otherNavigators.push(navigatorName)
+      return this
     }
 
     const foreignKeys = this.ctx.metadata
       .getForeignKeys(this.entityMetadata.type.prototype)
       .filter(key => key.navigatorName === navigatorName)
+    const otherNavigators = this.otherNavigators
 
     const getRequestParameters = (entity: T) => foreignKeys.map(key => Reflect.get(entity, key.propertyName))
 
-    const request = (entity: T) => {
+    const request = async (entity: T | null) => {
+      if (!entity) {
+        return Promise.resolve(null)
+      }
+
       const parameters = getRequestParameters(entity)
+      const set = otherNavigators.reduce((es, nav) => es.include(nav), entitySet)
 
       // 发起请求
       if (navigator.relationship === Relationship.One) {
-        return entitySet.load(...parameters).then((data) => {
-          const relatedEntity = entitySet.find(...parameters)
+        return set.load(...parameters).then((data) => {
+          const relatedEntity = set.find(...parameters)
           Reflect.set(entity, navigatorName, relatedEntity)
 
           return data
         })
       } else if (navigator.relationship === Relationship.Many) {
-        const allRequests = parameters
-          .map(params => params.map((primaryKey: any) => entitySet.load(primaryKey)))
+        const allLoadRequests = parameters
+          .map(params => params.map((primaryKey: any) => set.load(primaryKey)))
           .reduce((acc, val) => acc.concat(val))
-        return Promise.all(allRequests).then((res) => {
+        return Promise.all(allLoadRequests).then((res) => {
           res.forEach(relatedEntity => {
             const collection = Reflect.get(entity, navigatorName) || []
             collection.push(relatedEntity)
@@ -233,7 +236,9 @@ export default class EntitySet<T extends Object> {
       }
     }
 
-    this.includes[navigatorName] = request
+    request.navigatorName = navigatorName
+
+    this.includedNavigators[navigatorName] = request
 
     return this
   }

@@ -118,12 +118,7 @@ export default class EntitySet<T extends Object> {
       return null
     }
 
-    const Type = this.entityMetadata.type
-    const entity = new Type()
-
-    Reflect.ownKeys(originData).forEach(key => {
-      Reflect.set(entity, key, Reflect.get(originData, key))
-    })
+    const entity = this.entry(originData)
 
     this.attach(entity)
 

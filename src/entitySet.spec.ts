@@ -17,7 +17,7 @@ describe('EntitySet', () => {
     @member()
     id: number = 0
 
-    @member()
+    @member('zAliasName')
     name: string = ''
   }
 
@@ -50,7 +50,7 @@ describe('EntitySet', () => {
     name: string = ''
   }
 
-  const mapRequestParameters = (entity: Foo) => {
+  const mapParameters = (entity: Foo) => {
     if (entity.id === 0) {
       delete entity.id
     }
@@ -58,9 +58,11 @@ describe('EntitySet', () => {
     return entity
   }
 
+  const mapEntity = (response: Response) => response.json()
+
   @behavior('loadAll', `${domain}/foo`, 'GET', a => a, a => a)
   @behavior('load', `${domain}/foo/:id`, 'GET', a => a, a => a)
-  @behavior('add', `${domain}/foo`, 'POST', mapRequestParameters, a => a.json())
+  @behavior('add', `${domain}/foo`, 'POST', mapParameters, mapEntity)
   class Foo {
     @primary()
     @member()
@@ -250,6 +252,17 @@ describe('EntitySet', () => {
         foo!.name = 'asshole'
       }).toThrowError(/has been revoked/)
     })
+
+    it('entry', () => {
+      const originData = {
+        id: 1,
+        zAliasName: 'ZarName'
+      }
+
+      const zar = ctx.zar.entry(originData)
+      expect(zar.id).toEqual(originData.id)
+      expect(zar.name).toEqual(originData.zAliasName)
+    })
   })
 
   describe('query remote data', () => {
@@ -362,6 +375,16 @@ describe('EntitySet', () => {
       expect(foo!.bar).not.toBeUndefined()
       expect(foo!.bar!.zar).not.toBeUndefined()
     })
+
+    it('rawFetch', () => {
+      const foo = new Foo()
+      foo.id = 2
+      foo.name = 'Hello World'
+
+      return expect(ctx.foo.rawFetch(() => {
+        return Promise.resolve(foo)
+      })).resolves.toStrictEqual(foo)
+    })
   })
 
   describe('save changes', () => {
@@ -410,6 +433,4 @@ describe('EntitySet', () => {
       return expect(ctx.saveChanges()).resolves.toStrictEqual([])
     })
   })
-
-  it('rawFetch', () => {})
 })

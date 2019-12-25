@@ -133,7 +133,7 @@ export default class EntitySet<T extends Object> {
       throw new Error(`${this.entityMetadata.type.name} 没有配置Load behavior`)
     }
 
-    const params = queryMeta.mapRequestParameters ? queryMeta.mapRequestParameters(...args) : args
+    const params = queryMeta.mapParameters ? queryMeta.mapParameters(...args) : args
     const requests = Object.values(this.includedNavigators)
 
     this.clear()
@@ -141,7 +141,7 @@ export default class EntitySet<T extends Object> {
     return new Promise<T>((resolve, reject) => {
       this.ctx.configuration
         .fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
-        .then(queryMeta.mapEntityData || (anything => anything), reject)
+        .then(queryMeta.mapEntity || (anything => anything), reject)
         .then(data => {
           const entity = this.attachDataToEntitySet(data)
           Promise.all(requests.map(fn => fn(entity))).then(() => {
@@ -158,7 +158,7 @@ export default class EntitySet<T extends Object> {
       throw new Error(`${this.entityMetadata.type.name} 没有配置LoadAll behavior`)
     }
 
-    const params = queryMeta.mapRequestParameters ? queryMeta.mapRequestParameters(...args) : args
+    const params = queryMeta.mapParameters ? queryMeta.mapParameters(...args) : args
     const requests = Object.values(this.includedNavigators)
 
     this.clear()
@@ -166,7 +166,7 @@ export default class EntitySet<T extends Object> {
     return new Promise<T[]>((resolve, reject) => {
       this.ctx.configuration
         .fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
-        .then(queryMeta.mapEntityData || (anything => anything), reject)
+        .then(queryMeta.mapEntity || (anything => anything), reject)
         .then((data: T[]) => {
           const promises = data
             .map(item => this.attachDataToEntitySet(item))
@@ -244,12 +244,25 @@ export default class EntitySet<T extends Object> {
     return this
   }
 
-  public rawFetch (): this {
-    throw new Error('Not implemented')
+  public entry (originData: {}): T {
+    const Type = this.entityMetadata.type
+    const instance = new Type()
+
+    const members = this.ctx.metadata.getMembers(Type.prototype)
+    members.forEach(item => {
+      const fieldData = Reflect.get(originData, item.fieldName)
+      Reflect.set(instance, item.propertyName, fieldData)
+    })
+
+    return instance
   }
 
-  private onPropertyChanged (tracer: EntityTrace<T>/*, e: PropertyChangeEvent<T, EntityState> */) {
-    tracer.state = EntityState.Modified
+  public async rawFetch (request: () => Promise<T>): Promise<T> {
+    return request()
+      .then(entity => {
+        this.attach(entity)
+        return entity
+      })
   }
 
   public synchronizeState (): Promise<any>[] {
@@ -261,6 +274,7 @@ export default class EntitySet<T extends Object> {
       .map(async tracer => {
         const state = tracer.state
         const object = tracer.rawObject
+        const identity = (a: any) => a
 
         if (state === EntityState.Added) {
           const members = this.ctx.metadata.getMembers(object.constructor.prototype)
@@ -270,14 +284,15 @@ export default class EntitySet<T extends Object> {
             return Promise.reject(new Error(`${object.constructor.name} 没有配置Add behavior`))
           }
 
-          const mapRequestParameters = behavior.mapRequestParameters || (a => a)
+          const { mapParameters = identity, mapEntity = identity } = behavior
 
-          const params = mapRequestParameters(members.reduce((params, m) => {
+          const params = mapParameters(members.reduce((params, m) => {
             Reflect.set(params, m.fieldName, Reflect.get(object, m.fieldName))
             return params
           }, {}))
 
           return this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params)
+            .then(mapEntity)
             .then(res => {
               tracer.state = EntityState.Unchanged
               return res
@@ -292,12 +307,15 @@ export default class EntitySet<T extends Object> {
             return Promise.reject(new Error(`${object.constructor.name} 没有配置Delete behavior`))
           }
 
-          const params = primaryKeys.reduce((params, m) => {
+          const { mapParameters = identity, mapEntity = identity } = behavior
+
+          const params = mapParameters(primaryKeys.reduce((params, m) => {
             Reflect.set(params, m.fieldName, Reflect.get(object, m.fieldName))
             return params
-          })
+          }))
 
           return this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params)
+            .then(mapEntity)
             .then(res => {
               this.set.delete(tracer)
               return res
@@ -312,15 +330,19 @@ export default class EntitySet<T extends Object> {
             return Promise.reject(new Error(`${object.constructor.name} 没有配置Update behavior`))
           }
 
-          const params = members.reduce((params, m) => {
+          const { mapParameters = identity, mapEntity = identity } = behavior
+
+          const params = mapParameters(members.reduce((params, m) => {
             Reflect.set(params, m.fieldName, Reflect.get(object, m.fieldName))
             return params
-          })
+          }))
 
-          return this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params).then(res => {
-            tracer.state = EntityState.Unchanged
-            return res
-          })
+          return this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params)
+            .then(mapEntity)
+            .then(res => {
+              tracer.state = EntityState.Unchanged
+              return res
+            })
         }
 
         if (state === EntityState.Detached) {
@@ -330,5 +352,9 @@ export default class EntitySet<T extends Object> {
           })
         }
       })
+  }
+
+  private onPropertyChanged (tracer: EntityTrace<T>/*, e: PropertyChangeEvent<T, EntityState> */) {
+    tracer.state = EntityState.Modified
   }
 }

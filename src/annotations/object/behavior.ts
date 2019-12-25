@@ -1,11 +1,11 @@
 import manager, { MetadataType, Method, Behavior, BehaviorName } from '../metadataManager'
 
-export default (
+export default <T = any>(
   behaviorName: BehaviorName,
   url: string,
   method: Method = 'GET',
-  mapRequestParameters?: (...args: any[]) => any,
-  mapResponseData?: (...args: any[]) => any
+  mapParameters?: (...args: any[]) => T,
+  mapEntity?: (...args: any[]) => Promise<T>
 ) => (target: { new(): {} }) => {
-  manager.register<Behavior>(target.prototype, MetadataType.Behavior, { behaviorName, url, method, mapRequestParameters, mapEntityData: mapResponseData })
+  manager.register<Behavior<T>>(target.prototype, MetadataType.Behavior, { behaviorName, url, method, mapParameters, mapEntity })
 }

@@ -19,12 +19,12 @@ export interface Navigator extends Member {
 }
 
 export type BehaviorName = 'load' | 'loadAll' | 'add' | 'delete' | 'update'
-export interface Behavior {
+export interface Behavior<T = any> {
   behaviorName: BehaviorName;
   url: string;
   method: Method;
-  mapRequestParameters?: (...args: any[]) => any,
-  mapEntityData?: (...args: any[]) => any
+  mapParameters?: (...args: any[]) => T,
+  mapEntity?: (response: Response) => Promise<T>
 }
 
 export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'

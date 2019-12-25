@@ -32,30 +32,9 @@ export default class EntitySet<T extends Object> {
     return this
   }
 
-  public add (element: T): this {
-    const tracer = new EntityTrace(element, EntityState.Added)
-    tracer.onPropertyChange(this.onPropertyChanged)
-
-    this.set.add(tracer)
-
-    return this
-  }
-
-  public remove (entity?: T): this {
-    const tracer = Array.from(this.set).find(item => item.object === entity && item.state !== EntityState.Deleted)
-
-    if (tracer) {
-      tracer.state = EntityState.Deleted
-      tracer.offPropertyChange(this.onPropertyChanged)
-      tracer.revoke()
-    }
-
-    return this
-  }
-
-  public attach (...elements: T[]): this {
-    elements.forEach(item => {
-      const tracer = new EntityTrace(item, EntityState.Unchanged)
+  public add (...entities: (T| undefined)[]): this {
+    entities.filter(item => !!item).forEach(addedItem => {
+      const tracer = new EntityTrace<T>(addedItem!, EntityState.Added)
       tracer.onPropertyChange(this.onPropertyChanged)
 
       this.set.add(tracer)
@@ -64,14 +43,40 @@ export default class EntitySet<T extends Object> {
     return this
   }
 
-  public detach (entity?: T): this {
-    const stateTrace = Array.from(this.set).find(item => item.object === entity && item.state !== EntityState.Detached)
+  public remove (...entities: (T| undefined)[]): this {
+    entities.forEach(removedItem => {
+      const tracer = Array.from(this.set).find(item => item.object === removedItem && item.state !== EntityState.Deleted)
 
-    if (stateTrace) {
-      stateTrace.state = EntityState.Detached
-      stateTrace.offPropertyChange(this.onPropertyChanged)
-      stateTrace.revoke()
-    }
+      if (tracer) {
+        tracer.state = EntityState.Deleted
+        tracer.offPropertyChange(this.onPropertyChanged)
+        tracer.revoke()
+      }
+    })
+    return this
+  }
+
+  public attach (...entities: (T | undefined)[]): this {
+    entities.filter(item => !!item).forEach(attachedItem => {
+      const tracer = new EntityTrace<T>(attachedItem!, EntityState.Unchanged)
+      tracer.onPropertyChange(this.onPropertyChanged)
+
+      this.set.add(tracer)
+    })
+
+    return this
+  }
+
+  public detach (...entities: (T | undefined)[]): this {
+    entities.filter(item => !!item).forEach(detachedItem => {
+      const stateTrace = Array.from(this.set).find(item => item.object === detachedItem && item.state !== EntityState.Detached)
+
+      if (stateTrace) {
+        stateTrace.state = EntityState.Detached
+        stateTrace.offPropertyChange(this.onPropertyChanged)
+        stateTrace.revoke()
+      }
+    })
 
     return this
   }

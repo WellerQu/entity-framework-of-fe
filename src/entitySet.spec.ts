@@ -11,7 +11,7 @@ describe('EntitySet', () => {
   const domain = 'http://localhost:3000'
 
   @behavior('loadAll', `${domain}/zar`, 'GET', a => a, a => a)
-  @behavior('load', `${domain}/zar/:id`, 'GET', a => a, a => a)
+  @behavior('load', `${domain}/zar/$id`, 'GET', a => a, a => a)
   class Zar {
     @primary()
     @member()
@@ -22,7 +22,7 @@ describe('EntitySet', () => {
   }
 
   @behavior('loadAll', `${domain}/bar`, 'GET', a => a, a => a)
-  @behavior('load', `${domain}/bar/:id`, 'GET', a => a, a => a)
+  @behavior('load', `${domain}/bar/$id`, 'GET', a => a, a => a)
   class Bar {
     @primary()
     @member()
@@ -40,7 +40,7 @@ describe('EntitySet', () => {
   }
 
   @behavior('loadAll', `${domain}/jar`, 'GET', a => a, a => a)
-  @behavior('load', `${domain}/jar/:id`, 'GET', a => a, a => a)
+  @behavior('load', `${domain}/jar/$id`, 'GET', a => a, a => a)
   class Jar {
     @primary('id')
     @member()
@@ -61,7 +61,7 @@ describe('EntitySet', () => {
   const mapEntity = (response: Response) => response.json()
 
   @behavior('loadAll', `${domain}/foo`, 'GET', a => a, a => a)
-  @behavior('load', `${domain}/foo/:id`, 'GET', a => a, a => a)
+  @behavior('load', `${domain}/foo/$id`, 'GET', a => a, a => a)
   @behavior('add', `${domain}/foo`, 'POST', mapParameters, mapEntity)
   class Foo {
     @primary()

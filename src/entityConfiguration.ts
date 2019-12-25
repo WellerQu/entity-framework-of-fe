@@ -12,17 +12,17 @@ export default class EntityConfiguration {
     let newUrl = url
 
     if (isBaseType) {
-      newUrl = newUrl.replace(/\/(:[^/]+)/i, `/${params}`)
+      newUrl = newUrl.replace(/(\$[^/]+)/i, `/${params}`)
     } else {
       Object.keys(params).forEach((key) => {
-        newUrl = newUrl.replace(/\/(:[^/]+)/i, `/${Reflect.get(params, key)}`)
+        newUrl = newUrl.replace(/(\$[^/]+)/i, `/${Reflect.get(params, key)}`)
       })
     }
 
     return newUrl
   }
 
-  public fetchJSON <T> (url: string, options: RequestInit, data: {}) {
+  public async fetchJSON (url: string, options: RequestInit, data: {}) {
     let fetchTarget = url
     const fetchOptions = {
       ...options,

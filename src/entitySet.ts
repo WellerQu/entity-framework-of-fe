@@ -315,7 +315,7 @@ export default class EntitySet<T extends Object> {
           const params = mapParameters(primaryKeys.reduce((params, m) => {
             Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
             return params
-          }))
+          }, {}))
 
           return this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params)
             .then(mapEntity)
@@ -338,7 +338,7 @@ export default class EntitySet<T extends Object> {
           const params = mapParameters(members.reduce((params, m) => {
             Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
             return params
-          }))
+          }, {}))
 
           return this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params)
             .then(mapEntity)

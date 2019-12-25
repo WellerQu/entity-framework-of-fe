@@ -228,7 +228,7 @@ const foo = ctx.foo.find(1)
 // 只可以更新非主键成员字段
 foo.name = 'Hello'
 // 将调用@behavior('update', 'http://localhost:3000/foo', 'POST')定义的行为
-ctx.foo.saveChanges()
+ctx.saveChanges()
 
 // Delete entity
 const foo1 = ctx.foo.find(1)

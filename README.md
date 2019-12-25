@@ -186,6 +186,12 @@ await ctx.foo.include('bar').load(1)
 await ctx.foo.include('bar').loadAll()
 ```
 
+- rawFetch 使用任意方法发起加载数据的请求, 并结果存储在EntitySet中, **忽略include**
+
+```typescript
+await ctx.foo.rawFetch(() => window.fetch('/bar').then(res => res.json()))
+```
+
 ## 查询数据
 
 在EF完成对数据的加载后, 就可以直接查询数据, 查询数据有二种方式, 分别应对二种情况
@@ -263,6 +269,7 @@ const res: Promise<Response[]> = await ctx.saveChanges()
 
 ## TODO
 
+- [] 补充关键代码注释
 - [] 更精确的错误信息传递
 - [] 数据缓存降低数据加载时对服务器的压力
 - [] 更多场景的测试用例

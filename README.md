@@ -1,6 +1,6 @@
 # EntityFramework Of Frontend
 
-用于前端的实体关系框架, 主要解决存在关联关系的实体之间的CRUD
+用于前端的实体关系框架, 解决存在关联关系的实体之间的CRUD
 
 ## 定义实体
 

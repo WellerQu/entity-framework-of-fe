@@ -262,11 +262,14 @@ export default class EntitySet<T extends Object> {
     return instance
   }
 
-  public async rawFetch (request: () => Promise<T>): Promise<T> {
+  public async rawFetch (request: () => Promise<T[]>): Promise<T[]> {
     return request()
-      .then(entity => {
-        this.attach(entity)
-        return entity
+      .then(entities => {
+        if (Array.isArray(entities)) {
+          this.attach(...entities)
+        }
+
+        return entities
       })
   }
 

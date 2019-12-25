@@ -382,8 +382,8 @@ describe('EntitySet', () => {
       foo.name = 'Hello World'
 
       return expect(ctx.foo.rawFetch(() => {
-        return Promise.resolve(foo)
-      })).resolves.toStrictEqual(foo)
+        return Promise.resolve([foo])
+      })).resolves.toStrictEqual([ foo ])
     })
   })
 

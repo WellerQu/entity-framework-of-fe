@@ -290,7 +290,7 @@ export default class EntitySet<T extends Object> {
           const { mapParameters = identity, mapEntity = identity } = behavior
 
           const params = mapParameters(members.reduce((params, m) => {
-            Reflect.set(params, m.fieldName, Reflect.get(object, m.fieldName))
+            Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
             return params
           }, {}))
 
@@ -313,7 +313,7 @@ export default class EntitySet<T extends Object> {
           const { mapParameters = identity, mapEntity = identity } = behavior
 
           const params = mapParameters(primaryKeys.reduce((params, m) => {
-            Reflect.set(params, m.fieldName, Reflect.get(object, m.fieldName))
+            Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
             return params
           }))
 
@@ -336,7 +336,7 @@ export default class EntitySet<T extends Object> {
           const { mapParameters = identity, mapEntity = identity } = behavior
 
           const params = mapParameters(members.reduce((params, m) => {
-            Reflect.set(params, m.fieldName, Reflect.get(object, m.fieldName))
+            Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
             return params
           }))
 

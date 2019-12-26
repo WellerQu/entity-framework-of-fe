@@ -43,7 +43,7 @@ class MetadataManager {
     navigators: Navigators
   }>()
 
-  register<T extends PrimaryKey | ForeignKey | Behavior | Navigator> (prototype: Object, type: MetadataType, meta: T) {
+  register<T extends Member | PrimaryKey | ForeignKey | Behavior | Navigator> (prototype: Object, type: MetadataType, meta: T) {
     if (!this.managed.has(prototype)) {
       this.managed.set(prototype, {
         members: [],

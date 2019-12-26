@@ -45,7 +45,10 @@ export default class EntitySet<T extends Object> {
 
   public remove (...entities: (T| undefined)[]): this {
     entities.filter(item => !!item).forEach(removedItem => {
-      const tracer = Array.from(this.set).find(item => item.object === removedItem && item.state !== EntityState.Deleted)
+      const tracer = Array.from(this.set)
+        .find(item => item.object === removedItem &&
+          item.state !== EntityState.Deleted &&
+          item.state !== EntityState.Detached)
 
       if (tracer) {
         tracer.state = EntityState.Deleted

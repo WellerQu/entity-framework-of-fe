@@ -3,7 +3,7 @@ import isEmpty from './utils/isEmpty'
 export default class EntityConfiguration {
   public fetch = window.fetch || require('node-fetch')
 
-  private parseUrl (url: string, params: any) {
+  protected parseUrl (url: string, params: any) {
     if (isEmpty(params)) {
       return url
     }

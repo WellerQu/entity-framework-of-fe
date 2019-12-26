@@ -3,12 +3,18 @@ import EntityConfiguration from './entityConfiguration'
 import EntitySet from './entitySet'
 
 export default class EntityContext {
+  constructor (private _configuration?: EntityConfiguration) {
+    if (!this._configuration) {
+      this._configuration = new EntityConfiguration()
+    }
+  }
+
   public get metadata () {
     return metadata
   }
 
   public get configuration () {
-    return new EntityConfiguration()
+    return this._configuration!
   }
 
   public async saveChanges () {

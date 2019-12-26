@@ -6,6 +6,7 @@ import member from './annotations/property/member'
 import behavior from './annotations/object/behavior'
 import navigator from './annotations/property/navigator'
 import Relationship from './annotations/relationship'
+import EntityConfiguration from './entityConfiguration'
 
 describe('EntitySet', () => {
   const domain = 'http://localhost:3000'
@@ -94,6 +95,10 @@ describe('EntitySet', () => {
   }
 
   class Context extends EntityContext {
+    constructor () {
+      super(new EntityConfiguration())
+    }
+
     foo: EntitySet<Foo> = new EntitySet<Foo>(this, Foo)
     bar: EntitySet<Bar> = new EntitySet<Bar>(this, Bar)
     jar: EntitySet<Jar> = new EntitySet<Jar>(this, Jar)

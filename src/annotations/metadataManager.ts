@@ -116,6 +116,14 @@ class MetadataManager {
 
     return this.managed.get(prototype)!.navigators[navigatorName]
   }
+
+  getNavigators (prototype: Object): Navigator[] {
+    if (!this.managed.has(prototype)) {
+      return []
+    }
+
+    return Object.values(this.managed.get(prototype)!.navigators)
+  }
 }
 
 const manager = new MetadataManager()

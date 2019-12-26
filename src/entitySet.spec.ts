@@ -136,6 +136,8 @@ describe('EntitySet', () => {
       ctx.bar.add(bar1)
       ctx.bar.add(bar2)
 
+      foo1.bar = ctx.bar.find(1, 'ba1')
+
       const jar1 = new Jar()
       jar1.id = 1
       jar1.name = 'ja1'
@@ -149,6 +151,8 @@ describe('EntitySet', () => {
       ctx.jar.add(jar1)
       ctx.jar.add(jar2)
       ctx.jar.add(jar3)
+
+      foo1.jar = ctx.jar.filter(item => item.id === 1 || item.id === 2)
     })
 
     afterEach(() => {
@@ -201,16 +205,25 @@ describe('EntitySet', () => {
     it('remove', () => {
       const foo = ctx.foo.find(3)
       ctx.foo.remove(foo)
-      expect(ctx.foo).toHaveProperty('size', 3)
+      expect(ctx.foo.size).toEqual(2)
 
       ctx.foo.remove(foo)
-      expect(ctx.foo).toHaveProperty('size', 3)
+      expect(ctx.foo.size).toEqual(2)
 
       const otherFoo = new Foo()
       otherFoo.id = 2
       ctx.foo.remove(otherFoo)
       ctx.foo.remove()
-      expect(ctx.foo).toHaveProperty('size', 3)
+      expect(ctx.foo.size).toEqual(2)
+    })
+
+    it('remove include key', () => {
+      const foo = ctx.foo.find(1)
+      ctx.foo.remove(foo)
+
+      expect(ctx.foo.size).toEqual(2)
+      expect(ctx.bar.size).toEqual(1)
+      expect(ctx.jar.size).toEqual(1)
     })
 
     it('attach', () => {
@@ -228,18 +241,18 @@ describe('EntitySet', () => {
       const foo = ctx.foo.find(1)
       ctx.foo.detach(foo)
 
-      expect(ctx.foo).toHaveProperty('size', 3)
+      expect(ctx.foo.size).toEqual(2)
+
+      expect(() => {
+        ctx.foo.attach(foo)
+      }).toThrowError(/Cannot create proxy with a revoked proxy as target or handler/)
 
       const otherFoo = new Foo()
       otherFoo.id = 999
 
       ctx.foo.detach(otherFoo)
       ctx.foo.detach()
-      expect(ctx.foo).toHaveProperty('size', 3)
-
-      expect(() => {
-        ctx.foo.attach(foo)
-      }).toThrowError(/Cannot create proxy with a revoked proxy as target or handler/)
+      expect(ctx.foo.size).toEqual(2)
     })
 
     it('toList', () => {

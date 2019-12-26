@@ -21,7 +21,8 @@ export default class EntitySet<T extends Object> {
   }
 
   public get size () {
-    return this.set.size
+    const entries = Array.from(this.set).filter(item => item.state !== EntityState.Deleted && item.state !== EntityState.Detached)
+    return entries.length
   }
 
   public clear (): this {
@@ -44,6 +45,8 @@ export default class EntitySet<T extends Object> {
   }
 
   public remove (...entities: (T| undefined)[]): this {
+    const navigators = this.ctx.metadata.getNavigators(this.entityMetadata.type.prototype)
+
     entities.filter(item => !!item).forEach(removedItem => {
       const tracer = Array.from(this.set)
         .find(item => item.object === removedItem &&
@@ -51,6 +54,27 @@ export default class EntitySet<T extends Object> {
           item.state !== EntityState.Detached)
 
       if (tracer) {
+        // 删除与当前传入数据直接相关的数据
+        navigators.forEach(nav => {
+          const entrySet = Reflect.get(this.ctx, nav.navigatorName)
+          if (!entrySet) {
+            return
+          }
+
+          if (nav.relationship === Relationship.One) {
+            const entry = Reflect.get(removedItem!, nav.propertyName)
+            if (entry) {
+              entrySet.remove(entry)
+            }
+          } else {
+            const entries = Reflect.get(removedItem!, nav.propertyName)
+            if (entries) {
+              entrySet.remove(...entries)
+            }
+          }
+        })
+
+        // 删除当前传入的数据
         tracer.state = EntityState.Deleted
         tracer.offPropertyChange(this.onPropertyChanged)
         tracer.revoke()
@@ -248,7 +272,7 @@ export default class EntitySet<T extends Object> {
         return Promise.all(allLoadRequests).then((res) => {
           res.forEach(relatedEntity => {
             const collection = Reflect.get(entity, navigatorName) || []
-            collection.push(relatedEntity)
+            collection.push(set.entry(relatedEntity as {}))
 
             Reflect.set(entity, navigatorName, collection)
           })

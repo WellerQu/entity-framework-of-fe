@@ -1,4 +1,4 @@
-# EntityFramework Of Frontendo
+# EntityFramework Of Frontend
 
 ![](https://github.com/WellerQu/entity-framework-of-fe/workflows/Node%20CI/badge.svg)
 

@@ -69,7 +69,11 @@ export default class EntitySet<T extends Object> {
 
   public detach (...entities: (T | undefined)[]): this {
     entities.filter(item => !!item).forEach(detachedItem => {
-      const stateTrace = Array.from(this.set).find(item => item.object === detachedItem && item.state !== EntityState.Detached)
+      const stateTrace = Array.from(this.set)
+        .find(item =>
+          item.object === detachedItem &&
+          item.state !== EntityState.Detached &&
+          item.state !== EntityState.Deleted)
 
       if (stateTrace) {
         stateTrace.state = EntityState.Detached

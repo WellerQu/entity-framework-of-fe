@@ -2,6 +2,15 @@ import metadata from './annotations/metadataManager'
 import EntityConfiguration from './entityConfiguration'
 import EntitySet from './entitySet'
 
+/**
+ * @example
+ * ```typescript
+ * class YourContext extends EntityContext {
+ * }
+ *
+ * const ctx = new YourContext()
+ * ```
+ */
 export default class EntityContext {
   constructor (private _configuration?: EntityConfiguration) {
     if (!this._configuration) {

@@ -249,6 +249,12 @@ const foo = ctx.foo.find(1)
 ctx.bar.remove(foo.bar)
 // 将调用@behavior('delete', 'http://localhost:3000/bar', 'POST')定义的行为
 ctx.saveChanges()
+
+await ctx.foo.include('jar').load(1)
+const foo = ctx.foo.find(1)
+// 若一个foo关联了二个jar, 那么ctx中将会有三个实体实例被标记为deleted, saveChanges会发出三个请求
+ctx.foo.remove(foo)
+ctx.saveChange()
 ```
 
 ## 错误处理

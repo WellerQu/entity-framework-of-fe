@@ -1,4 +1,6 @@
-# EntityFramework Of Frontend
+# EntityFramework Of Frontendo
+
+![](https://github.com/WellerQu/entity-framework-of-fe/workflows/Node%20CI/badge.svg)
 
 用于前端的实体关系框架, 解决存在关联关系的实体之间的CRUD
 

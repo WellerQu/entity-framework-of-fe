@@ -61,16 +61,17 @@ export default class EntitySet<T extends Object> {
             return
           }
 
+          const entry = Reflect.get(removedItem!, nav.propertyName)
+          if (!entry) {
+            return
+          }
+
           if (nav.relationship === Relationship.One) {
-            const entry = Reflect.get(removedItem!, nav.propertyName)
-            if (entry) {
-              entitySet.remove(entry)
-            }
+            entitySet.remove(entry)
+          } else if (nav.relationship === Relationship.Many) {
+            entitySet.remove(...entry)
           } else {
-            const entries = Reflect.get(removedItem!, nav.propertyName)
-            if (entries) {
-              entitySet.remove(...entries)
-            }
+            throw new Error('未定义的Relationship')
           }
         })
 

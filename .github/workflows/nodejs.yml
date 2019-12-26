@@ -26,6 +26,3 @@ jobs:
       run: |
         npm run json-server &
         npm test
-    - name: npm run docs
-      run: |
-        npm run docs

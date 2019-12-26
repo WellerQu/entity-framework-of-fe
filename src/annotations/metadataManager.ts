@@ -39,6 +39,10 @@ type Navigators = Record<string, Navigator>
 
 export { MetadataType, Relationship }
 
+/**
+ * @module annotations
+ * @class MetadataManager
+ */
 class MetadataManager {
   private managedModel = new WeakMap<Object, {
     members: Member[],

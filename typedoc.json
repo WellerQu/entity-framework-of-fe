@@ -1,4 +1,5 @@
 {
   "mode": "modules",
-  "name": "Entity Framework"
+  "name": "Entity Framework",
+  "exclude": "**/*+(index|.spec|.e2e).ts"
 }

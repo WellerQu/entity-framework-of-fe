@@ -1,5 +1,5 @@
 
-/*
+/* 注解的四种形式及使用示例
 const entity = <T>(target: { new(): T }) => {
   console.log(target)
 }

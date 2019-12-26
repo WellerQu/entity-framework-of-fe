@@ -22,7 +22,10 @@ jobs:
         npm i
       env:
         CI: true
-    - name: npm run json-server, npm run test
+    - name: npm run json-server, npm test
       run: |
         npm run json-server &
         npm test
+    - name: npm run docs
+      run: |
+        npm run docs

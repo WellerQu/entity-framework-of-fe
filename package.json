@@ -27,6 +27,8 @@
     "rollup-plugin-uglify": "^6.0.4",
     "ts-jest": "^24.2.0",
     "tslib": "^1.10.0",
+    "typedoc": "^0.15.5",
+    "typedoc-plugin-external-module-name": "^2.1.0",
     "typescript": "^3.5.3"
   },
   "scripts": {
@@ -34,9 +36,11 @@
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch --notify",
     "json-server": "json-server server/db.json",
+    "docs": "typedoc --out docs",
     "build": "node_modules/.bin/rollup -c ./build/rollup.config.prod.js",
     "start": "node_modules/.bin/rollup -w -c ./build/rollup.config.dev.js"
   },
+  "repository": "git@github.com:WellerQu/entity-framework-of-fe.git",
   "author": "nixon",
   "license": "ISC"
 }

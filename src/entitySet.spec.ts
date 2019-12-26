@@ -7,6 +7,7 @@ import behavior from './annotations/object/behavior'
 import navigator from './annotations/property/navigator'
 import Relationship from './annotations/relationship'
 import EntityConfiguration from './entityConfiguration'
+import set from './annotations/property/set'
 
 describe('EntitySet', () => {
   const domain = 'http://localhost:3000'
@@ -81,7 +82,7 @@ describe('EntitySet', () => {
     @member()
     bName: string = ''
 
-    @foreign(Jar, 'jar')
+    @foreign(Jar, 'jar-alias')
     @member()
     jid: number[] = []
 
@@ -90,7 +91,7 @@ describe('EntitySet', () => {
     bar?: Bar
 
     // 导航属性
-    @navigator(Relationship.Many, 'jar')
+    @navigator(Relationship.Many, 'jar-alias')
     jar?: Jar[]
   }
 
@@ -99,9 +100,13 @@ describe('EntitySet', () => {
       super(new EntityConfiguration())
     }
 
+    @set()
     foo: EntitySet<Foo> = new EntitySet<Foo>(this, Foo)
+    @set()
     bar: EntitySet<Bar> = new EntitySet<Bar>(this, Bar)
+    @set('jar-alias')
     jar: EntitySet<Jar> = new EntitySet<Jar>(this, Jar)
+    @set()
     zar: EntitySet<Zar> = new EntitySet<Zar>(this, Zar)
   }
 
@@ -315,7 +320,7 @@ describe('EntitySet', () => {
     })
 
     it('include: one to many', async () => {
-      await ctx.foo.include('jar').load(1)
+      await ctx.foo.include('jar-alias').load(1)
       const foo = ctx.foo.find(1)
       expect(foo).not.toBeUndefined()
       expect(foo).toHaveProperty('jar')
@@ -323,7 +328,7 @@ describe('EntitySet', () => {
     })
 
     it('include: more fields', async () => {
-      await ctx.foo.include('bar').include('jar').load(1)
+      await ctx.foo.include('bar').include('jar-alias').load(1)
       const foo = ctx.foo.find(1)
       expect(foo).not.toBeUndefined()
       expect(foo).toHaveProperty('bar')
@@ -345,7 +350,7 @@ describe('EntitySet', () => {
     })
 
     it('include: load more levels and fields', async () => {
-      await ctx.foo.include('bar').include('jar').include('zar').load(1)
+      await ctx.foo.include('bar').include('jar-alias').include('zar').load(1)
 
       const foo = ctx.foo.find(1)
       expect(foo).not.toBeUndefined()
@@ -366,7 +371,7 @@ describe('EntitySet', () => {
     })
 
     it('loadAll: include jar key', async () => {
-      await ctx.foo.include('jar').loadAll()
+      await ctx.foo.include('jar-alias').loadAll()
       const case2 = ctx.foo.find(1)
       expect(case2).toHaveProperty('jar')
       expect(case2!.jar).not.toBeUndefined()
@@ -381,7 +386,7 @@ describe('EntitySet', () => {
     })
 
     it('loadAll: include two keys', async () => {
-      await ctx.foo.include('bar').include('jar').loadAll()
+      await ctx.foo.include('bar').include('jar-alias').loadAll()
       const foo = ctx.foo.find(1)
       expect(foo).toHaveProperty('id', 1)
 
@@ -392,7 +397,7 @@ describe('EntitySet', () => {
     })
 
     it('loadAll: include more levels', async () => {
-      await ctx.foo.include('bar').include('jar').include('zar').loadAll()
+      await ctx.foo.include('bar').include('jar-alias').include('zar').loadAll()
       const foo = ctx.foo.find(1)
       expect(foo).toHaveProperty('id', 1)
 

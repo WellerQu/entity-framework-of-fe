@@ -56,20 +56,20 @@ export default class EntitySet<T extends Object> {
       if (tracer) {
         // 删除与当前传入数据直接相关的数据
         navigators.forEach(nav => {
-          const entrySet = Reflect.get(this.ctx, nav.navigatorName)
-          if (!entrySet) {
+          const entitySet = this.getRelatedEntitySet(nav.navigatorName)
+          if (!entitySet) {
             return
           }
 
           if (nav.relationship === Relationship.One) {
             const entry = Reflect.get(removedItem!, nav.propertyName)
             if (entry) {
-              entrySet.remove(entry)
+              entitySet.remove(entry)
             }
           } else {
             const entries = Reflect.get(removedItem!, nav.propertyName)
             if (entries) {
-              entrySet.remove(...entries)
+              entitySet.remove(...entries)
             }
           }
         })
@@ -223,15 +223,25 @@ export default class EntitySet<T extends Object> {
     })
   }
 
+  private getRelatedEntitySet (navigatorName: string) {
+    const ctxPrototype = Reflect.getPrototypeOf(this.ctx)
+    const entitySetMeta = this.ctx.metadata.getEntitySet(ctxPrototype, navigatorName)
+    if (!entitySetMeta) {
+      throw new Error(`当前上下文中没有配置EntitySet "${navigatorName}"`)
+    }
+    const entitySet = Reflect.get(this.ctx, entitySetMeta.propertyName) as EntitySet<any>
+    if (!entitySet) {
+      throw new Error(`当前上下文中没有配置EntitySet "${entitySetMeta.propertyName}"`)
+    }
+    return entitySet
+  }
+
   public include (navigatorName: string): this {
     if (this.includedNavigators[navigatorName]) {
       return this
     }
 
-    const entitySet = Reflect.get(this.ctx, navigatorName) as EntitySet<any>
-    if (!entitySet) {
-      throw new Error(`当前上下文中没有配置EntitySet "${navigatorName}"`)
-    }
+    const entitySet = this.getRelatedEntitySet(navigatorName)
 
     const navigator = this.ctx.metadata.getNavigator(this.entityMetadata.type.prototype, navigatorName as string)
     if (!navigator) {
@@ -243,6 +253,7 @@ export default class EntitySet<T extends Object> {
       .getForeignKeys(this.entityMetadata.type.prototype)
       .filter(key => key.navigatorName === navigatorName)
     const otherNavigators = this.otherNavigators
+    const propertyName = navigator.propertyName
 
     const getRequestParameters = (entity: T) => {
       return foreignKeys.map(key => Reflect.get(entity, key.propertyName))
@@ -260,7 +271,7 @@ export default class EntitySet<T extends Object> {
       if (navigator.relationship === Relationship.One) {
         return set.load(...parameters).then((data) => {
           const relatedEntity = set.find(...parameters)
-          Reflect.set(entity, navigatorName, relatedEntity)
+          Reflect.set(entity, propertyName, relatedEntity)
 
           return data
         })
@@ -274,7 +285,7 @@ export default class EntitySet<T extends Object> {
             .map(params => params.map((primaryKey: any) => set.find(primaryKey)))
             .reduce((acc, val) => acc.concat(val), [])
 
-          Reflect.set(entity, navigatorName, collection)
+          Reflect.set(entity, propertyName, collection)
 
           return res
         })

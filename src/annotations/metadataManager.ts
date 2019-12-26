@@ -18,6 +18,11 @@ export interface Navigator extends Member {
   navigatorName: string
 }
 
+export interface EntitySet {
+  navigatorName: string
+  propertyName: string
+}
+
 export type BehaviorName = 'load' | 'loadAll' | 'add' | 'delete' | 'update'
 export interface Behavior<T = any> {
   behaviorName: BehaviorName;
@@ -35,7 +40,7 @@ type Navigators = Record<string, Navigator>
 export { MetadataType, Relationship }
 
 class MetadataManager {
-  private managed = new WeakMap<Object, {
+  private managedModel = new WeakMap<Object, {
     members: Member[],
     primaryKeys: PrimaryKey[],
     foreignKeys: ForeignKey[],
@@ -43,9 +48,13 @@ class MetadataManager {
     navigators: Navigators
   }>()
 
-  register<T extends Member | PrimaryKey | ForeignKey | Behavior | Navigator> (prototype: Object, type: MetadataType, meta: T) {
-    if (!this.managed.has(prototype)) {
-      this.managed.set(prototype, {
+  private managedContext = new WeakMap<Object, {
+    entities: EntitySet[]
+  }>()
+
+  register<T extends Member | PrimaryKey | ForeignKey | Behavior | Navigator | EntitySet> (prototype: Object, type: MetadataType, meta: T) {
+    if (type !== MetadataType.Entity && !this.managedModel.has(prototype)) {
+      this.managedModel.set(prototype, {
         members: [],
         primaryKeys: [],
         foreignKeys: [],
@@ -53,76 +62,102 @@ class MetadataManager {
         navigators: {}
       })
     }
+    if (type === MetadataType.Entity && !this.managedContext.has(prototype)) {
+      this.managedContext.set(prototype, {
+        entities: []
+      })
+    }
 
     if (type === MetadataType.Member) {
-      return this.managed.get(prototype)!.members.push(meta as Member)
+      return this.managedModel.get(prototype)!.members.push(meta as Member)
     }
     if (type === MetadataType.PrimaryKey) {
-      return this.managed.get(prototype)!.primaryKeys.push(meta as PrimaryKey)
+      return this.managedModel.get(prototype)!.primaryKeys.push(meta as PrimaryKey)
     }
     if (type === MetadataType.ForeignKey) {
-      return this.managed.get(prototype)!.foreignKeys.push(meta as ForeignKey)
+      return this.managedModel.get(prototype)!.foreignKeys.push(meta as ForeignKey)
     }
     if (type === MetadataType.Navigator) {
       const navigatorMeta = meta as Navigator
-      return (this.managed.get(prototype)!.navigators[navigatorMeta.navigatorName] = navigatorMeta)
+      return (this.managedModel.get(prototype)!.navigators[navigatorMeta.navigatorName] = navigatorMeta)
     }
     if (type === MetadataType.Behavior) {
       const behaviorMeta = meta as Behavior
-      return (this.managed.get(prototype)!.behaviors[behaviorMeta.behaviorName] = behaviorMeta)
+      return (this.managedModel.get(prototype)!.behaviors[behaviorMeta.behaviorName] = behaviorMeta)
+    }
+    if (type === MetadataType.Entity) {
+      const entityMeta = meta as EntitySet
+      return (this.managedContext.get(prototype)!.entities.push(entityMeta))
     }
   }
 
   unregister (prototype: Object) {
-    this.managed.has(prototype) && this.managed.delete(prototype)
+    this.managedModel.has(prototype) && this.managedModel.delete(prototype)
+    this.managedContext.has(prototype) && this.managedContext.delete(prototype)
   }
 
   getMembers (prototype: Object): Member[] {
-    if (!this.managed.has(prototype)) {
+    if (!this.managedModel.has(prototype)) {
       return []
     }
 
-    return this.managed.get(prototype)!.members
+    return this.managedModel.get(prototype)!.members
   }
 
   getPrimaryKeys (prototype: Object): PrimaryKey[] {
-    if (!this.managed.has(prototype)) {
+    if (!this.managedModel.has(prototype)) {
       return []
     }
 
-    return this.managed.get(prototype)!.primaryKeys
+    return this.managedModel.get(prototype)!.primaryKeys
   }
 
   getForeignKeys (prototype: Object): ForeignKey[] {
-    if (!this.managed.has(prototype)) {
+    if (!this.managedModel.has(prototype)) {
       return []
     }
 
-    return this.managed.get(prototype)!.foreignKeys
+    return this.managedModel.get(prototype)!.foreignKeys
   }
 
   getBehavior (prototype: Object, behaviorName: BehaviorName): Behavior | undefined {
-    if (!this.managed.has(prototype)) {
+    if (!this.managedModel.has(prototype)) {
       return
     }
 
-    return this.managed.get(prototype)!.behaviors[behaviorName]
+    return this.managedModel.get(prototype)!.behaviors[behaviorName]
   }
 
-  getNavigator (prototype: Object, navigatorName: keyof Navigators): Navigator | undefined {
-    if (!this.managed.has(prototype)) {
+  getNavigator (prototype: Object, navigatorName: string): Navigator | undefined {
+    if (!this.managedModel.has(prototype)) {
       return
     }
 
-    return this.managed.get(prototype)!.navigators[navigatorName]
+    return this.managedModel.get(prototype)!.navigators[navigatorName]
   }
 
   getNavigators (prototype: Object): Navigator[] {
-    if (!this.managed.has(prototype)) {
+    if (!this.managedModel.has(prototype)) {
       return []
     }
 
-    return Object.values(this.managed.get(prototype)!.navigators)
+    return Object.values(this.managedModel.get(prototype)!.navigators)
+  }
+
+  getEntitySet (prototype: Object, navigatorName: string): EntitySet | undefined {
+    if (!this.managedContext.has(prototype)) {
+      return void 0
+    }
+
+    return this.managedContext.get(prototype)!.entities.find(item => item.navigatorName === navigatorName)
+  }
+
+  getEntitySets (prototype: Object): EntitySet[] {
+    if (!this.managedContext.has(prototype)) {
+      return []
+    }
+
+    return this.managedContext.get(prototype)!.entities
   }
 }
 

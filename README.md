@@ -85,13 +85,13 @@ EF中, 采用注解来描述代表实体数据结构的class, 目前一共有二
 
   > 完整签名查看源代码 src/annotations/property/foreign.ts
 
-  - @navigator() 用于注解实体的导航数据, 在通过外键读取到相关数据后, EF会将相关数据的引用存储在导航属性中, **导航属性只需要声明, 不需要初始化**
+  - @navigator() 用于注解实体的导航数据, 在通过外键读取到相关数据后, EF会将相关数据的引用存储在导航属性中, **导航属性只需要声明, 不需要初始化**,
 
   > 完整签名查看源代码 src/annotations/property/navigator.ts
 
 ## 关联实体模型
 
-参考数据库设计, 可以用主外键来描述, 并部署相关的导航属性
+参考数据库设计, 可以用主外键来描述, 并部署相关的导航属性, 其中导航名称(navigatorName)是很重要的一个数据, 用来**联系@set(), @foreign(), @navigator()标记的数据**, 代码标记\[1\]\[2\]\[3\]处须一致
 
 ```typescript
 class Bar {
@@ -109,18 +109,23 @@ class Foo {
   id: number = 0
 
   // Foo 与 Bar 是一对一关联
-  @foreign(Bar, 'bar')
+  @foreign(Bar, 'bar-navigatorName') // <- [1]
   bid: number = 0
 
   // Foo 与 Haz 是一对多关联
   @foreign(Haz, 'haz')
   hid: number[] = [0]
 
-  @navigator(Relationship.One, 'bar')
+  @navigator(Relationship.One, 'bar-navigatorName') // <- [2]
   bar?: Bar
 
   @navigator(Relationship.Many, 'haz')
   haz?: Haz[]
+}
+
+class Context extends EntityContext {
+  @set('bar-navigatorName') // <- [3]
+  bar = new EntitySet<Bar>(this, Bar)
 }
 ```
 
@@ -133,8 +138,11 @@ class Foo {
   ```typescript
   // 定义一个 Context
   class MyContext extends EntityContext {
+    @set()
     foo = new EntitySet<Foo>(this, Foo)
+    @set()
     bar = new EntitySet<Bar>(this, Bar)
+    @set()
     haz = new EntitySet<Haz>(this, Haz)
   }
 

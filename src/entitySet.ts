@@ -44,7 +44,7 @@ export default class EntitySet<T extends Object> {
   }
 
   public remove (...entities: (T| undefined)[]): this {
-    entities.forEach(removedItem => {
+    entities.filter(item => !!item).forEach(removedItem => {
       const tracer = Array.from(this.set).find(item => item.object === removedItem && item.state !== EntityState.Deleted)
 
       if (tracer) {
@@ -122,12 +122,7 @@ export default class EntitySet<T extends Object> {
       return null
     }
 
-    const Type = this.entityMetadata.type
-    const entity = new Type()
-
-    Reflect.ownKeys(originData).forEach(key => {
-      Reflect.set(entity, key, Reflect.get(originData, key))
-    })
+    const entity = this.entry(originData)
 
     this.attach(entity)
 
@@ -299,7 +294,7 @@ export default class EntitySet<T extends Object> {
           const { mapParameters = identity, mapEntity = identity } = behavior
 
           const params = mapParameters(members.reduce((params, m) => {
-            Reflect.set(params, m.fieldName, Reflect.get(object, m.fieldName))
+            Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
             return params
           }, {}))
 
@@ -322,9 +317,9 @@ export default class EntitySet<T extends Object> {
           const { mapParameters = identity, mapEntity = identity } = behavior
 
           const params = mapParameters(primaryKeys.reduce((params, m) => {
-            Reflect.set(params, m.fieldName, Reflect.get(object, m.fieldName))
+            Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
             return params
-          }))
+          }, {}))
 
           return this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params)
             .then(mapEntity)
@@ -345,9 +340,9 @@ export default class EntitySet<T extends Object> {
           const { mapParameters = identity, mapEntity = identity } = behavior
 
           const params = mapParameters(members.reduce((params, m) => {
-            Reflect.set(params, m.fieldName, Reflect.get(object, m.fieldName))
+            Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
             return params
-          }))
+          }, {}))
 
           return this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params)
             .then(mapEntity)

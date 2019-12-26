@@ -1,6 +1,6 @@
 # EntityFramework Of Frontend
 
-用于前端的实体关系框架, 主要解决存在关联关系的实体之间的CRUD
+用于前端的实体关系框架, 解决存在关联关系的实体之间的CRUD
 
 ## 定义实体
 
@@ -228,7 +228,7 @@ const foo = ctx.foo.find(1)
 // 只可以更新非主键成员字段
 foo.name = 'Hello'
 // 将调用@behavior('update', 'http://localhost:3000/foo', 'POST')定义的行为
-ctx.foo.saveChanges()
+ctx.saveChanges()
 
 // Delete entity
 const foo1 = ctx.foo.find(1)

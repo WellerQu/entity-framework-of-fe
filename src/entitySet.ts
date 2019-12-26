@@ -94,6 +94,12 @@ export default class EntitySet<T extends Object> {
       if (keys.length === 0) {
         return false
       }
+      if (item.state === EntityState.Deleted) {
+        return false
+      }
+      if (item.state === EntityState.Detached) {
+        return false
+      }
 
       return keys.every((meta, index) => {
         return Reflect.get(item.object, meta.fieldName) === primaryKeys[index]
@@ -109,6 +115,13 @@ export default class EntitySet<T extends Object> {
 
   public filter (fn: (n: T) => boolean): T[] {
     const stateTraces = Array.from(this.set).filter(item => {
+      if (item.state === EntityState.Deleted) {
+        return false
+      }
+      if (item.state === EntityState.Detached) {
+        return false
+      }
+
       return fn(Object.freeze(item.object))
     })
 
@@ -208,7 +221,6 @@ export default class EntitySet<T extends Object> {
     const otherNavigators = this.otherNavigators
 
     const getRequestParameters = (entity: T) => {
-      debugger
       return foreignKeys.map(key => Reflect.get(entity, key.propertyName))
     }
 

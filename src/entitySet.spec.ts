@@ -33,6 +33,7 @@ describe('EntitySet', () => {
     name: string = ''
 
     @foreign(Zar, 'zar')
+    @member()
     zid: number = 0
 
     @navigator(Relationship.One, 'zar')
@@ -235,6 +236,10 @@ describe('EntitySet', () => {
       ctx.foo.detach(otherFoo)
       ctx.foo.detach()
       expect(ctx.foo).toHaveProperty('size', 3)
+
+      expect(() => {
+        ctx.foo.attach(foo)
+      }).toThrowError(/Cannot create proxy with a revoked proxy as target or handler/)
     })
 
     it('toList', () => {
@@ -285,6 +290,7 @@ describe('EntitySet', () => {
       expect(foo).not.toBeUndefined()
       expect(foo).toHaveProperty('bar')
       expect(foo!.bar).toHaveProperty('id', 1)
+      expect(foo!.bar!).not.toHaveProperty('age')
     })
 
     it('include: one to many', async () => {

@@ -207,7 +207,10 @@ export default class EntitySet<T extends Object> {
       .filter(key => key.navigatorName === navigatorName)
     const otherNavigators = this.otherNavigators
 
-    const getRequestParameters = (entity: T) => foreignKeys.map(key => Reflect.get(entity, key.propertyName))
+    const getRequestParameters = (entity: T) => {
+      debugger
+      return foreignKeys.map(key => Reflect.get(entity, key.propertyName))
+    }
 
     const request = async (entity: T | null) => {
       if (!entity) {
@@ -227,8 +230,9 @@ export default class EntitySet<T extends Object> {
         })
       } else if (navigator.relationship === Relationship.Many) {
         const allLoadRequests = parameters
+          .filter(params => !!params)
           .map(params => params.map((primaryKey: any) => set.load(primaryKey)))
-          .reduce((acc, val) => acc.concat(val))
+          .reduce((acc, val) => acc.concat(val), [])
         return Promise.all(allLoadRequests).then((res) => {
           res.forEach(relatedEntity => {
             const collection = Reflect.get(entity, navigatorName) || []

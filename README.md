@@ -4,7 +4,7 @@
 
 用于前端的实体关系框架, 解决存在关联关系的实体之间的CRUD
 
-## 定义实体
+## 定义实体模型
 
 实体是用于描述一种数据的数据结构, 实体的实例在Entity Framework(以后简称为EF)中定义成**一个class的实例, 而非原生的JSON数据**, 例如:
 
@@ -21,7 +21,7 @@ class Foo {
 const foo = new Foo()
 ```
 
-## 描述实体
+## 描述实体模型
 
 EF中, 采用注解来描述代表实体数据结构的class, 目前一共有二类注解
 
@@ -89,7 +89,7 @@ EF中, 采用注解来描述代表实体数据结构的class, 目前一共有二
 
   > 完整签名查看源代码 src/annotations/property/navigator.ts
 
-## 关联实体
+## 关联实体模型
 
 参考数据库设计, 可以用主外键来描述, 并部署相关的导航属性
 
@@ -162,6 +162,7 @@ class Foo {
 await ctx.foo.load(1)
 // 加载部署了组合键的数据
 // http://localhost:3000/foo/$pk1/$pk2 -> http://localhost:3000/foo/1/2
+// 参数顺序为描述模型中@primary标记的顺序
 await ctx.foo.load(1, 2)
 ```
 
@@ -259,7 +260,7 @@ ctx.foo.remove(foo)
 ctx.saveChange()
 ```
 
-## 错误处理
+## 处理错误
 
 - 当前加载数据时的部分错误被消化在Promise中, 并未全部都传递到调用端, 用户无法捕获正确的错误信息
 - saveChanges时的错误能传递到调用端

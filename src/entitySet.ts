@@ -265,7 +265,6 @@ export default class EntitySet<T extends Object> {
           return data
         })
       } else if (navigator.relationship === Relationship.Many) {
-        // const primaryKeys = this.ctx.metadata.getPrimaryKeys(set.entityMetadata.type)
         const validParameters = parameters.filter(params => !!params)
         const allLoadRequests = validParameters
           .map(params => params.map((primaryKey: any) => set.load(primaryKey)))

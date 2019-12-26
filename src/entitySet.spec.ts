@@ -217,12 +217,15 @@ describe('EntitySet', () => {
       expect(ctx.foo.size).toEqual(2)
     })
 
-    it('remove include key', () => {
+    it('remove with included key', () => {
       const foo = ctx.foo.find(1)
       ctx.foo.remove(foo)
 
+      // before: size is 3
       expect(ctx.foo.size).toEqual(2)
+      // before: size is 2
       expect(ctx.bar.size).toEqual(1)
+      // before: size is 3
       expect(ctx.jar.size).toEqual(1)
     })
 

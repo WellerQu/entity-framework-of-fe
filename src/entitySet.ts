@@ -265,17 +265,17 @@ export default class EntitySet<T extends Object> {
           return data
         })
       } else if (navigator.relationship === Relationship.Many) {
-        const allLoadRequests = parameters
-          .filter(params => !!params)
+        // const primaryKeys = this.ctx.metadata.getPrimaryKeys(set.entityMetadata.type)
+        const validParameters = parameters.filter(params => !!params)
+        const allLoadRequests = validParameters
           .map(params => params.map((primaryKey: any) => set.load(primaryKey)))
           .reduce((acc, val) => acc.concat(val), [])
         return Promise.all(allLoadRequests).then((res) => {
-          res.forEach(relatedEntity => {
-            const collection = Reflect.get(entity, navigatorName) || []
-            collection.push(set.entry(relatedEntity as {}))
+          const collection = validParameters
+            .map(params => params.map((primaryKey: any) => set.find(primaryKey)))
+            .reduce((acc, val) => acc.concat(val), [])
 
-            Reflect.set(entity, navigatorName, collection)
-          })
+          Reflect.set(entity, navigatorName, collection)
 
           return res
         })

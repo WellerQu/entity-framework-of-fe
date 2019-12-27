@@ -1,6 +1,24 @@
 import * as EF from './index'
 
+const exec = require('child_process').exec
+
 describe('Behavior-driven development', () => {
+  beforeEach(() => {
+    exec('git checkout server/db.json', function (err: Error) {
+      if (err != null) {
+        return console.error(err) // eslint-disable-line no-console
+      }
+    })
+  })
+
+  afterAll(() => {
+    exec('git checkout server/db.json', function (err: Error) {
+      if (err != null) {
+        return console.error(err) // eslint-disable-line no-console
+      }
+    })
+  })
+
   it('query a foo by primary (id)', async () => {
     @EF.behavior('load', 'http://localhost:3000/foo/$id', 'GET')
     class Foo {
@@ -341,5 +359,93 @@ describe('Behavior-driven development', () => {
 
     expect(foo1).not.toEqual(foo2)
     expect(ctx.foo.size).toEqual(1)
+  })
+
+  it('add two foo to set and synchronize changes to remote', async () => {
+    @EF.behavior('add', 'http://localhost:3000/foo', 'POST')
+    class Foo {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+    }
+
+    class Context extends EF.EntityContext {
+      @EF.set()
+      foo = new EF.EntitySet<Foo>(this, Foo)
+    }
+
+    const ctx = new Context()
+    const foo1 = ctx.foo.entry({
+      id: 6,
+      name: '巫行云'
+    })
+    const foo2 = ctx.foo.entry({
+      id: 7,
+      name: '李秋水'
+    })
+
+    ctx.foo.add(foo1, foo2)
+    const res1 = await ctx.saveChanges()
+    expect(res1).toEqual([foo1, foo2])
+  })
+
+  it('remove two foo from set and synchronize changes to remote', async () => {
+    @EF.behavior('loadAll', 'http://localhost:3000/foo?name=$name', 'GET', ({ name }) => name)
+    @EF.behavior('delete', 'http://localhost:3000/foo/$id', 'DELETE')
+    class Foo {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+    }
+
+    class Context extends EF.EntityContext {
+      @EF.set()
+      foo = new EF.EntitySet<Foo>(this, Foo)
+    }
+
+    const ctx = new Context()
+    await ctx.foo.loadAll({ name: 'fa4' })
+    const set = ctx.foo.filter((n) => n.name === 'fa4')
+    expect(set).toHaveLength(2)
+
+    ctx.foo.remove(...set)
+    const res = await ctx.saveChanges()
+    expect(res).toEqual([{}, {}])
+  })
+
+  it('update a foo from set and synchronize changes to remote', async () => {
+    @EF.behavior('loadAll', 'http://localhost:3000/bar?name=$name', 'GET', ({ name }) => name)
+    @EF.behavior('update', 'http://localhost:3000/bar/$id', 'PATCH')
+    class Bar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+
+      @EF.member()
+      age: number = 0
+    }
+
+    class Context extends EF.EntityContext {
+      @EF.set()
+      bar = new EF.EntitySet<Bar>(this, Bar)
+    }
+
+    const ctx = new Context()
+    await ctx.bar.loadAll({ name: 'ba4' })
+
+    const bar = ctx.bar.find(4)
+    bar!.age = 53
+
+    const res = await ctx.saveChanges()
+    expect(res).toEqual([bar])
   })
 })

@@ -84,7 +84,7 @@ export default class EntitySet<T extends Object> {
 
     entities.filter(item => !!item).forEach(removedItem => {
       const tracer = Array.from(this.set)
-        .find(item => item.object === removedItem &&
+        .find(item => (item.rawObject === removedItem || item.object === removedItem) &&
           item.state !== EntityState.Deleted &&
           item.state !== EntityState.Detached)
 
@@ -116,6 +116,7 @@ export default class EntitySet<T extends Object> {
         tracer.revoke()
       }
     })
+
     return this
   }
 
@@ -134,7 +135,7 @@ export default class EntitySet<T extends Object> {
     entities.filter(item => !!item).forEach(detachedItem => {
       const stateTrace = Array.from(this.set)
         .find(item =>
-          item.object === detachedItem &&
+          (item.object === detachedItem || item.rawObject === detachedItem) &&
           item.state !== EntityState.Detached &&
           item.state !== EntityState.Deleted)
 
@@ -240,7 +241,7 @@ export default class EntitySet<T extends Object> {
           const promises = data
             .map(item => this.attachDataToEntitySet(item))
             .map(entity => requests.map(fn => fn(entity)))
-            .reduce((acc, val) => acc.concat(val))
+            .reduce((acc, val) => acc.concat(val), [])
           Promise.all(promises).then(() => {
             resolve(data)
           })
@@ -343,93 +344,121 @@ export default class EntitySet<T extends Object> {
       })
   }
 
-  public synchronizeState (): Promise<any>[] {
-    return Array.from(this.set)
-      .filter(item => item.state === EntityState.Added ||
-        item.state === EntityState.Modified ||
-        item.state === EntityState.Deleted ||
-        item.state === EntityState.Detached)
-      .map(async tracer => {
-        const state = tracer.state
-        const object = tracer.rawObject
-        const identity = (a: any) => a
+  private async synchronizeAddedState (item: EntityTrace<T>): Promise<any> {
+    const object = item.rawObject
+    const identity = (a: any) => a
 
-        if (state === EntityState.Added) {
-          const members = this.ctx.metadata.getMembers(object.constructor.prototype)
-          const behavior = this.ctx.metadata.getBehavior(object.constructor.prototype, 'add')
+    const members = this.ctx.metadata.getMembers(object.constructor.prototype)
+    const behavior = this.ctx.metadata.getBehavior(object.constructor.prototype, 'add')
 
-          if (!behavior) {
-            return Promise.reject(new Error(`${object.constructor.name} 没有配置Add behavior`))
-          }
+    if (!behavior) {
+      return (Promise.reject(new Error(`${object.constructor.name} 没有配置Add behavior`)))
+    }
 
-          const { mapParameters = identity, mapEntity = identity } = behavior
+    const { mapParameters = identity, mapEntity = identity } = behavior
 
-          const params = mapParameters(members.reduce((params, m) => {
-            Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
-            return params
-          }, {}))
+    const params = mapParameters(members.reduce((params, m) => {
+      Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
+      return params
+    }, {}))
 
-          return this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params)
-            .then(mapEntity)
-            .then(res => {
-              tracer.state = EntityState.Unchanged
-              return res
-            })
-        }
+    return this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params)
+      .then(mapEntity)
+      .then(res => {
+        item.state = EntityState.Unchanged
 
-        if (state === EntityState.Deleted) {
-          const primaryKeys = this.ctx.metadata.getPrimaryKeys(object.constructor.prototype)
-          const behavior = this.ctx.metadata.getBehavior(object.constructor.prototype, 'delete')
-
-          if (!behavior) {
-            return Promise.reject(new Error(`${object.constructor.name} 没有配置Delete behavior`))
-          }
-
-          const { mapParameters = identity, mapEntity = identity } = behavior
-
-          const params = mapParameters(primaryKeys.reduce((params, m) => {
-            Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
-            return params
-          }, {}))
-
-          return this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params)
-            .then(mapEntity)
-            .then(res => {
-              this.set.delete(tracer)
-              return res
-            })
-        }
-
-        if (state === EntityState.Modified) {
-          const members = this.ctx.metadata.getMembers(object.constructor.prototype)
-          const behavior = this.ctx.metadata.getBehavior(object.constructor.prototype, 'update')
-
-          if (!behavior) {
-            return Promise.reject(new Error(`${object.constructor.name} 没有配置Update behavior`))
-          }
-
-          const { mapParameters = identity, mapEntity = identity } = behavior
-
-          const params = mapParameters(members.reduce((params, m) => {
-            Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
-            return params
-          }, {}))
-
-          return this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params)
-            .then(mapEntity)
-            .then(res => {
-              tracer.state = EntityState.Unchanged
-              return res
-            })
-        }
-
-        if (state === EntityState.Detached) {
-          return Promise.resolve().then(() => {
-            this.set.delete(tracer)
-            return true
-          })
-        }
+        return res
       })
+  }
+
+  private async synchronizeDeletedState (item: EntityTrace<T>): Promise<any> {
+    const object = item.rawObject
+    const identity = (a: any) => a
+
+    const primaryKeys = this.ctx.metadata.getPrimaryKeys(object.constructor.prototype)
+    const behavior = this.ctx.metadata.getBehavior(object.constructor.prototype, 'delete')
+
+    if (!behavior) {
+      return (Promise.reject(new Error(`${object.constructor.name} 没有配置Delete behavior`)))
+    }
+
+    const { mapParameters = identity, mapEntity = identity } = behavior
+
+    const params = mapParameters(primaryKeys.reduce((params, m) => {
+      Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
+      return params
+    }, {}))
+
+    return this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params)
+      .then(mapEntity)
+      .then(res => {
+        this.set.delete(item)
+        return res
+      })
+  }
+
+  private async synchronizeModifiedState (item: EntityTrace<T>): Promise<any> {
+    const object = item.rawObject
+    const identity = (a: any) => a
+
+    const members = this.ctx.metadata.getMembers(object.constructor.prototype)
+    const behavior = this.ctx.metadata.getBehavior(object.constructor.prototype, 'update')
+
+    if (!behavior) {
+      return (Promise.reject(new Error(`${object.constructor.name} 没有配置Update behavior`)))
+    }
+
+    const { mapParameters = identity, mapEntity = identity } = behavior
+
+    const params = mapParameters(members.reduce((params, m) => {
+      Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
+      return params
+    }, {}))
+
+    return (this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params)
+      .then(mapEntity)
+      .then(res => {
+        item.state = EntityState.Unchanged
+        return res
+      }))
+  }
+
+  public synchronizeState (): Promise<any>[] {
+    const promises: Promise<any>[] = []
+
+    for (let item of this.set) {
+      if (item.state !== EntityState.Added &&
+        item.state !== EntityState.Modified &&
+        item.state !== EntityState.Deleted &&
+        item.state !== EntityState.Detached) {
+        continue
+      }
+
+      const state = item.state
+
+      if (state === EntityState.Added) {
+        promises.push(this.synchronizeAddedState(item))
+        continue
+      }
+
+      if (state === EntityState.Deleted) {
+        promises.push(this.synchronizeDeletedState(item))
+        continue
+      }
+
+      if (state === EntityState.Modified) {
+        promises.push(this.synchronizeModifiedState(item))
+        continue
+      }
+
+      if (state === EntityState.Detached) {
+        promises.push(Promise.resolve().then(() => {
+          this.set.delete(item)
+        }))
+      }
+    }
+
+    return promises
   }
 
   private onPropertyChanged (tracer: EntityTrace<T>/*, e: PropertyChangeEvent<T, EntityState> */) {

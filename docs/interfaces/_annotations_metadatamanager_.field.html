@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ForeignKey | Entity Framework</title>
+	<title>Field | Entity Framework</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -59,10 +59,10 @@
 					<a href="../modules/_annotations_metadatamanager_.html">&quot;annotations/metadataManager&quot;</a>
 				</li>
 				<li>
-					<a href="_annotations_metadatamanager_.foreignkey.html">ForeignKey</a>
+					<a href="_annotations_metadatamanager_.field.html">Field</a>
 				</li>
 			</ul>
-			<h1>Interface ForeignKey</h1>
+			<h1>Interface Field</h1>
 		</div>
 	</div>
 </header>
@@ -73,10 +73,22 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="_annotations_metadatamanager_.field.html" class="tsd-signature-type">Field</a>
+						<span class="target">Field</span>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">ForeignKey</span>
+								<a href="_annotations_metadatamanager_.member.html" class="tsd-signature-type">Member</a>
+							</li>
+							<li>
+								<a href="_annotations_metadatamanager_.primarykey.html" class="tsd-signature-type">PrimaryKey</a>
+							</li>
+							<li>
+								<a href="_annotations_metadatamanager_.foreignkey.html" class="tsd-signature-type">ForeignKey</a>
+							</li>
+							<li>
+								<a href="_annotations_metadatamanager_.navigator.html" class="tsd-signature-type">Navigator</a>
+							</li>
+							<li>
+								<a href="_annotations_metadatamanager_.entityset.html" class="tsd-signature-type">EntitySet</a>
 							</li>
 						</ul>
 					</li>
@@ -89,10 +101,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_annotations_metadatamanager_.foreignkey.html#constructor" class="tsd-kind-icon">constructor</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_annotations_metadatamanager_.foreignkey.html#fieldname" class="tsd-kind-icon">field<wbr>Name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_annotations_metadatamanager_.foreignkey.html#navigatorname" class="tsd-kind-icon">navigator<wbr>Name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_annotations_metadatamanager_.foreignkey.html#propertyname" class="tsd-kind-icon">property<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_annotations_metadatamanager_.field.html#fieldname" class="tsd-kind-icon">field<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_annotations_metadatamanager_.field.html#propertyname" class="tsd-kind-icon">property<wbr>Name</a></li>
 							</ul>
 						</section>
 					</div>
@@ -101,62 +111,20 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="constructor" class="tsd-anchor"></a>
-					<h3>constructor</h3>
-					<div class="tsd-signature tsd-kind-icon">constructor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/WellerQu/entity-framework-of-fe/blob/9821098/src/annotations/metadataManager.ts#L14">annotations/metadataManager.ts:14</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter">
-								<h5>constructor<span class="tsd-signature-symbol">: </span>function</h5>
-								<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-type-literal tsd-is-not-exported">
-									<li class="tsd-signature tsd-kind-icon">new __type<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">__type</span></li>
-								</ul>
-								<ul class="tsd-descriptions">
-									<li class="tsd-description">
-										<aside class="tsd-sources">
-											<ul>
-												<li>Defined in <a href="https://github.com/WellerQu/entity-framework-of-fe/blob/9821098/src/annotations/metadataManager.ts#L14">annotations/metadataManager.ts:14</a></li>
-											</ul>
-										</aside>
-										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">__type</span></h4>
-									</li>
-							</ul>        </li>
-						</ul>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 					<a name="fieldname" class="tsd-anchor"></a>
 					<h3>field<wbr>Name</h3>
 					<div class="tsd-signature tsd-kind-icon">field<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="_annotations_metadatamanager_.field.html">Field</a>.<a href="_annotations_metadatamanager_.field.html#fieldname">fieldName</a></p>
 						<ul>
 							<li>Defined in <a href="https://github.com/WellerQu/entity-framework-of-fe/blob/9821098/src/annotations/metadataManager.ts#L5">annotations/metadataManager.ts:5</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="navigatorname" class="tsd-anchor"></a>
-					<h3>navigator<wbr>Name</h3>
-					<div class="tsd-signature tsd-kind-icon">navigator<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/WellerQu/entity-framework-of-fe/blob/9821098/src/annotations/metadataManager.ts#L15">annotations/metadataManager.ts:15</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 					<a name="propertyname" class="tsd-anchor"></a>
 					<h3>property<wbr>Name</h3>
 					<div class="tsd-signature tsd-kind-icon">property<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="_annotations_metadatamanager_.field.html">Field</a>.<a href="_annotations_metadatamanager_.field.html#propertyname">propertyName</a></p>
 						<ul>
 							<li>Defined in <a href="https://github.com/WellerQu/entity-framework-of-fe/blob/9821098/src/annotations/metadataManager.ts#L6">annotations/metadataManager.ts:6</a></li>
 						</ul>
@@ -228,30 +196,24 @@
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_annotations_metadatamanager_.entityset.html" class="tsd-kind-icon">Entity<wbr>Set</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_annotations_metadatamanager_.field.html" class="tsd-kind-icon">Field</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_annotations_metadatamanager_.foreignkey.html" class="tsd-kind-icon">Foreign<wbr>Key</a>
+						<a href="_annotations_metadatamanager_.field.html" class="tsd-kind-icon">Field</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_annotations_metadatamanager_.foreignkey.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="_annotations_metadatamanager_.foreignkey.html#fieldname" class="tsd-kind-icon">field<wbr>Name</a>
+								<a href="_annotations_metadatamanager_.field.html#fieldname" class="tsd-kind-icon">field<wbr>Name</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_annotations_metadatamanager_.foreignkey.html#navigatorname" class="tsd-kind-icon">navigator<wbr>Name</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="_annotations_metadatamanager_.foreignkey.html#propertyname" class="tsd-kind-icon">property<wbr>Name</a>
+								<a href="_annotations_metadatamanager_.field.html#propertyname" class="tsd-kind-icon">property<wbr>Name</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_annotations_metadatamanager_.foreignkey.html" class="tsd-kind-icon">Foreign<wbr>Key</a>
+					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_annotations_metadatamanager_.member.html" class="tsd-kind-icon">Member</a>
 					</li>

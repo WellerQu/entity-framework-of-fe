@@ -29,7 +29,7 @@ export default class EntityConfiguration {
       // return Promise.reject(new Error('缺失解析地址的参数'))
     }
 
-    let fetchTarget = url
+    const fetchTarget = this.parseUrl(url, data)
     const fetchOptions = {
       ...options,
       headers: {
@@ -38,10 +38,8 @@ export default class EntityConfiguration {
       }
     }
 
-    if (options.method === 'GET') {
-      fetchTarget = this.parseUrl(url, data)
-    } else {
-      options.body = JSON.stringify(data)
+    if (fetchOptions.method !== 'GET') {
+      fetchOptions.body = JSON.stringify(data)
     }
 
     return fetch(fetchTarget, fetchOptions).then(res => res.json())

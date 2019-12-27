@@ -279,11 +279,11 @@ export default class EntitySet<T extends Object> {
 
       const parameters = getRequestParameters(entity)
       const set = this.otherNavigators.reduce((es, nav) => es.include(nav), entitySet)
-      // 释放导航信息
-      this.otherNavigators = [] // fix: 修复未释放资源的问题
+      // fix: 释放导航信息
+      this.otherNavigators = []
 
-      // 发起请求
       if (navigator.relationship === Relationship.One) {
+        // 请求关联实体的数据
         return set.load(...parameters).then((data) => {
           const relatedEntity = set.find(...parameters)
           Reflect.set(entity, propertyName, relatedEntity)
@@ -291,30 +291,19 @@ export default class EntitySet<T extends Object> {
           return data
         })
       } else if (navigator.relationship === Relationship.Many) {
-        // FIXME: 读取不到数据? 先别删这段注释的代码
-        // const processParameters = (parameters: any[][]) =>
-        //   (exec: (primaryKey: any[]) => any) =>
-        //     parameters
-        //       .filter(params => !!params)
-        //       .map(params => params.map(primaryKey => exec(primaryKey)))
-        //       .reduce((acc, val) => acc.concat(val), [])
-        // const validRequests = processParameters(parameters)
-        // const collectResult = processParameters(parameters)
-        // Promise.all(validRequests((primaryKey: any) => set.load(primaryKey))).then(res => {
-        //   const collection = collectResult((primaryKey: any) => set.find(primaryKey))
-
-        //   Reflect.set(entity, propertyName, collection)
-
-        //   return res
-        // })
-        const validParameters = parameters.filter(params => !!params)
-        const allLoadRequests = validParameters
-          .map(params => params.map((primaryKey: any) => set.load(primaryKey)))
-          .reduce((acc, val) => acc.concat(val), [])
-        return Promise.all(allLoadRequests).then((res) => {
-          const collection = validParameters
-            .map(params => params.map((primaryKey: any) => set.find(primaryKey)))
+        // 提升参数parameters使用逻辑
+        const useParameters = (exec: (primaryKey: any) => any) => (parameters: any[]) => {
+          return parameters.filter(params => !!params)
+            .map(params => params.map(exec))
             .reduce((acc, val) => acc.concat(val), [])
+        }
+
+        const getRequests = useParameters((primaryKey) => set.load(primaryKey))
+        const getCollection = useParameters((primaryKey) => set.find(primaryKey))
+
+        // 请求每一个关联实体的数据
+        return Promise.all(getRequests(parameters)).then(res => {
+          const collection = getCollection(parameters)
 
           Reflect.set(entity, propertyName, collection)
 

@@ -25,4 +25,4 @@ jobs:
     - name: npm run json-server, npm test
       run: |
         npm run json-server &
-        npm test
+        CI=Github npm test

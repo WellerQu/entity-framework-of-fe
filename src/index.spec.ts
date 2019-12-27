@@ -3,21 +3,23 @@ import * as EF from './index'
 const exec = require('child_process').exec
 
 describe('Behavior-driven development', () => {
-  beforeEach(() => {
-    exec('git checkout server/db.json', function (err: Error) {
-      if (err != null) {
-        return console.error(err) // eslint-disable-line no-console
-      }
+  if (process.env.NODE_ENV !== 'Github') {
+    beforeEach(() => {
+      exec('git checkout server/db.json', function (err: Error) {
+        if (err != null) {
+          return console.error(err) // eslint-disable-line no-console
+        }
+      })
     })
-  })
 
-  afterAll(() => {
-    exec('git checkout server/db.json', function (err: Error) {
-      if (err != null) {
-        return console.error(err) // eslint-disable-line no-console
-      }
+    afterAll(() => {
+      exec('git checkout server/db.json', function (err: Error) {
+        if (err != null) {
+          return console.error(err) // eslint-disable-line no-console
+        }
+      })
     })
-  })
+  }
 
   it('query a foo by primary (id)', async () => {
     @EF.behavior('load', 'http://localhost:3000/foo/$id', 'GET')

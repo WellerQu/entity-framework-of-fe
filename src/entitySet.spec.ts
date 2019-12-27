@@ -166,10 +166,10 @@ describe('EntitySet', () => {
     })
 
     afterEach(() => {
-      ctx.foo.clear()
-      ctx.bar.clear()
-      ctx.jar.clear()
-      ctx.zar.clear()
+      ctx.foo.clean()
+      ctx.bar.clean()
+      ctx.jar.clean()
+      ctx.zar.clean()
     })
 
     it('context', () => {
@@ -298,10 +298,10 @@ describe('EntitySet', () => {
 
   describe('query remote data', () => {
     afterEach(() => {
-      ctx.foo.clear()
-      ctx.bar.clear()
-      ctx.jar.clear()
-      ctx.zar.clear()
+      ctx.foo.clean()
+      ctx.bar.clean()
+      ctx.jar.clean()
+      ctx.zar.clean()
     })
 
     it('load', async () => {
@@ -325,6 +325,7 @@ describe('EntitySet', () => {
       expect(foo).not.toBeUndefined()
       expect(foo).toHaveProperty('jar')
       expect(foo!.jar).toHaveLength(2)
+      expect(ctx.jar.size).toEqual(2)
     })
 
     it('include: more fields', async () => {

@@ -7,17 +7,43 @@ import isEmpty from './utils/isEmpty'
 export default class EntitySet<T extends Object> {
   constructor (private ctx: EntityContext, type: { new(): T}) {
     this.set = new Set<EntityTrace<T>>()
-    this.includedNavigators = {}
+    this.ownNavigatorRequests = {}
     this.otherNavigators = []
     this.entityMetadata = { type }
     this.onPropertyChanged = this.onPropertyChanged.bind(this)
   }
 
   private set: Set<EntityTrace<T>>
-  private includedNavigators: Record<string, (entity: T | null) => Promise<any>>
+  private ownNavigatorRequests: Record<string, (entity: T | null) => Promise<any>>
   private otherNavigators: string[]
   private entityMetadata: {
     type: { new() : T },
+  }
+
+  private attachDataToEntitySet (originData: T): T | null {
+    // 无数据
+    if (isEmpty(originData)) {
+      return null
+    }
+
+    const entity = this.entry(originData)
+
+    this.attach(entity)
+
+    return entity
+  }
+
+  private getRelatedEntitySet (navigatorName: string) {
+    const ctxPrototype = Reflect.getPrototypeOf(this.ctx)
+    const entitySetMeta = this.ctx.metadata.getEntitySet(ctxPrototype, navigatorName)
+    if (!entitySetMeta) {
+      throw new Error(`当前上下文中没有配置EntitySet "${navigatorName}"`)
+    }
+    const entitySet = Reflect.get(this.ctx, entitySetMeta.propertyName) as EntitySet<any>
+    if (!entitySet) {
+      throw new Error(`当前上下文中没有配置EntitySet "${entitySetMeta.propertyName}"`)
+    }
+    return entitySet
   }
 
   public get size () {
@@ -25,10 +51,19 @@ export default class EntitySet<T extends Object> {
     return entries.length
   }
 
-  public clear (): this {
+  public clean (): this {
+    return this.cleanSet().cleanOwnNavigators()
+  }
+
+  private cleanSet (): this {
     Array.from(this.set).forEach(item => item.offPropertyChange(this.onPropertyChanged))
     this.set.clear()
-    this.includedNavigators = {}
+
+    return this
+  }
+
+  private cleanOwnNavigators (): this {
+    this.ownNavigatorRequests = {}
 
     return this
   }
@@ -157,19 +192,6 @@ export default class EntitySet<T extends Object> {
     return Array.from(this.set).map(item => Object.freeze(item.object))
   }
 
-  private attachDataToEntitySet (originData: T): T | null {
-    // 无数据
-    if (isEmpty(originData)) {
-      return null
-    }
-
-    const entity = this.entry(originData)
-
-    this.attach(entity)
-
-    return entity
-  }
-
   public async load (...args: any[]): Promise<T> {
     const queryMeta = this.ctx.metadata
       .getBehavior(this.entityMetadata.type.prototype, 'load')
@@ -178,15 +200,17 @@ export default class EntitySet<T extends Object> {
       throw new Error(`${this.entityMetadata.type.name} 没有配置Load behavior`)
     }
 
-    const params = queryMeta.mapParameters ? queryMeta.mapParameters(...args) : args
-    const requests = Object.values(this.includedNavigators)
+    const nothingTodo = (...a: any[]) => a
+    const { mapParameters = nothingTodo, mapEntity = nothingTodo } = queryMeta
+    const params = mapParameters(...args)
+    const requests = Object.values(this.ownNavigatorRequests)
 
-    this.clear()
+    this.clean()
 
     return new Promise<T>((resolve, reject) => {
       this.ctx.configuration
         .fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
-        .then(queryMeta.mapEntity || (anything => anything), reject)
+        .then(mapEntity, reject)
         .then(data => {
           const entity = this.attachDataToEntitySet(data)
           Promise.all(requests.map(fn => fn(entity))).then(() => {
@@ -203,15 +227,17 @@ export default class EntitySet<T extends Object> {
       throw new Error(`${this.entityMetadata.type.name} 没有配置LoadAll behavior`)
     }
 
-    const params = queryMeta.mapParameters ? queryMeta.mapParameters(...args) : args
-    const requests = Object.values(this.includedNavigators)
+    const nothingTodo = (...a: any[]) => a
+    const { mapParameters = nothingTodo, mapEntity = nothingTodo } = queryMeta
+    const params = mapParameters(...args)
+    const requests = Object.values(this.ownNavigatorRequests)
 
-    this.clear()
+    this.clean()
 
     return new Promise<T[]>((resolve, reject) => {
       this.ctx.configuration
         .fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
-        .then(queryMeta.mapEntity || (anything => anything), reject)
+        .then(mapEntity, reject)
         .then((data: T[]) => {
           const promises = data
             .map(item => this.attachDataToEntitySet(item))
@@ -224,21 +250,8 @@ export default class EntitySet<T extends Object> {
     })
   }
 
-  private getRelatedEntitySet (navigatorName: string) {
-    const ctxPrototype = Reflect.getPrototypeOf(this.ctx)
-    const entitySetMeta = this.ctx.metadata.getEntitySet(ctxPrototype, navigatorName)
-    if (!entitySetMeta) {
-      throw new Error(`当前上下文中没有配置EntitySet "${navigatorName}"`)
-    }
-    const entitySet = Reflect.get(this.ctx, entitySetMeta.propertyName) as EntitySet<any>
-    if (!entitySet) {
-      throw new Error(`当前上下文中没有配置EntitySet "${entitySetMeta.propertyName}"`)
-    }
-    return entitySet
-  }
-
   public include (navigatorName: string): this {
-    if (this.includedNavigators[navigatorName]) {
+    if (this.ownNavigatorRequests[navigatorName]) {
       return this
     }
 
@@ -253,7 +266,6 @@ export default class EntitySet<T extends Object> {
     const foreignKeys = this.ctx.metadata
       .getForeignKeys(this.entityMetadata.type.prototype)
       .filter(key => key.navigatorName === navigatorName)
-    const otherNavigators = this.otherNavigators
     const propertyName = navigator.propertyName
 
     const getRequestParameters = (entity: T) => {
@@ -266,7 +278,9 @@ export default class EntitySet<T extends Object> {
       }
 
       const parameters = getRequestParameters(entity)
-      const set = otherNavigators.reduce((es, nav) => es.include(nav), entitySet)
+      const set = this.otherNavigators.reduce((es, nav) => es.include(nav), entitySet)
+      // 释放导航信息
+      this.otherNavigators = [] // fix: 修复未释放资源的问题
 
       // 发起请求
       if (navigator.relationship === Relationship.One) {
@@ -277,6 +291,22 @@ export default class EntitySet<T extends Object> {
           return data
         })
       } else if (navigator.relationship === Relationship.Many) {
+        // FIXME: 读取不到数据? 先别删这段注释的代码
+        // const processParameters = (parameters: any[][]) =>
+        //   (exec: (primaryKey: any[]) => any) =>
+        //     parameters
+        //       .filter(params => !!params)
+        //       .map(params => params.map(primaryKey => exec(primaryKey)))
+        //       .reduce((acc, val) => acc.concat(val), [])
+        // const validRequests = processParameters(parameters)
+        // const collectResult = processParameters(parameters)
+        // Promise.all(validRequests((primaryKey: any) => set.load(primaryKey))).then(res => {
+        //   const collection = collectResult((primaryKey: any) => set.find(primaryKey))
+
+        //   Reflect.set(entity, propertyName, collection)
+
+        //   return res
+        // })
         const validParameters = parameters.filter(params => !!params)
         const allLoadRequests = validParameters
           .map(params => params.map((primaryKey: any) => set.load(primaryKey)))
@@ -297,7 +327,7 @@ export default class EntitySet<T extends Object> {
 
     request.navigatorName = navigatorName
 
-    this.includedNavigators[navigatorName] = request
+    this.ownNavigatorRequests[navigatorName] = request
 
     return this
   }

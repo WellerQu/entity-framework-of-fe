@@ -238,7 +238,7 @@ export default class EntitySet<T extends Object> {
         .fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
         .then(mapEntity, reject)
         .then((data: T[]) => {
-          const promises = data
+          const promises = (data || [])
             .map(item => this.attachDataToEntitySet(item))
             .map(entity => requests.map(fn => fn(entity)))
             .reduce((acc, val) => acc.concat(val), [])

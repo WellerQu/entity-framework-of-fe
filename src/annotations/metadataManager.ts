@@ -1,27 +1,26 @@
 import MetadataType from './metadataType'
 import Relationship from './relationship'
 
-export interface Member {
+export interface Field {
   fieldName: string;
   propertyName: string;
 }
 
-export interface PrimaryKey extends Member { }
+export interface Member extends Field { }
 
-export interface ForeignKey extends Member {
+export interface PrimaryKey extends Field { }
+
+export interface ForeignKey extends Field {
   constructor: { new(): {} },
   navigatorName: string;
 }
 
-export interface Navigator extends Member {
+export interface Navigator extends Field {
   relationship: Relationship,
   navigatorName: string
 }
 
-export interface EntitySet {
-  navigatorName: string
-  propertyName: string
-}
+export interface EntitySet extends Field { }
 
 export type BehaviorName = 'load' | 'loadAll' | 'add' | 'delete' | 'update'
 export interface Behavior<T = any> {
@@ -153,7 +152,7 @@ class MetadataManager {
       return void 0
     }
 
-    return this.managedContext.get(prototype)!.entities.find(item => item.navigatorName === navigatorName)
+    return this.managedContext.get(prototype)!.entities.find(item => item.fieldName === navigatorName)
   }
 
   getEntitySets (prototype: Object): EntitySet[] {

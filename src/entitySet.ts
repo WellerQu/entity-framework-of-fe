@@ -200,8 +200,7 @@ export default class EntitySet<T extends Object> {
       throw new Error(`${this.entityMetadata.type.name} 没有配置Load behavior`)
     }
 
-    const nothingTodo = (...a: any[]) => a
-    const { mapParameters = nothingTodo, mapEntity = nothingTodo } = queryMeta
+    const { mapParameters = (...a: any[]) => a, mapEntity = (a:any) => a } = queryMeta
     const params = mapParameters(...args)
     const requests = Object.values(this.ownNavigatorRequests)
 
@@ -227,8 +226,7 @@ export default class EntitySet<T extends Object> {
       throw new Error(`${this.entityMetadata.type.name} 没有配置LoadAll behavior`)
     }
 
-    const nothingTodo = (...a: any[]) => a
-    const { mapParameters = nothingTodo, mapEntity = nothingTodo } = queryMeta
+    const { mapParameters = (...a: any[]) => a, mapEntity = (a: any) => a } = queryMeta
     const params = mapParameters(...args)
     const requests = Object.values(this.ownNavigatorRequests)
 

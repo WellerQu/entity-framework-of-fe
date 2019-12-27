@@ -45,7 +45,7 @@ describe('EntitySet', () => {
   @behavior('loadAll', `${domain}/jar`, 'GET', a => a, a => a)
   @behavior('load', `${domain}/jar/$id`, 'GET', a => a, a => a)
   class Jar {
-    @primary('id')
+    @primary()
     @member()
     id: number = 0
 

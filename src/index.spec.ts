@@ -29,6 +29,8 @@ describe('Behavior-driven development', () => {
   })
 
   it('query a bar by primary (id, name)', async () => {
+    // json server 的filter语法: https://github.com/typicode/json-server#filter
+    // 过滤出来的是一个集合, 所以需要mapEntity方法将结果取第一个元素
     @EF.behavior('load', 'http://localhost:3000/bar?id=$id&name=$name', 'GET', (...a: any[]) => a, (a: any[]) => a[0])
     class Bar {
       @EF.primary()

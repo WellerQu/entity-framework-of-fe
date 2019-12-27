@@ -315,6 +315,8 @@ describe('EntitySet', () => {
       const foo = ctx.foo.find(1)
       expect(foo).not.toBeUndefined()
       expect(foo).toHaveProperty('bar')
+      expect(foo!.bid).toBeDefined()
+      expect(foo!.bName).toBeDefined()
       expect(foo!.bar).toHaveProperty('id', 1)
       expect(foo!.bar!).not.toHaveProperty('age')
     })

@@ -3,7 +3,7 @@ import * as EF from './index'
 const exec = require('child_process').exec
 
 describe('Behavior-driven development', () => {
-  if (process.env.NODE_ENV !== 'Github') {
+  if (process.env.CI !== 'Github') {
     beforeEach(() => {
       exec('git checkout server/db.json', function (err: Error) {
         if (err != null) {

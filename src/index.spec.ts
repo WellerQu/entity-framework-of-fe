@@ -659,6 +659,9 @@ describe('Behavior-driven development', () => {
 
       @EF.member()
       name: string = ''
+
+      @EF.member()
+      zid: number = 0
     }
 
     @EF.behavior('load', 'http://localhost:3000/foo/$id', 'GET')
@@ -766,8 +769,116 @@ describe('Behavior-driven development', () => {
   })
 
   it('remove two zar from the members of bar and synchronize changes to remote', async () => {
+    @EF.behavior('load', 'http://localhost:3000/zar/$id', 'GET')
+    @EF.behavior('delete', 'http://localhost:3000/zar/$id', 'DELETE')
+    class Zar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+    }
+
+    @EF.behavior('loadAll', 'http://localhost:3000/bar?name=$name', 'GET', ({ name }) => [name])
+    class Bar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+
+      @EF.foreign(Zar, 'zar', 'id')
+      @EF.member()
+      zid: number = 0
+
+      @EF.navigator(EF.Relationship.One, 'zar')
+      zar?: Zar
+    }
+
+    class Context extends EF.EntityContext {
+      @EF.set()
+      zar = new EF.EntitySet<Zar>(this, Zar)
+      @EF.set()
+      bar = new EF.EntitySet<Bar>(this, Bar)
+    }
+
+    const ctx = new Context()
+    await ctx.bar.include('zar').loadAll({ name: 'ba4' })
+    const bar1 = ctx.bar.find(4)
+    const bar2 = ctx.bar.find(5)
+
+    ctx.zar.remove(bar1!.zar, bar2!.zar)
+    const res = await ctx.saveChanges()
+    expect(res).toEqual([{}, {}])
+
+    expect(ctx.bar.size).toEqual(2)
+    expect(ctx.zar.size).toEqual(0)
   })
 
-  it('remove two zars from the members of bar that from the members of foo and synchronize changes to remote', async () => {
+  it('remove two zars from the members of jar that from the members of foo and synchronize changes to remote', async () => {
+    @EF.behavior('load', 'http://localhost:3000/zar/$id', 'GET')
+    @EF.behavior('delete', 'http://localhost:3000/zar/$id', 'DELETE')
+    class Zar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+      @EF.member()
+      name: string = ''
+    }
+
+    @EF.behavior('load', 'http://localhost:3000/jar/$id', 'GET')
+    class Jar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+      @EF.member()
+      name: string = ''
+
+      @EF.foreign(Zar, 'zar', 'id')
+      @EF.member()
+      zid: number = 0
+
+      @EF.navigator(EF.Relationship.One, 'zar')
+      zar?: Zar
+    }
+
+    @EF.behavior('load', 'http://localhost:3000/foo/$id', 'GET')
+    class Foo {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+      @EF.member()
+      name: string = ''
+
+      @EF.foreign(Jar, 'jar', 'id')
+      @EF.member()
+      jid: number[] = []
+
+      @EF.navigator(EF.Relationship.Many, 'jar')
+      jar?: Jar[]
+    }
+
+    class Context extends EF.EntityContext {
+      @EF.set()
+      zar = new EF.EntitySet<Zar>(this, Zar)
+      @EF.set()
+      jar = new EF.EntitySet<Jar>(this, Jar)
+      @EF.set()
+      foo = new EF.EntitySet<Foo>(this, Foo)
+    }
+
+    const ctx = new Context()
+    await ctx.foo.include('jar').include('zar').load(1)
+
+    const foo = ctx.foo.find(1)
+    const zars = foo!.jar!.map(item => item.zar)
+    expect(zars).toBeDefined()
+    expect(zars).toHaveLength(2)
+
+    ctx.zar.remove(...zars)
+    const res = await ctx.saveChanges()
+    expect(res).toEqual([{}, {}])
   })
 })

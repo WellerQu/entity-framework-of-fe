@@ -137,7 +137,7 @@ class Context extends EntityContext {
 
 ## EntitySet 与 EntityContext
 
-- EntitySet 是用来存储实体集合的, **EntitySet字段的名称就是导航名称(navigatorName)**
+- EntitySet 是用来存储实体的容器, 内部用Set来存储数据, **EntitySet字段的名称就是导航名称(navigatorName)**
 
 - EntityContext 是用来界定相关数据范围的
 
@@ -170,24 +170,42 @@ class Foo {
 
 - Load 通过定义的主键(或者组合键)唯一实体数据, 需要先部署Load behavior
 
-```typescript
-// 加载只有一个主键的数据
-// http://localhost:3000/foo/$pk -> http://localhost:3000/foo/1
-await ctx.foo.load(1)
-// 加载部署了组合键的数据
-// http://localhost:3000/foo/$pk1/$pk2 -> http://localhost:3000/foo/1/2
-// 参数顺序为描述模型中@primary标记的顺序
-await ctx.foo.load(1, 2)
-```
+  ```typescript
+  // 加载只有一个主键的数据
+  // http://localhost:3000/foo/$pk -> http://localhost:3000/foo/1
+  await ctx.foo.load(1)
+  // 加载部署了组合键的数据
+  // http://localhost:3000/foo/$pk1/$pk2 -> http://localhost:3000/foo/1/2
+  // 参数顺序为描述模型中@primary标记的顺序
+  await ctx.foo.load(1, 2)
+  ```
 
 - LoadAll 通过传入的条件加载所有符合条件的数据
 
-```typescript
-// 加载符合条件的所有数据
-await ctx.foo.loadAll({
-  // anything
-})
-```
+  ```typescript
+  // 加载符合条件的所有数据
+  await ctx.foo.loadAll({
+    // anything
+  })
+  ```
+
+- 加载数据的副作用
+
+  每一次Load或者LoadAll, 都会在不清除上一次加载的数据的情况下, 添加新的数据, 如果不想被上一次的数据干扰, 可以使用**clean**方法
+
+  ```typescript
+  const ctx = new YourContext()
+  await ctx.foo.load(1)
+  await ctx.foo.load(1)
+
+  // 此时ctx.foo.size 为 2, 因为加载了二次
+
+  ctx.clean()
+  // 此时ctx.foo.size 为 1, 清除了之前加载的数据
+
+  // 或者每次加载之前执行 clean
+  await ctx.clean().foo.load(1)
+  ```
 
 **查询参数到RequestBody的映射** 与 **ResponseBody到实体数据的映射**, 参见@behavior注解的mapParameters和mapEntity参数
 

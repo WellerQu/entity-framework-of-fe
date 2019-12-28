@@ -310,6 +310,8 @@ const res: Promise<Response[]> = await ctx.saveChanges()
 
 ## 用法
 
+[参见测试用例](https://github.com/WellerQu/entity-framework-of-fe/blob/master/src/index.spec.ts)
+
 ## TODO
 
 - [] 补充关键代码注释

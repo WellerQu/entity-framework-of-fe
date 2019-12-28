@@ -881,4 +881,167 @@ describe('Behavior-driven development', () => {
     const res = await ctx.saveChanges()
     expect(res).toEqual([{}, {}])
   })
+
+  it('cascading remove', async () => {
+    @EF.behavior('load', 'http://localhost:3000/zar/$id', 'GET')
+    @EF.behavior('delete', 'http://localhost:3000/zar/$id', 'DELETE')
+    class Zar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+      @EF.member()
+      name: string = ''
+    }
+
+    @EF.behavior('load', 'http://localhost:3000/jar/$id', 'GET')
+    @EF.behavior('delete', 'http://localhost:3000/jar/$id', 'DELETE')
+    class Jar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+      @EF.member()
+      name: string = ''
+
+      @EF.foreign(Zar, 'zar', 'id')
+      @EF.member()
+      zid: number = 0
+
+      @EF.navigator(EF.Relationship.One, 'zar')
+      zar?: Zar
+    }
+
+    @EF.behavior('load', 'http://localhost:3000/foo/$id', 'GET')
+    @EF.behavior('delete', 'http://localhost:3000/foo/$id', 'DELETE')
+    class Foo {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+      @EF.member()
+      name: string = ''
+
+      @EF.foreign(Jar, 'jar', 'id')
+      @EF.member()
+      jid: number[] = []
+
+      @EF.navigator(EF.Relationship.Many, 'jar')
+      jar?: Jar[]
+    }
+
+    class Context extends EF.EntityContext {
+      @EF.set()
+      zar = new EF.EntitySet<Zar>(this, Zar)
+      @EF.set()
+      jar = new EF.EntitySet<Jar>(this, Jar)
+      @EF.set()
+      foo = new EF.EntitySet<Foo>(this, Foo)
+    }
+
+    const ctx = new Context()
+    await ctx.foo.include('jar').include('zar').load(1)
+
+    const foo = ctx.foo.find(1)
+    ctx.foo.remove(foo)
+
+    await ctx.saveChanges()
+    expect(ctx.foo.size).toEqual(0)
+
+    await ctx.foo.load(1)
+    expect(ctx.foo.size).toEqual(0)
+
+    await ctx.jar.load(1)
+    expect(ctx.jar.size).toEqual(0)
+
+    await ctx.jar.load(2)
+    expect(ctx.jar.size).toEqual(0)
+
+    await ctx.zar.load(1)
+    expect(ctx.zar.size).toEqual(0)
+
+    await ctx.zar.load(2)
+    expect(ctx.zar.size).toEqual(0)
+  })
+
+  it('break the cascading by detach', async () => {
+    @EF.behavior('load', 'http://localhost:3000/zar/$id', 'GET')
+    @EF.behavior('delete', 'http://localhost:3000/zar/$id', 'DELETE')
+    class Zar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+      @EF.member()
+      name: string = ''
+    }
+
+    @EF.behavior('load', 'http://localhost:3000/jar/$id', 'GET')
+    @EF.behavior('delete', 'http://localhost:3000/jar/$id', 'DELETE')
+    class Jar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+      @EF.member()
+      name: string = ''
+
+      @EF.foreign(Zar, 'zar', 'id')
+      @EF.member()
+      zid: number = 0
+
+      @EF.navigator(EF.Relationship.One, 'zar')
+      zar?: Zar
+    }
+
+    @EF.behavior('load', 'http://localhost:3000/foo/$id', 'GET')
+    @EF.behavior('delete', 'http://localhost:3000/foo/$id', 'DELETE')
+    class Foo {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+      @EF.member()
+      name: string = ''
+
+      @EF.foreign(Jar, 'jar', 'id')
+      @EF.member()
+      jid: number[] = []
+
+      @EF.navigator(EF.Relationship.Many, 'jar')
+      jar?: Jar[]
+    }
+
+    class Context extends EF.EntityContext {
+      @EF.set()
+      zar = new EF.EntitySet<Zar>(this, Zar)
+      @EF.set()
+      jar = new EF.EntitySet<Jar>(this, Jar)
+      @EF.set()
+      foo = new EF.EntitySet<Foo>(this, Foo)
+    }
+
+    const ctx = new Context()
+    await ctx.foo.include('jar').include('zar').load(2)
+
+    const foo = ctx.foo.find(2)
+    ctx.jar.detach(...foo!.jar) // 从上下文中分离目标实体, 注意! 并不是删除
+    ctx.foo.remove(foo)
+
+    await ctx.saveChanges()
+    expect(ctx.foo.size).toEqual(0)
+    expect(ctx.jar.size).toEqual(0)
+    expect(ctx.zar.size).toEqual(2)
+
+    ctx.clean()
+
+    await ctx.foo.load(1)
+    expect(ctx.foo.size).toEqual(0)
+
+    await ctx.jar.load(4)
+    expect(ctx.jar.size).toEqual(1)
+
+    await ctx.jar.load(5)
+    expect(ctx.jar.size).toEqual(2)
+
+    await ctx.zar.load(6)
+    expect(ctx.zar.size).toEqual(1)
+
+    await ctx.zar.load(7)
+    expect(ctx.zar.size).toEqual(2)
+  })
 })

@@ -4,14 +4,6 @@ const exec = require('child_process').exec
 
 describe('Behavior-driven development', () => {
   if (process.env.CI !== 'Github') {
-    beforeEach(() => {
-      exec('git checkout server/db.json', function (err: Error) {
-        if (err != null) {
-          return console.error(err) // eslint-disable-line no-console
-        }
-      })
-    })
-
     afterAll(() => {
       exec('git checkout server/db.json', function (err: Error) {
         if (err != null) {
@@ -421,7 +413,7 @@ describe('Behavior-driven development', () => {
     expect(res).toEqual([{}, {}])
   })
 
-  it('update a foo from set and synchronize changes to remote', async () => {
+  it('update two bar from set and synchronize changes to remote', async () => {
     @EF.behavior('loadAll', 'http://localhost:3000/bar?name=$name', 'GET', ({ name }) => name)
     @EF.behavior('update', 'http://localhost:3000/bar/$id', 'PATCH')
     class Bar {
@@ -444,10 +436,12 @@ describe('Behavior-driven development', () => {
     const ctx = new Context()
     await ctx.bar.loadAll({ name: 'ba4' })
 
-    const bar = ctx.bar.find(4)
-    bar!.age = 53
+    const bar1 = ctx.bar.find(4)
+    bar1!.age = 53
+    const bar2 = ctx.bar.find(5)
+    bar2!.age = 63
 
     const res = await ctx.saveChanges()
-    expect(res).toEqual([bar])
+    expect(res).toEqual([bar1, bar2])
   })
 })

@@ -68,11 +68,13 @@
   "jar": [
     {
       "id": 1,
-      "name": "ja1"
+      "name": "ja1",
+      "zid": 1
     },
     {
       "id": 2,
-      "name": "ja2"
+      "name": "ja2",
+      "zid": 2
     },
     {
       "id": 3,

@@ -74,6 +74,8 @@
 					</li>
 					<li><p><a href="https://github.com/WellerQu/entity-framework-of-fe">Github</a></p>
 					</li>
+					<li><p><a href="https://github.com/WellerQu/entity-framework-of-fe#%E7%94%A8%E6%B3%95">用法</a></p>
+					</li>
 				</ul>
 				<a href="#定义实体模型" id="定义实体模型" style="color: inherit; text-decoration: none;">
 					<h2>定义实体模型</h2>
@@ -278,7 +280,7 @@
 					<h2>添加数据 / 修改数据 / 删除数据</h2>
 				</a>
 				<ul>
-					<li>saveChanges 将对EntitySet的修改同步到服务端. EF的Context会搜集数据集中各个元素的状态, saveChanges方法被调用时, 会检查这些状态的变更, 并对Added, Deleted, Modified做出反应, 尝试调用定义的@behavior来与服务端同步</li>
+					<li>saveChanges 将对EntitySet的修改同步到服务端. EF的Context会搜集数据集中各个元素的状态, saveChanges方法被调用时, 会检查这些状态的变更, 并对Added, Deleted, Modified做出反应, 尝试调用定义的@behavior来与服务端同步. <strong>被remove后的数据, 不可以再以任何形式读写</strong>.</li>
 				</ul>
 				<pre><code class="language-typescript"><span class="hljs-comment">// Add entity</span>
 <span class="hljs-keyword">const</span> newFoo = <span class="hljs-keyword">new</span> Foo()
@@ -324,7 +326,7 @@ ctx.saveChange()</code></pre>
 					<h2>处理错误</h2>
 				</a>
 				<ul>
-					<li>当前加载数据时的部分错误被消化在Promise中, 并未全部都传递到调用端, 用户无法捕获正确的错误信息</li>
+					<li>加载数据时的部分错误(比如关联查询错误)被消化在Promise中, 并未全部都传递到调用端, 调用端无法捕获正确的错误信息</li>
 					<li>saveChanges时的错误能传递到调用端</li>
 				</ul>
 				<pre><code class="language-typescript"><span class="hljs-keyword">const</span> foo1 = <span class="hljs-keyword">new</span> Foo()
@@ -335,6 +337,9 @@ ctx.foo.add(foo1, foo2)
 <span class="hljs-keyword">const</span> res: <span class="hljs-built_in">Promise</span>&lt;Response[]&gt; = <span class="hljs-keyword">await</span> ctx.saveChanges()
 <span class="hljs-comment">// res的Promise中将得到一个数组, 即二次请求的结果</span>
 <span class="hljs-comment">// 检查res数据, 以确定每一个请求是否都正确完成</span></code></pre>
+				<a href="#用法" id="用法" style="color: inherit; text-decoration: none;">
+					<h2>用法</h2>
+				</a>
 				<a href="#todo" id="todo" style="color: inherit; text-decoration: none;">
 					<h2>TODO</h2>
 				</a>

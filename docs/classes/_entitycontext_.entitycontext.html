@@ -115,7 +115,8 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_entitycontext_.entitycontext.html#savechanges" class="tsd-kind-icon">save<wbr>Changes</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_entitycontext_.entitycontext.html#clean" class="tsd-kind-icon">clean</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="_entitycontext_.entitycontext.html#savechanges" class="tsd-kind-icon">save<wbr>Changes</a></li>
 							</ul>
 						</section>
 					</div>
@@ -133,7 +134,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/WellerQu/entity-framework-of-fe/blob/9821098/src/entityContext.ts#L14">entityContext.ts:14</a></li>
+									<li>Defined in <a href="https://github.com/WellerQu/entity-framework-of-fe/blob/25ce78e/src/entityContext.ts#L14">entityContext.ts:14</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -155,7 +156,7 @@
 					<div class="tsd-signature tsd-kind-icon">_configuration<span class="tsd-signature-symbol">:</span> <a href="_entityconfiguration_.entityconfiguration.html" class="tsd-signature-type">EntityConfiguration</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/WellerQu/entity-framework-of-fe/blob/9821098/src/entityContext.ts#L15">entityContext.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/WellerQu/entity-framework-of-fe/blob/25ce78e/src/entityContext.ts#L15">entityContext.ts:15</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -172,7 +173,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/WellerQu/entity-framework-of-fe/blob/9821098/src/entityContext.ts#L25">entityContext.ts:25</a></li>
+									<li>Defined in <a href="https://github.com/WellerQu/entity-framework-of-fe/blob/25ce78e/src/entityContext.ts#L25">entityContext.ts:25</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="_entityconfiguration_.entityconfiguration.html" class="tsd-signature-type">EntityConfiguration</a></h4>
@@ -189,7 +190,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/WellerQu/entity-framework-of-fe/blob/9821098/src/entityContext.ts#L21">entityContext.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/WellerQu/entity-framework-of-fe/blob/25ce78e/src/entityContext.ts#L21">entityContext.ts:21</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="_annotations_metadatamanager_.metadatamanager.html" class="tsd-signature-type">MetadataManager</a></h4>
@@ -200,19 +201,42 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="savechanges" class="tsd-anchor"></a>
-					<h3>save<wbr>Changes</h3>
+					<a name="clean" class="tsd-anchor"></a>
+					<h3>clean</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">save<wbr>Changes<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">clean<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/WellerQu/entity-framework-of-fe/blob/9821098/src/entityContext.ts#L29">entityContext.ts:29</a></li>
+									<li>Defined in <a href="https://github.com/WellerQu/entity-framework-of-fe/blob/25ce78e/src/entityContext.ts#L29">entityContext.ts:29</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+					<a name="savechanges" class="tsd-anchor"></a>
+					<h3>save<wbr>Changes</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">save<wbr>Changes&lt;T&gt;<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/WellerQu/entity-framework-of-fe/blob/25ce78e/src/entityContext.ts#L41">entityContext.ts:41</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -291,6 +315,9 @@
 								<a href="_entitycontext_.entitycontext.html#metadata" class="tsd-kind-icon">metadata</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_entitycontext_.entitycontext.html#clean" class="tsd-kind-icon">clean</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
 								<a href="_entitycontext_.entitycontext.html#savechanges" class="tsd-kind-icon">save<wbr>Changes</a>
 							</li>
 						</ul>

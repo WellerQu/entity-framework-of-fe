@@ -24,11 +24,13 @@
     },
     {
       "id": 4,
-      "name": "fa4"
+      "name": "fa4",
+      "bid": 4
     },
     {
       "id": 5,
-      "name": "fa4"
+      "name": "fa4",
+      "bid": 5
     }
   ],
   "bar": [
@@ -53,12 +55,14 @@
     {
       "id": 4,
       "name": "ba4",
-      "age": 43
+      "age": 43,
+      "zid": 4
     },
     {
       "id": 5,
       "name": "ba4",
-      "age": 53
+      "age": 53,
+      "zid": 5
     }
   ],
   "jar": [

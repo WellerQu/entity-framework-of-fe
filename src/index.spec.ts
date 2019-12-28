@@ -40,6 +40,36 @@ describe('Behavior-driven development', () => {
     expect(ctx.foo.size).toEqual(1)
   })
 
+  it('query a foo more times by the same primary(id)', async () => {
+    @EF.behavior('load', 'http://localhost:3000/foo/$id', 'GET')
+    class Foo {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member('name')
+      aliasName: string = ''
+    }
+
+    class Context extends EF.EntityContext {
+      @EF.set()
+      foo = new EF.EntitySet<Foo>(this, Foo)
+    }
+
+    const ctx = new Context()
+    await ctx.foo.load(1)
+    await ctx.foo.load(1)
+    await ctx.foo.load(1)
+
+    expect(ctx.foo.size).toEqual(3)
+
+    await ctx.clean().foo.load(1)
+    await ctx.clean().foo.load(1)
+    await ctx.clean().foo.load(1)
+
+    expect(ctx.foo.size).toEqual(1)
+  })
+
   it('query a bar by primary (id, name)', async () => {
     // json server 的filter语法: https://github.com/typicode/json-server#filter
     // 过滤出来的是一个集合, 所以需要mapEntity方法将结果取第一个元素
@@ -104,8 +134,8 @@ describe('Behavior-driven development', () => {
       id: number = 0
 
       @EF.primary()
-      @EF.member()
-      name: string = ''
+      @EF.member('name')
+      bbName: string = ''
 
       @EF.member()
       age: number = 0
@@ -145,7 +175,7 @@ describe('Behavior-driven development', () => {
     expect(foo).toHaveProperty('id', 1)
     expect(foo!.bar).toBeDefined()
     expect(foo!.bar).toHaveProperty('id', 1)
-    expect(foo!.bar).toHaveProperty('name', 'ba1')
+    expect(foo!.bar).toHaveProperty('bbName', 'ba1')
     expect(foo!.bar).toHaveProperty('age', 13)
     expect(ctx.foo.size).toEqual(1)
     expect(ctx.bar.size).toEqual(1)
@@ -197,7 +227,7 @@ describe('Behavior-driven development', () => {
     expect(ctx.jar.size).toEqual(2)
   })
 
-  it('query a foo with two foreign keys bar(id, name) and jar(id)', async () => {
+  it('query a foo with two foreign keys bar(id, name) and jar(id) together', async () => {
     @EF.behavior('load', 'http://localhost:3000/jar/$id', 'GET')
     class Jar {
       @EF.primary()
@@ -275,7 +305,7 @@ describe('Behavior-driven development', () => {
     expect(ctx.jar.size).toEqual(2)
   })
 
-  it('query a foo with a foreign key bar(id, name), and cascading query to zar(id) by bar', async () => {
+  it('query a foo with a foreign key bar(id, name), and cascading query a zar(id) by bar', async () => {
     @EF.behavior('load', 'http://localhost:3000/zar/$id', 'GET')
     class Zar {
       @EF.primary()
@@ -353,31 +383,86 @@ describe('Behavior-driven development', () => {
     expect(ctx.zar.size).toEqual(1)
   })
 
-  it('there is not any side-effect between two load behaviors', async () => {
+  it('query a foo with two foreign keys, cascading query by a foreign key', async () => {
+    @EF.behavior('load', 'http://localhost:3000/zar/$id', 'GET')
+    class Zar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+    }
+
+    @EF.behavior('load', 'http://localhost:3000/bar/$id', 'GET')
+    class Bar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+
+      @EF.foreign(Zar, 'zar', 'id')
+      @EF.member()
+      zid: number = 0
+
+      @EF.navigator(EF.Relationship.One, 'zar')
+      zar?: Zar
+    }
+
+    @EF.behavior('load', 'http://localhost:3000/jar/$id', 'GET')
+    class Jar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+    }
+
     @EF.behavior('load', 'http://localhost:3000/foo/$id', 'GET')
     class Foo {
       @EF.primary()
       @EF.member()
       id: number = 0
 
-      @EF.member('name')
-      aliasName: string = ''
+      @EF.member()
+      name: string = ''
+
+      @EF.foreign(Bar, 'bar', 'id')
+      @EF.member()
+      bid: number = 0
+
+      @EF.foreign(Jar, 'jar', 'id')
+      @EF.member()
+      jid: number[] = []
+
+      @EF.navigator(EF.Relationship.One, 'bar')
+      bar?: Bar
+
+      @EF.navigator(EF.Relationship.Many, 'jar')
+      jar?: Jar[]
     }
 
     class Context extends EF.EntityContext {
+      @EF.set()
+      zar = new EF.EntitySet<Zar>(this, Zar)
+      @EF.set()
+      bar = new EF.EntitySet<Bar>(this, Bar)
+      @EF.set()
+      jar = new EF.EntitySet<Jar>(this, Jar)
       @EF.set()
       foo = new EF.EntitySet<Foo>(this, Foo)
     }
 
     const ctx = new Context()
-    await ctx.foo.load(1)
-    const foo1 = ctx.foo.find(1)
-
-    await ctx.foo.load(2)
-    const foo2 = ctx.foo.find(2)
-
-    expect(foo1).not.toEqual(foo2)
-    expect(ctx.foo.size).toEqual(1)
+    await ctx.foo.include('bar').include('jar').include('zar').load(1)
+    const foo = ctx.foo.find(1)
+    expect(foo).toBeDefined()
+    expect(foo!.bar).toBeDefined()
+    expect(foo!.jar).toBeDefined()
+    expect(foo!.bar!.zar).toBeDefined()
   })
 
   it('add two foo to set and synchronize changes to remote', async () => {
@@ -451,6 +536,9 @@ describe('Behavior-driven development', () => {
 
       @EF.member()
       age: number = 0
+
+      @EF.member()
+      zid: number = 0
     }
 
     class Context extends EF.EntityContext {
@@ -506,5 +594,180 @@ describe('Behavior-driven development', () => {
 
     const res2 = await ctx.saveChanges<Foo>()
     expect(res2).toEqual([])
+  })
+
+  it('update a bar from the members of foo and synchronize changes to remote', async () => {
+    @EF.behavior('load', 'http://localhost:3000/bar/$id', 'GET')
+    @EF.behavior('update', 'http://localhost:3000/bar/$id', 'PATCH')
+    class Bar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+
+      @EF.member()
+      age: number = 0
+
+      @EF.member()
+      zid: number = 0
+    }
+
+    @EF.behavior('load', 'http://localhost:3000/foo/$id', 'GET')
+    class Foo {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+
+      @EF.foreign(Bar, 'bar', 'id')
+      @EF.member()
+      bid: number = 0
+
+      @EF.navigator(EF.Relationship.One, 'bar')
+      bar?: Bar
+    }
+
+    class Context extends EF.EntityContext {
+      @EF.set()
+      foo = new EF.EntitySet<Foo>(this, Foo)
+
+      @EF.set()
+      bar = new EF.EntitySet<Bar>(this, Bar)
+    }
+
+    const ctx = new Context()
+    await ctx.foo.include('bar').load(1)
+    const foo = ctx.foo.find(1)
+    expect(foo!.bar).toBeDefined()
+
+    foo!.bar!.age = 251
+    const res = await ctx.saveChanges()
+    expect(res).toEqual([foo!.bar])
+  })
+
+  it('update two jars from the members of foo and synchronize changes to remote', async () => {
+    @EF.behavior('load', 'http://localhost:3000/jar/$id', 'GET')
+    @EF.behavior('update', 'http://localhost:3000/jar/$id', 'PATCH')
+    class Jar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+    }
+
+    @EF.behavior('load', 'http://localhost:3000/foo/$id', 'GET')
+    class Foo {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.foreign(Jar, 'jar', 'id')
+      @EF.member()
+      jid: number[] = []
+
+      @EF.navigator(EF.Relationship.Many, 'jar')
+      jar?: Jar[]
+    }
+
+    class Context extends EF.EntityContext {
+      @EF.set()
+      foo = new EF.EntitySet<Foo>(this, Foo)
+
+      @EF.set()
+      jar = new EF.EntitySet<Jar>(this, Jar)
+    }
+
+    const ctx = new Context()
+    await ctx.foo.include('jar').load(1)
+    const foo = ctx.foo.find(1)
+    foo!.jar![0].name = 'ja11111'
+    foo!.jar![1].name = 'ja22222'
+
+    const res = await ctx.saveChanges()
+    const compare = (a: Jar, b: Jar) => a.id - b.id
+    expect(res.sort(compare)).toEqual(foo!.jar!.sort(compare))
+  })
+
+  it('update two zars from the members of bar that from the members of foo and synchronize changes to remote', async () => {
+    @EF.behavior('load', 'http://localhost:3000/zar/$id', 'GET')
+    @EF.behavior('update', 'http://localhost:3000/zar/$id', 'PATCH')
+    class Zar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+    }
+
+    @EF.behavior('load', 'http://localhost:3000/bar/$id', 'GET')
+    class Bar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+
+      @EF.foreign(Zar, 'zar', 'id')
+      @EF.member()
+      zid: number = 0
+
+      @EF.navigator(EF.Relationship.One, 'zar')
+      zar?: Zar
+    }
+
+    @EF.behavior('loadAll', 'http://localhost:3000/foo?name=$name', 'GET', ({ name }) => name)
+    class Foo {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+
+      @EF.foreign(Bar, 'bar', 'id')
+      @EF.member()
+      bid: number = 0
+
+      @EF.navigator(EF.Relationship.One, 'bar')
+      bar?: Bar
+    }
+
+    class Context extends EF.EntityContext {
+      @EF.set()
+      zar = new EF.EntitySet<Zar>(this, Zar)
+      @EF.set()
+      bar = new EF.EntitySet<Bar>(this, Bar)
+      @EF.set()
+      foo = new EF.EntitySet<Foo>(this, Foo)
+    }
+
+    const ctx = new Context()
+    await ctx.foo.include('bar').include('zar').loadAll({ name: 'fa2' })
+    const foo1 = ctx.foo.find(2)
+    const foo2 = ctx.foo.find(3)
+
+    expect(foo1!.bar!.zar).toBeDefined()
+    expect(foo2!.bar!.zar).toBeDefined()
+
+    foo1!.bar!.zar!.name = 'za4'
+    foo2!.bar!.zar!.name = 'za4'
+
+    const res = await ctx.saveChanges()
+    const compare = (a: Zar, b: Zar) => a.id - b.id
+    expect(res.sort(compare)).toEqual([foo1!.bar!.zar!, foo2!.bar!.zar!].sort(compare))
+  })
+
+  it('remove two zar from the members of bar and synchronize changes to remote', async () => {
+  })
+
+  it('remove two zars from the members of bar that from the members of foo and synchronize changes to remote', async () => {
   })
 })

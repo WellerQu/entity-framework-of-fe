@@ -8,6 +8,8 @@
 
 - [Github](https://github.com/WellerQu/entity-framework-of-fe)
 
+- [用法](https://github.com/WellerQu/entity-framework-of-fe#%E7%94%A8%E6%B3%95)
+
 ## 定义实体模型
 
 实体是用于描述一种数据的数据结构, 实体的实例在Entity Framework(以后简称为EF)中定义成**一个class的实例, 而非原生的JSON数据**, 例如:
@@ -227,7 +229,7 @@ const foo: Foo[] = ctx.foo.filter((n) => n.id === 1 || n.id === 2)
 
 ## 添加数据 / 修改数据 / 删除数据
 
-- saveChanges 将对EntitySet的修改同步到服务端. EF的Context会搜集数据集中各个元素的状态, saveChanges方法被调用时, 会检查这些状态的变更, 并对Added, Deleted, Modified做出反应, 尝试调用定义的@behavior来与服务端同步
+- saveChanges 将对EntitySet的修改同步到服务端. EF的Context会搜集数据集中各个元素的状态, saveChanges方法被调用时, 会检查这些状态的变更, 并对Added, Deleted, Modified做出反应, 尝试调用定义的@behavior来与服务端同步. **被remove后的数据, 不可以再以任何形式读写**.
 
 ```typescript
 // Add entity
@@ -274,7 +276,7 @@ ctx.saveChange()
 
 ## 处理错误
 
-- 当前加载数据时的部分错误被消化在Promise中, 并未全部都传递到调用端, 用户无法捕获正确的错误信息
+- 加载数据时的部分错误(比如关联查询错误)被消化在Promise中, 并未全部都传递到调用端, 调用端无法捕获正确的错误信息
 - saveChanges时的错误能传递到调用端
 
 ```typescript
@@ -287,6 +289,8 @@ const res: Promise<Response[]> = await ctx.saveChanges()
 // res的Promise中将得到一个数组, 即二次请求的结果
 // 检查res数据, 以确定每一个请求是否都正确完成
 ```
+
+## 用法
 
 ## TODO
 

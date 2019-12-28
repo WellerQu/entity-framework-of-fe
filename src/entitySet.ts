@@ -52,7 +52,7 @@ export default class EntitySet<T extends Object> {
   }
 
   public clean (): this {
-    return this.cleanSet().cleanOwnNavigators()
+    return this.cleanSet().cleanNavigators()
   }
 
   private cleanSet (): this {
@@ -62,8 +62,9 @@ export default class EntitySet<T extends Object> {
     return this
   }
 
-  private cleanOwnNavigators (): this {
+  private cleanNavigators (): this {
     this.ownNavigatorRequests = {}
+    this.otherNavigators = []
 
     return this
   }
@@ -205,8 +206,6 @@ export default class EntitySet<T extends Object> {
     const params = mapParameters(...args)
     const requests = Object.values(this.ownNavigatorRequests)
 
-    this.clean()
-
     return new Promise<T>((resolve, reject) => {
       this.ctx.configuration
         .fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
@@ -223,6 +222,7 @@ export default class EntitySet<T extends Object> {
   public async loadAll (...args: any[]): Promise<T[]> {
     const queryMeta = this.ctx.metadata
       .getBehavior(this.entityMetadata.type.prototype, 'loadAll')
+
     if (!queryMeta) {
       throw new Error(`${this.entityMetadata.type.name} 没有配置LoadAll behavior`)
     }
@@ -230,8 +230,6 @@ export default class EntitySet<T extends Object> {
     const { mapParameters = (...a: any[]) => a, mapEntity = (a: any) => a } = queryMeta
     const params = mapParameters(...args)
     const requests = Object.values(this.ownNavigatorRequests)
-
-    this.clean()
 
     return new Promise<T[]>((resolve, reject) => {
       this.ctx.configuration
@@ -241,10 +239,11 @@ export default class EntitySet<T extends Object> {
           const promises = (data || [])
             .map(item => this.attachDataToEntitySet(item))
             .map(entity => requests.map(fn => fn(entity)))
-            .reduce((acc, val) => acc.concat(val), [])
-          Promise.all(promises).then(() => {
-            resolve(data)
-          })
+            .reduce((acc, val) => acc.concat(val), []) // 降低数组维度
+          Promise.all(promises)
+            .then(() => {
+              resolve(data)
+            })
         })
     })
   }
@@ -278,8 +277,6 @@ export default class EntitySet<T extends Object> {
 
       const parameters = getRequestParameters(entity)
       const set = this.otherNavigators.reduce((es, nav) => es.include(nav), entitySet)
-      // fix: 释放导航信息
-      this.otherNavigators = []
 
       if (navigator.relationship === Relationship.One) {
         // 请求关联实体的数据
@@ -309,7 +306,7 @@ export default class EntitySet<T extends Object> {
           return res
         })
       } else {
-        throw new Error('未定义的Relationship')
+        throw new Error(`未定义的 Relationship: ${navigator.relationship}`)
       }
     }
 

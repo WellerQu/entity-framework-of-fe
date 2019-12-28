@@ -26,6 +26,18 @@ export default class EntityContext {
     return this._configuration!
   }
 
+  public clean () {
+    const entitySetKeys = this.metadata
+      .getEntitySets(Reflect.getPrototypeOf(this))
+      .map(item => item.propertyName)
+
+    entitySetKeys.forEach(key => {
+      (Reflect.get(this, key) as EntitySet<any>).clean()
+    })
+
+    return this
+  }
+
   public async saveChanges<T = any> () {
     const entitySetKeys = this.metadata
       .getEntitySets(Reflect.getPrototypeOf(this))

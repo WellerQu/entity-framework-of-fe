@@ -3,20 +3,32 @@ import isEmpty from './utils/isEmpty'
 const fetch = window.fetch || require('node-fetch')
 
 export default class EntityConfiguration {
-  protected parseUrl (url: string, params: any) {
+  protected parseUrl (url: string, params: any): string {
     if (isEmpty(params)) {
       return url
     }
 
-    const isBaseType = !(Object.getPrototypeOf(params) === Array.prototype || Object.getPrototypeOf(params) === Object.prototype)
     let newUrl = url
 
-    if (isBaseType) {
-      newUrl = newUrl.replace(/(\$[^/&$]+)/i, `${params}`)
+    // const isBaseType = !(Object.getPrototypeOf(params) === Array.prototype || Object.getPrototypeOf(params) === Object.prototype)
+    // if (isBaseType) {
+    //   newUrl = newUrl.replace(/(\$[^/&$]+)/i, `${params}`)
+    // } else {
+    //   Object.keys(params).forEach((key) => {
+    //     newUrl = newUrl.replace(/(\$[^/&$]+)/i, `${Reflect.get(params, key)}`)
+    //   })
+    // }
+    const prototype = Object.getPrototypeOf(params)
+    if (prototype === Array.prototype) {
+      newUrl = params.reduce((url: string, param: any) => {
+        return url.replace(/(\$[^/&$]+)/i, param)
+      }, newUrl)
+    } else if (prototype === Object.prototype) {
+      newUrl = Object.entries(params).reduce((url: string, param: any) => {
+        return url.replace(new RegExp(`(\\$${param[0]})\\b`, 'i'), param[1])
+      }, newUrl)
     } else {
-      Object.keys(params).forEach((key) => {
-        newUrl = newUrl.replace(/(\$[^/&$]+)/i, `${Reflect.get(params, key)}`)
-      })
+      newUrl = url.replace(/(\$[^/&$]+)/i, params)
     }
 
     return newUrl

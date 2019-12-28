@@ -71,6 +71,31 @@ describe('Behavior-driven development', () => {
     expect(bar).toHaveProperty('age', 13)
   })
 
+  it('query a zar set by name', async () => {
+    // json server 的filter语法: https://github.com/typicode/json-server#filter
+    // 过滤出来的是一个集合, 所以需要mapEntity方法将结果取第一个元素
+    @EF.behavior('loadAll', 'http://localhost:3000/zar?name=$name', 'GET', (...args) => args[0])
+    class Zar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.primary()
+      @EF.member()
+      name: string = ''
+    }
+
+    class Context extends EF.EntityContext {
+      @EF.set()
+      zar = new EF.EntitySet<Zar>(this, Zar)
+    }
+
+    const ctx = new Context()
+    await ctx.zar.loadAll('za3')
+    expect(ctx.zar.size).toEqual(3)
+    expect(ctx.zar.toList().map(item => item.id)).toEqual([3, 4, 5])
+  })
+
   it('query a foo with a foreign key bar(id, name), the relationship is one to one', async () => {
     @EF.behavior('load', 'http://localhost:3000/bar?id=$id&name=$name', 'GET', (...a: any[]) => a, (a: any[]) => a[0])
     class Bar {
@@ -443,5 +468,43 @@ describe('Behavior-driven development', () => {
 
     const res = await ctx.saveChanges()
     expect(res).toEqual([bar1, bar2])
+  })
+
+  it('there is not any side-effect between the two saveChanges', async () => {
+    @EF.behavior('load', 'http://localhost:3000/foo/$id', 'GET')
+    @EF.behavior('update', 'http://localhost:3000/foo/$id', 'PATCH')
+    class Foo {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+
+      @EF.member()
+      bid: number = 0
+
+      @EF.member()
+      bName: string = ''
+
+      @EF.member()
+      jid: number[] = []
+    }
+
+    class Context extends EF.EntityContext {
+      @EF.set()
+      foo = new EF.EntitySet<Foo>(this, Foo)
+    }
+
+    const ctx = new Context()
+    await ctx.foo.load(1)
+    const foo = ctx.foo.find(1)
+    foo!.name = 'Hello'
+
+    const res1 = await ctx.saveChanges<Foo>()
+    expect(res1).toEqual([foo])
+
+    const res2 = await ctx.saveChanges<Foo>()
+    expect(res2).toEqual([])
   })
 })

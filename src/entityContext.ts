@@ -26,12 +26,12 @@ export default class EntityContext {
     return this._configuration!
   }
 
-  public async saveChanges () {
+  public async saveChanges<T = any> () {
     const entitySetKeys = this.metadata
       .getEntitySets(Reflect.getPrototypeOf(this))
       .map(item => item.propertyName)
 
-    return Promise.all(entitySetKeys
+    return Promise.all<T>(entitySetKeys
       .map(key => (Reflect.get(this, key) as EntitySet<any>).synchronizeState())
       .reduce((acc, val) => acc.concat(val), []))
   }

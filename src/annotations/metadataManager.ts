@@ -1,22 +1,65 @@
 import MetadataType from './metadataType'
 import Relationship from './relationship'
 
+/**
+ * 注解实体模型的字段元数据
+ *
+ * @category annotations
+ */
 export interface Field {
+  /**
+   * 字段名称
+   */
   fieldName: string;
+  /**
+   * 属性名称
+   */
   propertyName: string;
 }
 
+/**
+ * 注解实体模型的成员字段元数据, 通过添加注解 @[[member]]() 产生
+ *
+ * @category annotations
+ */
 export interface Member extends Field { }
 
+/**
+ * 注解实体模型的主键字段元数据, 通过添加注解 @[[primary]]() 产生
+ *
+ * @category annotations
+ */
 export interface PrimaryKey extends Field { }
 
+/**
+ * 注解实体模型的外键字段元数据, 通过添加注解 @[[foreign]]() 产生
+ *
+ * @category annotations
+ */
 export interface ForeignKey extends Field {
+  /**
+   * 外键实体的构造函数
+   */
   constructor: { new(): {} },
+  /**
+   * 导航字段名称
+   */
   navigatorName: string;
 }
 
+/**
+ * 注解实体模型的导航字段元数据, 通过添加注解 @[[navigator]]() 产生
+ *
+ * @category annotations
+ */
 export interface Navigator extends Field {
+  /**
+   * 实体间关系
+   */
   relationship: Relationship,
+  /**
+   * 导航字段
+   */
   navigatorName: string
 }
 

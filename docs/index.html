@@ -74,11 +74,16 @@
 					</li>
 					<li><p><a href="https://github.com/WellerQu/entity-framework-of-fe">Github</a></p>
 					</li>
+					<li><p><a href="https://github.com/WellerQu/entity-framework-of-fe#%E6%A6%82%E5%BF%B5">概念</a></p>
+					</li>
 					<li><p><a href="https://github.com/WellerQu/entity-framework-of-fe#%E7%94%A8%E6%B3%95">用法</a></p>
 					</li>
 				</ul>
+				<a href="#概念" id="概念" style="color: inherit; text-decoration: none;">
+					<h2>概念</h2>
+				</a>
 				<a href="#定义实体模型" id="定义实体模型" style="color: inherit; text-decoration: none;">
-					<h2>定义实体模型</h2>
+					<h3>定义实体模型</h3>
 				</a>
 				<p>实体是用于描述一种数据的数据结构, 实体的实例在Entity Framework(以后简称为EF)中定义成<strong>一个class的实例, 而非原生的JSON数据</strong>, 例如:</p>
 				<pre><code class="language-typescript"><span class="hljs-comment">// Wrong ❌</span>
@@ -92,7 +97,7 @@
 
 <span class="hljs-keyword">const</span> foo = <span class="hljs-keyword">new</span> Foo()</code></pre>
 				<a href="#描述实体模型" id="描述实体模型" style="color: inherit; text-decoration: none;">
-					<h2>描述实体模型</h2>
+					<h3>描述实体模型</h3>
 				</a>
 				<p>EF中, 采用注解来描述代表实体数据结构的class, 目前一共有二类注解</p>
 				<ul>
@@ -163,7 +168,7 @@
 					</li>
 				</ul>
 				<a href="#关联实体模型" id="关联实体模型" style="color: inherit; text-decoration: none;">
-					<h2>关联实体模型</h2>
+					<h3>关联实体模型</h3>
 				</a>
 				<p>参考数据库设计, 可以用主外键来描述, 并部署相关的导航属性, 其中导航名称(navigatorName)是很重要的一个数据, 用来<strong>联系@set(), @foreign(), @navigator()标记的数据</strong>, 代码标记[1][2][3]处须一致</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">class</span> Bar {
@@ -200,10 +205,10 @@
   bar = <span class="hljs-keyword">new</span> EntitySet&lt;Bar&gt;(<span class="hljs-keyword">this</span>, Bar)
 }</code></pre>
 				<a href="#entityset-与-entitycontext" id="entityset-与-entitycontext" style="color: inherit; text-decoration: none;">
-					<h2>EntitySet 与 EntityContext</h2>
+					<h3>EntitySet 与 EntityContext</h3>
 				</a>
 				<ul>
-					<li><p>EntitySet 是用来存储实体集合的, <strong>EntitySet字段的名称就是导航名称(navigatorName)</strong></p>
+					<li><p>EntitySet 是用来存储实体的容器, 内部用Set来存储数据, <strong>EntitySet字段的名称就是导航名称(navigatorName)</strong></p>
 					</li>
 					<li><p>EntityContext 是用来界定相关数据范围的</p>
 						<pre><code class="language-typescript"><span class="hljs-comment">// 定义一个 Context</span>
@@ -221,7 +226,7 @@
 					</li>
 				</ul>
 				<a href="#加载数据" id="加载数据" style="color: inherit; text-decoration: none;">
-					<h2>加载数据</h2>
+					<h3>加载数据</h3>
 				</a>
 				<p>加载数据是对数据进行各种操作的前提, 加载数据有二种方式, 用于应对二种情况</p>
 				<pre><code class="language-typescript"><span class="hljs-meta">@behavior</span>(<span class="hljs-string">'load'</span>, <span class="hljs-string">'http://localhost:3000/foo/$pk'</span>, <span class="hljs-string">'GET'</span>)
@@ -230,22 +235,36 @@
   <span class="hljs-comment">// define ...</span>
 }</code></pre>
 				<ul>
-					<li>Load 通过定义的主键(或者组合键)唯一实体数据, 需要先部署Load behavior</li>
-				</ul>
-				<pre><code class="language-typescript"><span class="hljs-comment">// 加载只有一个主键的数据</span>
+					<li><p>Load 通过定义的主键(或者组合键)唯一实体数据, 需要先部署Load behavior</p>
+						<pre><code class="language-typescript"><span class="hljs-comment">// 加载只有一个主键的数据</span>
 <span class="hljs-comment">// http://localhost:3000/foo/$pk -&gt; http://localhost:3000/foo/1</span>
 <span class="hljs-keyword">await</span> ctx.foo.load(<span class="hljs-number">1</span>)
 <span class="hljs-comment">// 加载部署了组合键的数据</span>
 <span class="hljs-comment">// http://localhost:3000/foo/$pk1/$pk2 -&gt; http://localhost:3000/foo/1/2</span>
 <span class="hljs-comment">// 参数顺序为描述模型中@primary标记的顺序</span>
 <span class="hljs-keyword">await</span> ctx.foo.load(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>)</code></pre>
-				<ul>
-					<li>LoadAll 通过传入的条件加载所有符合条件的数据</li>
-				</ul>
-				<pre><code class="language-typescript"><span class="hljs-comment">// 加载符合条件的所有数据</span>
+					</li>
+					<li><p>LoadAll 通过传入的条件加载所有符合条件的数据</p>
+						<pre><code class="language-typescript"><span class="hljs-comment">// 加载符合条件的所有数据</span>
 <span class="hljs-keyword">await</span> ctx.foo.loadAll({
   <span class="hljs-comment">// anything</span>
 })</code></pre>
+					</li>
+					<li><p>加载数据的副作用</p>
+						<p>每一次Load或者LoadAll, 都会在不清除上一次加载的数据的情况下, 添加新的数据, 如果不想被上一次的数据干扰, 可以使用<strong>clean</strong>方法</p>
+						<pre><code class="language-typescript"><span class="hljs-keyword">const</span> ctx = <span class="hljs-keyword">new</span> YourContext()
+<span class="hljs-keyword">await</span> ctx.foo.load(<span class="hljs-number">1</span>)
+<span class="hljs-keyword">await</span> ctx.foo.load(<span class="hljs-number">1</span>)
+
+<span class="hljs-comment">// 此时ctx.foo.size 为 2, 因为加载了二次</span>
+
+ctx.clean()
+<span class="hljs-comment">// 此时ctx.foo.size 为 1, 清除了之前加载的数据</span>
+
+<span class="hljs-comment">// 或者每次加载之前执行 clean</span>
+<span class="hljs-keyword">await</span> ctx.clean().foo.load(<span class="hljs-number">1</span>)</code></pre>
+					</li>
+				</ul>
 				<p><strong>查询参数到RequestBody的映射</strong> 与 <strong>ResponseBody到实体数据的映射</strong>, 参见@behavior注解的mapParameters和mapEntity参数</p>
 				<blockquote>
 					<p>完整源代码参见 src/entitySet.ts</p>
@@ -263,7 +282,7 @@
 				</ul>
 				<pre><code class="language-typescript"><span class="hljs-keyword">await</span> ctx.foo.rawFetch(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">window</span>.fetch(<span class="hljs-string">'/bar'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> res.json()))</code></pre>
 				<a href="#查询数据" id="查询数据" style="color: inherit; text-decoration: none;">
-					<h2>查询数据</h2>
+					<h3>查询数据</h3>
 				</a>
 				<p>在EF完成对数据的加载后, 就可以直接查询数据, 查询数据有二种方式, 分别应对二种情况</p>
 				<ul>
@@ -277,7 +296,7 @@
 				</ul>
 				<pre><code class="language-typescript"><span class="hljs-keyword">const</span> foo: Foo[] = ctx.foo.filter(<span class="hljs-function">(<span class="hljs-params">n</span>) =&gt;</span> n.id === <span class="hljs-number">1</span> || n.id === <span class="hljs-number">2</span>)</code></pre>
 				<a href="#添加数据--修改数据--删除数据" id="添加数据--修改数据--删除数据" style="color: inherit; text-decoration: none;">
-					<h2>添加数据 / 修改数据 / 删除数据</h2>
+					<h3>添加数据 / 修改数据 / 删除数据</h3>
 				</a>
 				<ul>
 					<li>saveChanges 将对EntitySet的修改同步到服务端. EF的Context会搜集数据集中各个元素的状态, saveChanges方法被调用时, 会检查这些状态的变更, 并对Added, Deleted, Modified做出反应, 尝试调用定义的@behavior来与服务端同步. <strong>被remove后的数据, 不可以再以任何形式读写</strong>.</li>
@@ -323,7 +342,7 @@ ctx.saveChanges()
 ctx.foo.remove(foo)
 ctx.saveChange()</code></pre>
 				<a href="#处理错误" id="处理错误" style="color: inherit; text-decoration: none;">
-					<h2>处理错误</h2>
+					<h3>处理错误</h3>
 				</a>
 				<ul>
 					<li>加载数据时的部分错误(比如关联查询错误)被消化在Promise中, 并未全部都传递到调用端, 调用端无法捕获正确的错误信息</li>
@@ -340,14 +359,15 @@ ctx.foo.add(foo1, foo2)
 				<a href="#用法" id="用法" style="color: inherit; text-decoration: none;">
 					<h2>用法</h2>
 				</a>
+				<p><a href="https://github.com/WellerQu/entity-framework-of-fe/blob/master/src/index.spec.ts">参见测试用例</a></p>
 				<a href="#todo" id="todo" style="color: inherit; text-decoration: none;">
 					<h2>TODO</h2>
 				</a>
 				<ul>
-					<li>[] 补充关键代码注释</li>
-					<li>[] 更精确的错误信息传递</li>
-					<li>[] 数据缓存降低数据加载时对服务器的压力</li>
-					<li>[] 更多场景的测试用例</li>
+					<li><input disabled="" type="checkbox"> 补充关键代码注释</li>
+					<li><input disabled="" type="checkbox"> 更精确的错误信息传递</li>
+					<li><input disabled="" type="checkbox"> 数据缓存降低数据加载时对服务器的压力</li>
+					<li><input checked="" disabled="" type="checkbox"> 更多场景的测试用例</li>
 				</ul>
 			</div>
 		</div>

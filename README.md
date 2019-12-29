@@ -8,9 +8,13 @@
 
 - [Github](https://github.com/WellerQu/entity-framework-of-fe)
 
+- [概念](https://github.com/WellerQu/entity-framework-of-fe#%E6%A6%82%E5%BF%B5)
+
 - [用法](https://github.com/WellerQu/entity-framework-of-fe#%E7%94%A8%E6%B3%95)
 
-## 定义实体模型
+## 概念
+
+### 定义实体模型
 
 实体是用于描述一种数据的数据结构, 实体的实例在Entity Framework(以后简称为EF)中定义成**一个class的实例, 而非原生的JSON数据**, 例如:
 
@@ -27,7 +31,7 @@ class Foo {
 const foo = new Foo()
 ```
 
-## 描述实体模型
+### 描述实体模型
 
 EF中, 采用注解来描述代表实体数据结构的class, 目前一共有二类注解
 
@@ -95,7 +99,7 @@ EF中, 采用注解来描述代表实体数据结构的class, 目前一共有二
 
   > 完整签名查看源代码 src/annotations/property/navigator.ts
 
-## 关联实体模型
+### 关联实体模型
 
 参考数据库设计, 可以用主外键来描述, 并部署相关的导航属性, 其中导航名称(navigatorName)是很重要的一个数据, 用来**联系@set(), @foreign(), @navigator()标记的数据**, 代码标记\[1\]\[2\]\[3\]处须一致
 
@@ -135,7 +139,7 @@ class Context extends EntityContext {
 }
 ```
 
-## EntitySet 与 EntityContext
+### EntitySet 与 EntityContext
 
 - EntitySet 是用来存储实体的容器, 内部用Set来存储数据, **EntitySet字段的名称就是导航名称(navigatorName)**
 
@@ -156,7 +160,7 @@ class Context extends EntityContext {
   const ctx = new MyContext()
   ```
 
-## 加载数据
+### 加载数据
 
 加载数据是对数据进行各种操作的前提, 加载数据有二种方式, 用于应对二种情况
 
@@ -227,7 +231,7 @@ await ctx.foo.include('bar').loadAll()
 await ctx.foo.rawFetch(() => window.fetch('/bar').then(res => res.json()))
 ```
 
-## 查询数据
+### 查询数据
 
 在EF完成对数据的加载后, 就可以直接查询数据, 查询数据有二种方式, 分别应对二种情况
 
@@ -245,7 +249,7 @@ const foo: Foo = ctx.foo.find(1, 2)
 const foo: Foo[] = ctx.foo.filter((n) => n.id === 1 || n.id === 2)
 ```
 
-## 添加数据 / 修改数据 / 删除数据
+### 添加数据 / 修改数据 / 删除数据
 
 - saveChanges 将对EntitySet的修改同步到服务端. EF的Context会搜集数据集中各个元素的状态, saveChanges方法被调用时, 会检查这些状态的变更, 并对Added, Deleted, Modified做出反应, 尝试调用定义的@behavior来与服务端同步. **被remove后的数据, 不可以再以任何形式读写**.
 
@@ -292,7 +296,7 @@ ctx.foo.remove(foo)
 ctx.saveChange()
 ```
 
-## 处理错误
+### 处理错误
 
 - 加载数据时的部分错误(比如关联查询错误)被消化在Promise中, 并未全部都传递到调用端, 调用端无法捕获正确的错误信息
 - saveChanges时的错误能传递到调用端
@@ -314,7 +318,7 @@ const res: Promise<Response[]> = await ctx.saveChanges()
 
 ## TODO
 
-- [] 补充关键代码注释
-- [] 更精确的错误信息传递
-- [] 数据缓存降低数据加载时对服务器的压力
+- [ ] 补充关键代码注释
+- [ ] 更精确的错误信息传递
+- [ ] 数据缓存降低数据加载时对服务器的压力
 - [x] 更多场景的测试用例

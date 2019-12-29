@@ -165,8 +165,8 @@ describe('Behavior-driven development', () => {
     class Context extends EF.EntityContext {
       @EF.set()
       foo = new EF.EntitySet<Foo>(this, Foo)
-      @EF.set()
-      bar = new EF.EntitySet<Bar>(this, Bar)
+      @EF.set('bar')
+      barAlias = new EF.EntitySet<Bar>(this, Bar)
     }
 
     const ctx = new Context()
@@ -178,7 +178,7 @@ describe('Behavior-driven development', () => {
     expect(foo!.bar).toHaveProperty('bbName', 'ba1')
     expect(foo!.bar).toHaveProperty('age', 13)
     expect(ctx.foo.size).toEqual(1)
-    expect(ctx.bar.size).toEqual(1)
+    expect(ctx.barAlias.size).toEqual(1)
   })
 
   it('query a foo with a foreign key jar(id), the relationship is one to many', async () => {

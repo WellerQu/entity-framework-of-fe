@@ -10,14 +10,6 @@ export default class EntityConfiguration {
 
     let newUrl = url
 
-    // const isBaseType = !(Object.getPrototypeOf(params) === Array.prototype || Object.getPrototypeOf(params) === Object.prototype)
-    // if (isBaseType) {
-    //   newUrl = newUrl.replace(/(\$[^/&$]+)/i, `${params}`)
-    // } else {
-    //   Object.keys(params).forEach((key) => {
-    //     newUrl = newUrl.replace(/(\$[^/&$]+)/i, `${Reflect.get(params, key)}`)
-    //   })
-    // }
     const prototype = Object.getPrototypeOf(params)
     if (prototype === Array.prototype) {
       newUrl = params.reduce((url: string, param: any) => {
@@ -38,7 +30,6 @@ export default class EntityConfiguration {
     const hasDollar = !!(~url.indexOf('$'))
     if (hasDollar && isEmpty(data)) {
       return Promise.resolve(null)
-      // return Promise.reject(new Error('缺失解析地址的参数'))
     }
 
     const fetchTarget = this.parseUrl(url, data)

@@ -3,6 +3,10 @@
     "Detailable",
     "Queryable",
     "autowire",
+    "promisify",
+    "tslib",
+    "typedoc",
+    "xargs",
     "zars"
   ]
 }

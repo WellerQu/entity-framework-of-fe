@@ -35,8 +35,8 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch --notify",
-    "json-server:watch": "json-server --watch server/db.json",
     "json-server": "json-server server/db.json",
+    "kill-server": "ps -ef | grep json-server | grep -v grep | awk '{print $2}' | xargs kill -9",
     "docs": "typedoc --out docs",
     "build": "node_modules/.bin/rollup -c ./build/rollup.config.prod.js",
     "start": "node_modules/.bin/rollup -w -c ./build/rollup.config.dev.js"

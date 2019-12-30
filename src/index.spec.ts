@@ -1,15 +1,12 @@
 import * as EF from './index'
 
-const exec = require('child_process').exec
+const util = require('util')
+const exec = util.promisify(require('child_process').exec)
 
 describe('Behavior-driven development', () => {
   if (process.env.CI !== 'Github') {
     afterAll(() => {
-      exec('git checkout server/db.json', function (err: Error) {
-        if (err != null) {
-          return console.error(err) // eslint-disable-line no-console
-        }
-      })
+      return exec('git checkout server/db.json')
     })
   }
 

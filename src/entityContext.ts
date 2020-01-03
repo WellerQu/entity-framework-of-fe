@@ -1,4 +1,4 @@
-import metadata from './annotations/metadataManager'
+import metadata from './annotations/entityMetadataManager'
 import EntityConfiguration from './entityConfiguration'
 import EntitySet from './entitySet'
 
@@ -18,7 +18,7 @@ export default class EntityContext {
     }
   }
 
-  public get metadata () {
+  public get entityMetadata () {
     return metadata
   }
 
@@ -27,7 +27,7 @@ export default class EntityContext {
   }
 
   public clean () {
-    const entitySetKeys = this.metadata
+    const entitySetKeys = this.entityMetadata
       .getEntitySets(Reflect.getPrototypeOf(this))
       .map(item => item.propertyName)
 
@@ -39,7 +39,7 @@ export default class EntityContext {
   }
 
   public async saveChanges<T = any> () {
-    const entitySetKeys = this.metadata
+    const entitySetKeys = this.entityMetadata
       .getEntitySets(Reflect.getPrototypeOf(this))
       .map(item => item.propertyName)
 

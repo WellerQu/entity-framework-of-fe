@@ -85,7 +85,7 @@ export { MetadataType, Relationship }
  * @module annotations
  * @class MetadataManager
  */
-class MetadataManager {
+class EntityMetadataManager {
   private managedModel = new WeakMap<Object, {
     members: Member[],
     primaryKeys: PrimaryKey[],
@@ -207,6 +207,6 @@ class MetadataManager {
   }
 }
 
-const manager = new MetadataManager()
+const manager = new EntityMetadataManager()
 
 export default manager

@@ -1,4 +1,4 @@
-import manager, { MetadataType, Relationship, Member, PrimaryKey, ForeignKey, Navigator } from './metadataManager'
+import manager, { MetadataType, Relationship, Member, PrimaryKey, ForeignKey, Navigator } from './entityMetadataManager'
 
 describe('Metadata Manager', () => {
   class Foo {

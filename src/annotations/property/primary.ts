@@ -1,4 +1,4 @@
-import manager, { MetadataType, PrimaryKey } from '../metadataManager'
+import manager, { MetadataType, PrimaryKey } from '../entityMetadataManager'
 
 /**
  * 用来注解实体模型中的主键字段

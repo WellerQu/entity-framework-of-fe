@@ -1,4 +1,4 @@
-import manager, { MetadataType, EntitySet } from '../metadataManager'
+import manager, { MetadataType, EntitySet } from '../entityMetadataManager'
 
 /**
  * 用来注解上下文模型中的数据集字段

@@ -1,4 +1,4 @@
-import manager, { MetadataType, Member } from '../metadataManager'
+import manager, { MetadataType, Member } from '../entityMetadataManager'
 
 /**
  * 用来注解实体模型中的成员字段

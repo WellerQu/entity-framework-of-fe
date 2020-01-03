@@ -1,4 +1,4 @@
-import manager, { MetadataType, Method, Behavior, BehaviorName } from '../metadataManager'
+import manager, { MetadataType, Method, Behavior, BehaviorName } from '../entityMetadataManager'
 
 /**
  * 用于定义实体模型的行为

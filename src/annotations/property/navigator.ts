@@ -1,4 +1,4 @@
-import manager, { MetadataType, Relationship, Navigator } from '../metadataManager'
+import manager, { MetadataType, Relationship, Navigator } from '../entityMetadataManager'
 
 /**
  * 用来注解实体模型中的导航字段

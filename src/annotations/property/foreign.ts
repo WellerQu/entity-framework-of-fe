@@ -1,4 +1,4 @@
-import manager, { MetadataType, ForeignKey } from '../metadataManager'
+import manager, { MetadataType, ForeignKey } from '../entityMetadataManager'
 
 /**
  * 用来注解实体模型中的外键字段

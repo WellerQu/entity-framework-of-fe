@@ -1,8 +1,9 @@
 {
   "name": "entity-framework",
   "version": "1.0.0",
-  "description": "",
-  "main": "dist/index.js",
+  "description": "用于前端的实体关系框架, 解决存在关联关系的实体之间的CRUD",
+  "keywords": ["entity", "framework", "load data", "save data"],
+  "main": "src/index.ts",
   "dependencies": {},
   "devDependencies": {
     "@types/jest": "^24.0.23",

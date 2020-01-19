@@ -225,10 +225,12 @@ await ctx.foo.include('bar').load(1)
 await ctx.foo.include('bar').loadAll()
 ```
 
-- rawFetch 使用任意方法发起加载数据的请求, 并结果存储在EntitySet中, **忽略include**
+- rawQuery 使用任意方法发起加载数据的请求, 并结果存储在EntitySet中
 
 ```typescript
-await ctx.foo.rawFetch(() => window.fetch('/bar').then(res => res.json()))
+await ctx.foo.rawQuery(() => window.fetch('/bar').then(res => res.json()))
+// or
+await ctx.foo.include('bar').include('jar').rawQuery(() => Promise.resolve([{/*...*/}]))
 ```
 
 ### 查询数据

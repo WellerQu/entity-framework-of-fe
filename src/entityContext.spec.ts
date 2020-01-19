@@ -8,8 +8,8 @@ describe('Entity Context', () => {
 
     const ctx = new Context()
 
-    it('metadata', () => {
-      expect(ctx).toHaveProperty('metadata')
+    it('entityMetadata', () => {
+      expect(ctx).toHaveProperty('entityMetadata')
       expect(ctx).toBeDefined()
     })
 
@@ -28,8 +28,8 @@ describe('Entity Context', () => {
 
     const ctx = new Context()
 
-    it('metadata', () => {
-      expect(ctx).toHaveProperty('metadata')
+    it('entityMetadata', () => {
+      expect(ctx).toHaveProperty('entityMetadata')
       expect(ctx).toBeDefined()
     })
 

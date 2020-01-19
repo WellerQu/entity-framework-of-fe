@@ -228,13 +228,13 @@ export default class EntitySet<T extends Object> {
     return new Promise<T>((resolve, reject) => {
       this.ctx.configuration
         .fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
-        .then(mapEntity, reject)
-        .then(data => {
+        .then(res => {
+          const data = mapEntity(res)
           const entity = this.attachDataToEntitySet(data)
           Promise.all(requests.map(fn => fn(entity))).then(() => {
             resolve(data)
           })
-        })
+        }, reject)
     })
   }
 
@@ -253,8 +253,8 @@ export default class EntitySet<T extends Object> {
     return new Promise<T[]>((resolve, reject) => {
       this.ctx.configuration
         .fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
-        .then(mapEntity, reject)
-        .then((data: T[]) => {
+        .then((res) => {
+          const data: T[] = mapEntity(res)
           const promises = (data || [])
             .map(item => this.attachDataToEntitySet(item))
             .map(entity => requests.map(fn => fn(entity)))
@@ -263,7 +263,7 @@ export default class EntitySet<T extends Object> {
             .then(() => {
               resolve(data)
             })
-        })
+        }, reject)
     })
   }
 

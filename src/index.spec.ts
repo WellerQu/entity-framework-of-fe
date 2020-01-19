@@ -5,7 +5,7 @@ const exec = util.promisify(require('child_process').exec)
 
 describe('Behavior-driven development', () => {
   if (process.env.CI !== 'Github') {
-    afterAll(() => {
+    afterAll(async () => {
       return exec('git checkout server/db.json')
     })
   }
@@ -455,6 +455,119 @@ describe('Behavior-driven development', () => {
 
     const ctx = new Context()
     await ctx.foo.include('bar').include('jar').include('zar').load(1)
+    const foo = ctx.foo.find(1)
+    expect(foo).toBeDefined()
+    expect(foo!.bar).toBeDefined()
+    expect(foo!.jar).toBeDefined()
+    expect(foo!.bar!.zar).toBeDefined()
+  })
+
+  it('query by rawQuery', async () => {
+    class Foo {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+    }
+
+    class Context extends EF.EntityContext {
+      @EF.set()
+      foo = new EF.EntitySet<Foo>(this, Foo)
+    }
+
+    const ctx = new Context()
+    await ctx.foo.rawQuery(async () => {
+      return Promise.resolve([{ id: 1, name: 'cat', nothing: 'nothing' }, { id: 2, name: 'kitty', notMemberField: 'not member' }])
+    })
+
+    expect(ctx.foo.size).toEqual(2)
+
+    const foo = ctx.foo.find(1)
+    expect(foo).toEqual({ id: 1, name: 'cat' })
+    expect(foo).not.toHaveProperty('nothing')
+    expect(foo).not.toHaveProperty('notMemberField')
+  })
+
+  it('query by rawQuery with two foreign keys, cascading query by a foreign key', async () => {
+    @EF.behavior('load', 'http://localhost:3000/zar/$id', 'GET')
+    class Zar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+    }
+
+    @EF.behavior('load', 'http://localhost:3000/bar/$id', 'GET')
+    class Bar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+
+      @EF.foreign(Zar, 'zar', 'id')
+      @EF.member()
+      zid: number = 0
+
+      @EF.navigator(EF.Relationship.One, 'zar')
+      zar?: Zar
+    }
+
+    @EF.behavior('load', 'http://localhost:3000/jar/$id', 'GET')
+    class Jar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+    }
+
+    class Foo {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      name: string = ''
+
+      @EF.foreign(Bar, 'bar', 'id')
+      @EF.member()
+      bid: number = 0
+
+      @EF.foreign(Jar, 'jar', 'id')
+      @EF.member()
+      jid: number[] = []
+
+      @EF.navigator(EF.Relationship.One, 'bar')
+      bar?: Bar
+
+      @EF.navigator(EF.Relationship.Many, 'jar')
+      jar?: Jar[]
+    }
+
+    class Context extends EF.EntityContext {
+      @EF.set()
+      zar = new EF.EntitySet<Zar>(this, Zar)
+      @EF.set()
+      bar = new EF.EntitySet<Bar>(this, Bar)
+      @EF.set()
+      jar = new EF.EntitySet<Jar>(this, Jar)
+      @EF.set()
+      foo = new EF.EntitySet<Foo>(this, Foo)
+    }
+
+    const ctx = new Context()
+    await ctx.foo.include('bar').include('jar').include('zar').rawQuery(() => {
+      return Promise.resolve({
+        'id': 1, 'name': 'fa1', 'bid': 1, 'bName': 'ba1', 'jid': [ 1, 2 ]
+      })
+    })
     const foo = ctx.foo.find(1)
     expect(foo).toBeDefined()
     expect(foo!.bar).toBeDefined()

@@ -349,15 +349,40 @@ export default class EntitySet<T extends Object> {
     return instance
   }
 
-  public async rawFetch (request: () => Promise<T[]>): Promise<T[]> {
-    return request()
-      .then(entities => {
-        if (Array.isArray(entities)) {
-          this.attach(...entities)
-        }
+  public rawQuery (query: () => Promise<T[] | T>): Promise<T[]> {
+    const requests = Object.values(this.ownNavigatorRequests)
 
-        return entities
-      })
+    return new Promise((resolve, reject) => {
+      query()
+        .then(originData => {
+          const entities: T[] = []
+
+          if (Array.isArray(originData)) {
+            for (let i = 0; i < originData.length; i++) {
+              const newEntity = this.attachDataToEntitySet(originData[i])
+              if (newEntity) {
+                entities.push(newEntity)
+              }
+            }
+          } else {
+            const newEntity = (this.attachDataToEntitySet(originData))
+            if (newEntity) {
+              entities.push(newEntity)
+            }
+          }
+
+          if (entities.length === 0) {
+            return resolve([])
+          }
+
+          Promise.all(
+            entities.map(entity => requests.map(fn => fn(entity)))
+              .reduce((acc, val) => acc.concat(val), []) // 降低数组维度
+          ).then(() => {
+            resolve(entities)
+          }, reject)
+        }, reject)
+    })
   }
 
   private async synchronizeAddedState (item: EntityTrace<T>): Promise<any> {

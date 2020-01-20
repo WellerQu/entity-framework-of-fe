@@ -205,10 +205,11 @@ class Foo {
   // 此时ctx.foo.size 为 2, 因为加载了二次
 
   ctx.clean()
-  // 此时ctx.foo.size 为 1, 清除了之前加载的数据
+  // 此时ctx.foo.size 为 0, 清除了之前加载的数据
 
   // 或者每次加载之前执行 clean
   await ctx.clean().foo.load(1)
+  // 此时ctx.foo.size 为 1
   ```
 
 **查询参数到RequestBody的映射** 与 **ResponseBody到实体数据的映射**, 参见@behavior注解的mapParameters和mapEntity参数

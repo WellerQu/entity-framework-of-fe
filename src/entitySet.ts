@@ -20,7 +20,7 @@ export default class EntitySet<T extends Object> {
     type: { new() : T },
   }
 
-  private attachDataToEntitySet (originData: T): T | null {
+  private attachOriginDataToEntitySet (originData: {}): T | null {
     // 无数据
     if (isEmpty(originData)) {
       return null
@@ -230,7 +230,7 @@ export default class EntitySet<T extends Object> {
         .fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
         .then(res => {
           const data = mapEntity(res)
-          const entity = this.attachDataToEntitySet(data)
+          const entity = this.attachOriginDataToEntitySet(data)
           Promise.all(requests.map(fn => fn(entity))).then(() => {
             resolve(data)
           })
@@ -256,7 +256,7 @@ export default class EntitySet<T extends Object> {
         .then((res) => {
           const data: T[] = mapEntity(res)
           const promises = (data || [])
-            .map(item => this.attachDataToEntitySet(item))
+            .map(item => this.attachOriginDataToEntitySet(item))
             .map(entity => requests.map(fn => fn(entity)))
             .reduce((acc, val) => acc.concat(val), []) // 降低数组维度
           Promise.all(promises)
@@ -359,13 +359,13 @@ export default class EntitySet<T extends Object> {
 
           if (Array.isArray(originData)) {
             for (let i = 0; i < originData.length; i++) {
-              const newEntity = this.attachDataToEntitySet(originData[i])
+              const newEntity = this.attachOriginDataToEntitySet(originData[i])
               if (newEntity) {
                 entities.push(newEntity)
               }
             }
           } else {
-            const newEntity = (this.attachDataToEntitySet(originData))
+            const newEntity = (this.attachOriginDataToEntitySet(originData))
             if (newEntity) {
               entities.push(newEntity)
             }

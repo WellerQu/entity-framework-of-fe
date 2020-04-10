@@ -10,6 +10,12 @@ describe('Behavior-driven development', () => {
     })
   }
 
+  class Configuration extends EF.EntityConfiguration {
+    public fetch<T = any> (url: string, options?: RequestInit | undefined): Promise<T> {
+      return require('node-fetch')(url, options)
+    }
+  }
+
   it('query a foo by primary (id)', async () => {
     @EF.behavior('load', 'http://localhost:3000/foo/$id', 'GET')
     class Foo {
@@ -22,6 +28,10 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
       @EF.set()
       foo = new EF.EntitySet<Foo>(this, Foo)
     }
@@ -49,6 +59,9 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
       @EF.set()
       foo = new EF.EntitySet<Foo>(this, Foo)
     }
@@ -85,6 +98,9 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
       @EF.set()
       bar = new EF.EntitySet<Bar>(this, Bar)
     }
@@ -113,6 +129,9 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
       @EF.set()
       zar = new EF.EntitySet<Zar>(this, Zar)
     }
@@ -160,6 +179,9 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
       @EF.set()
       foo = new EF.EntitySet<Foo>(this, Foo)
       @EF.set('bar')
@@ -207,6 +229,10 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
       @EF.set()
       foo = new EF.EntitySet<Foo>(this, Foo)
       @EF.set()
@@ -278,6 +304,10 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
       @EF.set()
       foo = new EF.EntitySet<Foo>(this, Foo)
       @EF.set()
@@ -356,6 +386,10 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
       @EF.set()
       foo = new EF.EntitySet<Foo>(this, Foo)
       @EF.set()
@@ -443,6 +477,10 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
       @EF.set()
       zar = new EF.EntitySet<Zar>(this, Zar)
       @EF.set()
@@ -473,6 +511,10 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
       @EF.set()
       foo = new EF.EntitySet<Foo>(this, Foo)
     }
@@ -552,6 +594,10 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
       @EF.set()
       zar = new EF.EntitySet<Zar>(this, Zar)
       @EF.set()
@@ -587,6 +633,10 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
       @EF.set()
       foo = new EF.EntitySet<Foo>(this, Foo)
     }
@@ -619,6 +669,10 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
       @EF.set()
       foo = new EF.EntitySet<Foo>(this, Foo)
     }
@@ -652,6 +706,10 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
       @EF.set()
       bar = new EF.EntitySet<Bar>(this, Bar)
     }
@@ -690,6 +748,10 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
       @EF.set()
       foo = new EF.EntitySet<Foo>(this, Foo)
     }
@@ -742,6 +804,10 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
       @EF.set()
       foo = new EF.EntitySet<Foo>(this, Foo)
 
@@ -789,6 +855,10 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
       @EF.set()
       foo = new EF.EntitySet<Foo>(this, Foo)
 
@@ -854,6 +924,10 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
       @EF.set()
       zar = new EF.EntitySet<Zar>(this, Zar)
       @EF.set()
@@ -908,6 +982,10 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
       @EF.set()
       zar = new EF.EntitySet<Zar>(this, Zar)
       @EF.set()
@@ -971,6 +1049,10 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
       @EF.set()
       zar = new EF.EntitySet<Zar>(this, Zar)
       @EF.set()
@@ -1038,6 +1120,10 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
       @EF.set()
       zar = new EF.EntitySet<Zar>(this, Zar)
       @EF.set()
@@ -1117,6 +1203,10 @@ describe('Behavior-driven development', () => {
     }
 
     class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
       @EF.set()
       zar = new EF.EntitySet<Zar>(this, Zar)
       @EF.set()

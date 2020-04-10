@@ -12,6 +12,12 @@ import set from './annotations/property/set'
 describe('EntitySet', () => {
   const domain = 'http://localhost:3000'
 
+  class Configuration extends EntityConfiguration {
+    public fetch<T = any> (url: string, options?: RequestInit | undefined): Promise<T> {
+      return require('node-fetch')(url, options)
+    }
+  }
+
   @behavior('loadAll', `${domain}/zar`, 'GET', a => a, a => a)
   @behavior('load', `${domain}/zar/$id`, 'GET', a => a, a => a)
   class Zar {
@@ -97,7 +103,7 @@ describe('EntitySet', () => {
 
   class Context extends EntityContext {
     constructor () {
-      super(new EntityConfiguration())
+      super(new Configuration())
     }
 
     @set()

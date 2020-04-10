@@ -12,11 +12,11 @@ import EntitySet from './entitySet'
  * ```
  */
 export default class EntityContext {
-  constructor (private _configuration?: EntityConfiguration) {
-    if (!this._configuration) {
-      this._configuration = new EntityConfiguration()
-    }
+  constructor (configuration: EntityConfiguration) {
+    this._configuration = configuration
   }
+
+  private _configuration: EntityConfiguration
 
   public get configuration () {
     return this._configuration!

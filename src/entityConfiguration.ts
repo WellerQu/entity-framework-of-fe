@@ -1,8 +1,6 @@
 import isEmpty from './utils/isEmpty'
 
-const fetch = window.fetch || require('node-fetch')
-
-export default class EntityConfiguration {
+export default abstract class EntityConfiguration {
   protected parseUrl (url: string, params: any): string {
     if (isEmpty(params)) {
       return url
@@ -45,6 +43,8 @@ export default class EntityConfiguration {
       fetchOptions.body = JSON.stringify(data)
     }
 
-    return fetch(fetchTarget, fetchOptions).then(res => res.json())
+    return this.fetch(fetchTarget, fetchOptions).then(res => res.json())
   }
+
+  public abstract fetch<T = any>(url: string, options?: RequestInit): Promise<T>;
 }

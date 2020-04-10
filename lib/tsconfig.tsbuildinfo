@@ -138,8 +138,8 @@
         "signature": "560fbdbc2a276b8159986d9b432c01a303ef297467b65927978f58979c1780fe"
       },
       "/users/qiuwei/workspace/entity-framework/src/entityset.ts": {
-        "version": "267d2b577afc5ebc31fb05a3947a3c7e1d33ef4ef51a4d17f1018fe90cf35ff6",
-        "signature": "a59abc3322fffc17060be6f220d35cf0097026cc2024d8fe97a7c3a0984d3810"
+        "version": "31610741e87346d5c5afbe2a4ed479c6e57ed45131129815c733854b4904a6d2",
+        "signature": "76d49079bf2f0cb534c40a2ad7860300cff47283a02c5232699208a22ab99dd7"
       },
       "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts": {
         "version": "de997533b043b888166ee3ebbcaa37f36caaa5dbb78669ffc10966d5e9fd5e58",
@@ -1703,6 +1703,7 @@
       "/users/qiuwei/workspace/entity-framework/node_modules/typescript/lib/lib.esnext.intl.d.ts",
       "/users/qiuwei/workspace/entity-framework/node_modules/typescript/lib/lib.esnext.bigint.d.ts",
       "/users/qiuwei/workspace/entity-framework/src/utils/isempty.ts",
+      "/users/qiuwei/workspace/entity-framework/src/entityconfiguration.ts",
       "/users/qiuwei/workspace/entity-framework/src/annotations/metadatatype.ts",
       "/users/qiuwei/workspace/entity-framework/src/annotations/relationship.ts",
       "/users/qiuwei/workspace/entity-framework/src/annotations/entitymetadatamanager.ts",
@@ -1764,7 +1765,6 @@
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts",
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/globals.d.ts",
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/index.d.ts",
-      "/users/qiuwei/workspace/entity-framework/src/entityconfiguration.ts",
       "/users/qiuwei/workspace/entity-framework/src/entityset.ts",
       "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts",
       "/users/qiuwei/workspace/entity-framework/src/index.ts"

@@ -40,8 +40,8 @@ export default class EntitySet<T extends Object> {
     find(...primaryKeys: any[]): T | undefined;
     filter(fn: (n: T) => boolean): T[];
     toList(): T[];
-    load(...args: any[]): Promise<T>;
-    loadAll(...args: any[]): Promise<T[]>;
+    load<P = any>(...args: any[]): Promise<P>;
+    loadAll<P = any>(...args: any[]): Promise<P>;
     include(navigatorName: string): this;
     entry(originData: {}): T;
     rawQuery(query: () => Promise<T[] | T>): Promise<T[]>;

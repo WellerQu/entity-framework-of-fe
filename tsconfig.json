@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES5",
     "lib": [
       "dom",
       "es5",
       "es6"
     ],
     "sourceMap": true,
-    "allowJs": true,
+    "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -18,9 +18,12 @@
     "module": "CommonJS",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "downlevelIteration": true,
-    "noEmit": true,
+    "declaration": true,
+    "composite": true,
+    "outDir": "lib",
+    "noEmit": false,
     "types": ["jest", "node"],
     "baseUrl": "src"
   },
@@ -30,6 +33,7 @@
   ],
   "exclude": [
     "node_modules/**/*",
-    "build/**/*"
+    "build/**/*",
+    "*.spec.ts"
   ]
 }

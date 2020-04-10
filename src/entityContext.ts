@@ -18,16 +18,12 @@ export default class EntityContext {
     }
   }
 
-  public get entityMetadata () {
-    return metadata
-  }
-
   public get configuration () {
     return this._configuration!
   }
 
   public clean () {
-    const entitySetKeys = this.entityMetadata
+    const entitySetKeys = metadata
       .getEntitySets(Reflect.getPrototypeOf(this))
       .map(item => item.propertyName)
 
@@ -39,7 +35,7 @@ export default class EntityContext {
   }
 
   public async saveChanges<T = any> () {
-    const entitySetKeys = this.entityMetadata
+    const entitySetKeys = metadata
       .getEntitySets(Reflect.getPrototypeOf(this))
       .map(item => item.propertyName)
 

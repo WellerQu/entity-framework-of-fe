@@ -2,6 +2,7 @@ import EntityContext from './entityContext'
 import EntityState from './entityState'
 import EntityTrace from './entityTrace'
 import Relationship from './annotations/relationship'
+import metadata from './annotations/entityMetadataManager'
 import isEmpty from './utils/isEmpty'
 
 export default class EntitySet<T extends Object> {
@@ -35,7 +36,7 @@ export default class EntitySet<T extends Object> {
 
   private getRelatedEntitySet (navigatorName: string) {
     const ctxPrototype = Reflect.getPrototypeOf(this.ctx)
-    const entitySetMeta = this.ctx.entityMetadata.getEntitySet(ctxPrototype, navigatorName)
+    const entitySetMeta = metadata.getEntitySet(ctxPrototype, navigatorName)
     if (!entitySetMeta) {
       throw new Error(`当前上下文中没有配置EntitySet "${navigatorName}"`)
     }
@@ -81,7 +82,7 @@ export default class EntitySet<T extends Object> {
   }
 
   public remove (...entities: (T| undefined)[]): this {
-    const navigators = this.ctx.entityMetadata.getNavigators(this.entityMetadata.type.prototype)
+    const navigators = metadata.getNavigators(this.entityMetadata.type.prototype)
 
     entities.filter(item => !!item).forEach(removedItem => {
       const tracer = Array.from(this.set)
@@ -171,7 +172,7 @@ export default class EntitySet<T extends Object> {
    */
   public find (...primaryKeys: any[]): T | undefined {
     const stateTrace = Array.from(this.set).find(item => {
-      const keys = this.ctx.entityMetadata.getPrimaryKeys(item.object.constructor.prototype)
+      const keys = metadata.getPrimaryKeys(item.object.constructor.prototype)
       if (keys.length === 0) {
         return false
       }
@@ -214,7 +215,7 @@ export default class EntitySet<T extends Object> {
   }
 
   public async load (...args: any[]): Promise<T> {
-    const queryMeta = this.ctx.entityMetadata
+    const queryMeta = metadata
       .getBehavior(this.entityMetadata.type.prototype, 'load')
 
     if (!queryMeta) {
@@ -239,7 +240,7 @@ export default class EntitySet<T extends Object> {
   }
 
   public async loadAll (...args: any[]): Promise<T[]> {
-    const queryMeta = this.ctx.entityMetadata
+    const queryMeta = metadata
       .getBehavior(this.entityMetadata.type.prototype, 'loadAll')
 
     if (!queryMeta) {
@@ -274,13 +275,13 @@ export default class EntitySet<T extends Object> {
 
     const entitySet = this.getRelatedEntitySet(navigatorName)
 
-    const navigator = this.ctx.entityMetadata.getNavigator(this.entityMetadata.type.prototype, navigatorName as string)
+    const navigator = metadata.getNavigator(this.entityMetadata.type.prototype, navigatorName as string)
     if (!navigator) {
       this.otherNavigators.push(navigatorName)
       return this
     }
 
-    const foreignKeys = this.ctx.entityMetadata
+    const foreignKeys = metadata
       .getForeignKeys(this.entityMetadata.type.prototype)
       .filter(key => key.navigatorName === navigatorName)
     const propertyName = navigator.propertyName
@@ -340,7 +341,7 @@ export default class EntitySet<T extends Object> {
     const Type = this.entityMetadata.type
     const instance = new Type()
 
-    const members = this.ctx.entityMetadata.getMembers(Type.prototype)
+    const members = metadata.getMembers(Type.prototype)
     members.forEach(item => {
       const fieldData = Reflect.get(originData, item.fieldName)
       Reflect.set(instance, item.propertyName, fieldData)
@@ -389,8 +390,8 @@ export default class EntitySet<T extends Object> {
     const object = item.rawObject
     const identity = (a: any) => a
 
-    const members = this.ctx.entityMetadata.getMembers(object.constructor.prototype)
-    const behavior = this.ctx.entityMetadata.getBehavior(object.constructor.prototype, 'add')
+    const members = metadata.getMembers(object.constructor.prototype)
+    const behavior = metadata.getBehavior(object.constructor.prototype, 'add')
 
     if (!behavior) {
       return (Promise.reject(new Error(`${object.constructor.name} 没有配置Add behavior`)))
@@ -416,8 +417,8 @@ export default class EntitySet<T extends Object> {
     const object = item.rawObject
     const identity = (a: any) => a
 
-    const primaryKeys = this.ctx.entityMetadata.getPrimaryKeys(object.constructor.prototype)
-    const behavior = this.ctx.entityMetadata.getBehavior(object.constructor.prototype, 'delete')
+    const primaryKeys = metadata.getPrimaryKeys(object.constructor.prototype)
+    const behavior = metadata.getBehavior(object.constructor.prototype, 'delete')
 
     if (!behavior) {
       return (Promise.reject(new Error(`${object.constructor.name} 没有配置Delete behavior`)))
@@ -442,8 +443,8 @@ export default class EntitySet<T extends Object> {
     const object = item.rawObject
     const identity = (a: any) => a
 
-    const members = this.ctx.entityMetadata.getMembers(object.constructor.prototype)
-    const behavior = this.ctx.entityMetadata.getBehavior(object.constructor.prototype, 'update')
+    const members = metadata.getMembers(object.constructor.prototype)
+    const behavior = metadata.getBehavior(object.constructor.prototype, 'update')
 
     if (!behavior) {
       return (Promise.reject(new Error(`${object.constructor.name} 没有配置Update behavior`)))

@@ -214,7 +214,7 @@ export default class EntitySet<T extends Object> {
     return Array.from(this.set).map(item => Object.freeze(item.object))
   }
 
-  public async load (...args: any[]): Promise<T> {
+  public async load <P = any> (...args: any[]): Promise<P> {
     const queryMeta = metadata
       .getBehavior(this.entityMetadata.type.prototype, 'load')
 
@@ -229,7 +229,7 @@ export default class EntitySet<T extends Object> {
     const params = mapParameters(...args)
     const requests = Object.values(this.ownNavigatorRequests)
 
-    return new Promise<T>((resolve, reject) => {
+    return new Promise<P>((resolve, reject) => {
       this.ctx.configuration
         .fetchData(queryMeta.url, { method: queryMeta.method }, params)
         .then<T>(mapEntity)
@@ -237,13 +237,13 @@ export default class EntitySet<T extends Object> {
           const first = Array.isArray(data) ? data[0] : data
           const entity = this.attachOriginDataToEntitySet(first)
           Promise.all(requests.map(fn => fn(entity))).then(() => {
-            resolve(data)
+            resolve(data as any)
           })
         }, reject)
     })
   }
 
-  public async loadAll (...args: any[]): Promise<T[]> {
+  public async loadAll <P = any> (...args: any[]): Promise<P> {
     const queryMeta = metadata
       .getBehavior(this.entityMetadata.type.prototype, 'loadAll')
 
@@ -258,7 +258,7 @@ export default class EntitySet<T extends Object> {
     const params = mapParameters(...args)
     const requests = Object.values(this.ownNavigatorRequests)
 
-    return new Promise<T[]>((resolve, reject) => {
+    return new Promise<P>((resolve, reject) => {
       this.ctx.configuration
         .fetchData(queryMeta.url, { method: queryMeta.method }, params)
         .then<T[]>(mapEntity)
@@ -269,7 +269,7 @@ export default class EntitySet<T extends Object> {
             .reduce((acc, val) => acc.concat(val), []) // 降低数组维度
           Promise.all(promises)
             .then(() => {
-              resolve(data)
+              resolve(data as any)
             })
         }, reject)
     })

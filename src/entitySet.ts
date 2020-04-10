@@ -270,7 +270,7 @@ export default class EntitySet<T extends Object> {
               .reduce((acc, val) => acc.concat(val), []) // 降低数组维度
             Promise.all(promises)
               .then(() => {
-                resolve(data as any)
+                resolve(res)
               })
           })
         }, reject)

@@ -14,5 +14,5 @@ import { Method, BehaviorName } from '../entityMetadataManager';
  * class Foo {}
  * ```
  */
-declare const behavior: <T = any>(behaviorName: BehaviorName, url: string, method?: Method, mapParameters?: ((...args: any[]) => T) | undefined, mapEntity?: ((...args: any[]) => Promise<T>) | undefined) => (target: new () => {}) => void;
+declare const behavior: <T = any>(behaviorName: BehaviorName, url: string, method?: Method, mapParameters?: ((...args: any[]) => T) | undefined, mapEntity?: ((a: any) => any) | undefined) => (target: new () => {}) => void;
 export default behavior;

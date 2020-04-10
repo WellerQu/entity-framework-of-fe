@@ -20,7 +20,7 @@ const behavior = <T = any>(
   url: string,
   method: Method = 'GET',
   mapParameters?: (...args: any[]) => T,
-  mapEntity?: (...args: any[]) => Promise<T>
+  mapEntity?: (a: any) => any
 ) => (target: { new(): {} }) => {
     manager.register<Behavior<T>>(target.prototype, MetadataType.Behavior, { behaviorName, url, method, mapParameters, mapEntity })
   }

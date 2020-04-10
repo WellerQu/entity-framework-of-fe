@@ -214,7 +214,7 @@ export default class EntitySet<T extends Object> {
     return Array.from(this.set).map(item => Object.freeze(item.object))
   }
 
-  public async load <P = any> (...args: any[]): Promise<P> {
+  public async load (...args: any[]): Promise<Response> {
     const queryMeta = metadata
       .getBehavior(this.entityMetadata.type.prototype, 'load')
 
@@ -229,21 +229,22 @@ export default class EntitySet<T extends Object> {
     const params = mapParameters(...args)
     const requests = Object.values(this.ownNavigatorRequests)
 
-    return new Promise<P>((resolve, reject) => {
+    return new Promise<Response>((resolve, reject) => {
       this.ctx.configuration
         .fetchData(queryMeta.url, { method: queryMeta.method }, params)
-        .then<T>(mapEntity)
-        .then(data => {
-          const first = Array.isArray(data) ? data[0] : data
-          const entity = this.attachOriginDataToEntitySet(first)
-          Promise.all(requests.map(fn => fn(entity))).then(() => {
-            resolve(data as any)
+        .then(res => {
+          return mapEntity(res).then(data => {
+            const first = Array.isArray(data) ? data[0] : data
+            const entity = this.attachOriginDataToEntitySet(first)
+            Promise.all(requests.map(fn => fn(entity))).then(() => {
+              resolve(res)
+            })
           })
         }, reject)
     })
   }
 
-  public async loadAll <P = any> (...args: any[]): Promise<P> {
+  public async loadAll (...args: any[]): Promise<Response> {
     const queryMeta = metadata
       .getBehavior(this.entityMetadata.type.prototype, 'loadAll')
 
@@ -258,19 +259,20 @@ export default class EntitySet<T extends Object> {
     const params = mapParameters(...args)
     const requests = Object.values(this.ownNavigatorRequests)
 
-    return new Promise<P>((resolve, reject) => {
+    return new Promise<Response>((resolve, reject) => {
       this.ctx.configuration
         .fetchData(queryMeta.url, { method: queryMeta.method }, params)
-        .then<T[]>(mapEntity)
-        .then(data => {
-          const promises = (data || [])
-            .map(item => this.attachOriginDataToEntitySet(item))
-            .map(entity => requests.map(fn => fn(entity)))
-            .reduce((acc, val) => acc.concat(val), []) // 降低数组维度
-          Promise.all(promises)
-            .then(() => {
-              resolve(data as any)
-            })
+        .then(res => {
+          return mapEntity(res).then((data: T[]) => {
+            const promises = (data || [])
+              .map(item => this.attachOriginDataToEntitySet(item))
+              .map(entity => requests.map(fn => fn(entity)))
+              .reduce((acc, val) => acc.concat(val), []) // 降低数组维度
+            Promise.all(promises)
+              .then(() => {
+                resolve(data as any)
+              })
+          })
         }, reject)
     })
   }

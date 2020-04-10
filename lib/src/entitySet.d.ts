@@ -1,4 +1,5 @@
 import EntityContext from './entityContext';
+export declare type OriginJSON = Promise<any>;
 export default class EntitySet<T extends Object> {
     private ctx;
     constructor(ctx: EntityContext, type: {
@@ -8,7 +9,7 @@ export default class EntitySet<T extends Object> {
     private ownNavigatorRequests;
     private otherNavigators;
     private entityMetadata;
-    private attachOriginDataToEntitySet;
+    private parseOriginDataToEntity;
     private getRelatedEntitySet;
     readonly size: number;
     clean(): this;
@@ -41,7 +42,7 @@ export default class EntitySet<T extends Object> {
     filter(fn: (n: T) => boolean): T[];
     toList(): T[];
     load(...args: any[]): Promise<Response>;
-    loadAll(...args: any[]): Promise<Response>;
+    loadAll<P = any>(...args: any[]): Promise<P>;
     include(navigatorName: string): this;
     entry(originData: {}): T;
     rawQuery(query: () => Promise<T[] | T>): Promise<T[]>;

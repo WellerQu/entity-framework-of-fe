@@ -69,7 +69,7 @@ export interface Behavior<T = any> {
     url: string;
     method: Method;
     mapParameters?: (...args: any[]) => T;
-    mapEntity?: (response: Response) => Promise<T>;
+    mapEntity?: (a: any) => any;
 }
 export declare type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 export { MetadataType, Relationship };

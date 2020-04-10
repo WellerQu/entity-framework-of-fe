@@ -5,6 +5,8 @@ import Relationship from './annotations/relationship'
 import metadata from './annotations/entityMetadataManager'
 import isEmpty from './utils/isEmpty'
 
+export type OriginJSON = Promise<any>
+
 export default class EntitySet<T extends Object> {
   constructor (private ctx: EntityContext, type: { new(): T}) {
     this.set = new Set<EntityTrace<T>>()
@@ -21,15 +23,13 @@ export default class EntitySet<T extends Object> {
     type: { new() : T },
   }
 
-  private attachOriginDataToEntitySet (originData: {}): T | null {
+  private parseOriginDataToEntity (originData: {}): T | null {
     // 无数据
     if (isEmpty(originData)) {
       return null
     }
 
     const entity = this.entry(originData)
-
-    this.attach(entity)
 
     return entity
   }
@@ -224,7 +224,7 @@ export default class EntitySet<T extends Object> {
 
     const {
       mapParameters = (...a: any[]) => a,
-      mapEntity = (res: Response) => res.json()
+      mapEntity = (p: Promise<any>) => p
     } = queryMeta
     const params = mapParameters(...args)
     const requests = Object.values(this.ownNavigatorRequests)
@@ -232,19 +232,20 @@ export default class EntitySet<T extends Object> {
     return new Promise<Response>((resolve, reject) => {
       this.ctx.configuration
         .fetchData(queryMeta.url, { method: queryMeta.method }, params)
-        .then(res => {
-          return mapEntity(res).then(data => {
-            const first = Array.isArray(data) ? data[0] : data
-            const entity = this.attachOriginDataToEntitySet(first)
-            Promise.all(requests.map(fn => fn(entity))).then(() => {
-              resolve(res)
-            })
-          })
+        .then(res => res.json(), reject)
+        .then(json => {
+          const data = mapEntity(json)
+          const first = Array.isArray(data) ? data[0] : data
+          const entity = this.parseOriginDataToEntity(first)
+          Promise.all(requests.map(fn => fn(entity))).then(() => {
+            entity && this.attach(entity)
+            resolve(json)
+          }, reject)
         }, reject)
     })
   }
 
-  public async loadAll (...args: any[]): Promise<Response> {
+  public async loadAll <P = any> (...args: any[]): Promise<P> {
     const queryMeta = metadata
       .getBehavior(this.entityMetadata.type.prototype, 'loadAll')
 
@@ -254,25 +255,27 @@ export default class EntitySet<T extends Object> {
 
     const {
       mapParameters = (...a: any[]) => a,
-      mapEntity = (res: Response) => res.json()
+      mapEntity = (a: any) => a
     } = queryMeta
     const params = mapParameters(...args)
     const requests = Object.values(this.ownNavigatorRequests)
 
-    return new Promise<Response>((resolve, reject) => {
+    return new Promise<P>((resolve, reject) => {
       this.ctx.configuration
         .fetchData(queryMeta.url, { method: queryMeta.method }, params)
-        .then(res => {
-          return mapEntity(res).then((data: T[]) => {
-            const promises = (data || [])
-              .map(item => this.attachOriginDataToEntitySet(item))
-              .map(entity => requests.map(fn => fn(entity)))
-              .reduce((acc, val) => acc.concat(val), []) // 降低数组维度
-            Promise.all(promises)
-              .then(() => {
-                resolve(res)
-              })
-          })
+        .then(res => res.json(), reject)
+        .then(json => {
+          const data = mapEntity(json) as T[]
+          const parse = this.parseOriginDataToEntity.bind(this)
+          const entities = (data || []).map(parse).filter(item => !isEmpty(item))
+          const promises = entities
+            .map(entity => requests.map(fn => fn(entity)))
+            .reduce((acc, val) => acc.concat(val), []) // 降低数组维度
+          Promise.all(promises)
+            .then(() => {
+              this.attach(...entities as T[])
+              resolve(json)
+            }, reject)
         }, reject)
     })
   }
@@ -369,13 +372,13 @@ export default class EntitySet<T extends Object> {
 
           if (Array.isArray(originData)) {
             for (let i = 0; i < originData.length; i++) {
-              const newEntity = this.attachOriginDataToEntitySet(originData[i])
+              const newEntity = this.parseOriginDataToEntity(originData[i])
               if (newEntity) {
                 entities.push(newEntity)
               }
             }
           } else {
-            const newEntity = (this.attachOriginDataToEntitySet(originData))
+            const newEntity = this.parseOriginDataToEntity(originData)
             if (newEntity) {
               entities.push(newEntity)
             }
@@ -389,6 +392,7 @@ export default class EntitySet<T extends Object> {
             entities.map(entity => requests.map(fn => fn(entity)))
               .reduce((acc, val) => acc.concat(val), []) // 降低数组维度
           ).then(() => {
+            this.attach(...entities)
             resolve(entities)
           }, reject)
         }, reject)
@@ -408,7 +412,7 @@ export default class EntitySet<T extends Object> {
 
     const {
       mapParameters = identity,
-      mapEntity = (res: Response) => res.json()
+      mapEntity = (p: Promise<any>) => p
     } = behavior
 
     const params = mapParameters(members.reduce((params, m) => {
@@ -416,13 +420,16 @@ export default class EntitySet<T extends Object> {
       return params
     }, {}))
 
-    return this.ctx.configuration.fetchData(behavior.url, { method: behavior.method }, params)
-      .then<T>(mapEntity)
-      .then(res => {
-        item.state = EntityState.Unchanged
-
-        return res
-      })
+    return new Promise((resolve, reject) => {
+      this.ctx.configuration.fetchData(behavior.url, { method: behavior.method }, params)
+        .then(res => res.json(), reject)
+        .then(json => {
+          item.state = EntityState.Unchanged
+          return json
+        }, reject)
+        .then(mapEntity, reject)
+        .then(resolve, reject)
+    })
   }
 
   private async synchronizeDeletedState (item: EntityTrace<T>): Promise<any> {
@@ -438,7 +445,7 @@ export default class EntitySet<T extends Object> {
 
     const {
       mapParameters = identity,
-      mapEntity = (res: Response) => res.json()
+      mapEntity = (a: any) => a
     } = behavior
 
     const params = mapParameters(primaryKeys.reduce((params, m) => {
@@ -446,12 +453,16 @@ export default class EntitySet<T extends Object> {
       return params
     }, {}))
 
-    return this.ctx.configuration.fetchData(behavior.url, { method: behavior.method }, params)
-      .then<T>(mapEntity)
-      .then(res => {
-        this.set.delete(item)
-        return res
-      })
+    return new Promise((resolve, reject) => {
+      this.ctx.configuration.fetchData(behavior.url, { method: behavior.method }, params)
+        .then(res => res.json(), reject)
+        .then(json => {
+          this.set.delete(item)
+          return json
+        }, reject)
+        .then(mapEntity, reject)
+        .then(resolve, reject)
+    })
   }
 
   private async synchronizeModifiedState (item: EntityTrace<T>): Promise<any> {
@@ -467,7 +478,7 @@ export default class EntitySet<T extends Object> {
 
     const {
       mapParameters = identity,
-      mapEntity = (res: Response) => res.json()
+      mapEntity = (a: any) => a
     } = behavior
 
     const params = mapParameters(members.reduce((params, m) => {
@@ -475,12 +486,16 @@ export default class EntitySet<T extends Object> {
       return params
     }, {}))
 
-    return (this.ctx.configuration.fetchData(behavior.url, { method: behavior.method }, params)
-      .then<T>(mapEntity)
-      .then(res => {
-        item.state = EntityState.Unchanged
-        return res
-      }))
+    return new Promise((resolve, reject) => {
+      this.ctx.configuration.fetchData(behavior.url, { method: behavior.method }, params)
+        .then(res => res.json(), reject)
+        .then(res => {
+          item.state = EntityState.Unchanged
+          return res
+        }, reject)
+        .then(mapEntity, reject)
+        .then(resolve, reject)
+    })
   }
 
   public synchronizeState (): Promise<any>[] {

@@ -16,7 +16,7 @@ describe('Behavior-driven development', () => {
     }
   }
 
-  const mapEntity = (res: Response) => res.json()
+  const mapEntity = (a: any) => a
 
   it('query a foo by primary (id)', async () => {
     @EF.behavior('load', 'http://localhost:3000/foo/$id', 'GET')

@@ -71,7 +71,7 @@ export interface Behavior<T = any> {
   url: string;
   method: Method;
   mapParameters?: (...args: any[]) => T,
-  mapEntity?: (response: Response) => Promise<T>
+  mapEntity?: (a: any) => any
 }
 
 export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'

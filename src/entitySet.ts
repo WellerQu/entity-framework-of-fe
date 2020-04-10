@@ -222,16 +222,20 @@ export default class EntitySet<T extends Object> {
       throw new Error(`${this.entityMetadata.type.name} 没有配置Load behavior`)
     }
 
-    const { mapParameters = (...a: any[]) => a, mapEntity = (a:any) => a } = queryMeta
+    const {
+      mapParameters = (...a: any[]) => a,
+      mapEntity = (res: Response) => res.json()
+    } = queryMeta
     const params = mapParameters(...args)
     const requests = Object.values(this.ownNavigatorRequests)
 
     return new Promise<T>((resolve, reject) => {
       this.ctx.configuration
-        .fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
-        .then(res => {
-          const data = mapEntity(res)
-          const entity = this.attachOriginDataToEntitySet(data)
+        .fetchData(queryMeta.url, { method: queryMeta.method }, params)
+        .then<T>(mapEntity)
+        .then(data => {
+          const first = Array.isArray(data) ? data[0] : data
+          const entity = this.attachOriginDataToEntitySet(first)
           Promise.all(requests.map(fn => fn(entity))).then(() => {
             resolve(data)
           })
@@ -247,15 +251,18 @@ export default class EntitySet<T extends Object> {
       throw new Error(`${this.entityMetadata.type.name} 没有配置LoadAll behavior`)
     }
 
-    const { mapParameters = (...a: any[]) => a, mapEntity = (a: any) => a } = queryMeta
+    const {
+      mapParameters = (...a: any[]) => a,
+      mapEntity = (res: Response) => res.json()
+    } = queryMeta
     const params = mapParameters(...args)
     const requests = Object.values(this.ownNavigatorRequests)
 
     return new Promise<T[]>((resolve, reject) => {
       this.ctx.configuration
-        .fetchJSON(queryMeta.url, { method: queryMeta.method }, params)
-        .then((res) => {
-          const data: T[] = mapEntity(res)
+        .fetchData(queryMeta.url, { method: queryMeta.method }, params)
+        .then<T[]>(mapEntity)
+        .then(data => {
           const promises = (data || [])
             .map(item => this.attachOriginDataToEntitySet(item))
             .map(entity => requests.map(fn => fn(entity)))
@@ -397,15 +404,18 @@ export default class EntitySet<T extends Object> {
       return (Promise.reject(new Error(`${object.constructor.name} 没有配置Add behavior`)))
     }
 
-    const { mapParameters = identity, mapEntity = identity } = behavior
+    const {
+      mapParameters = identity,
+      mapEntity = (res: Response) => res.json()
+    } = behavior
 
     const params = mapParameters(members.reduce((params, m) => {
       Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
       return params
     }, {}))
 
-    return this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params)
-      .then(mapEntity)
+    return this.ctx.configuration.fetchData(behavior.url, { method: behavior.method }, params)
+      .then<T>(mapEntity)
       .then(res => {
         item.state = EntityState.Unchanged
 
@@ -424,15 +434,18 @@ export default class EntitySet<T extends Object> {
       return (Promise.reject(new Error(`${object.constructor.name} 没有配置Delete behavior`)))
     }
 
-    const { mapParameters = identity, mapEntity = identity } = behavior
+    const {
+      mapParameters = identity,
+      mapEntity = (res: Response) => res.json()
+    } = behavior
 
     const params = mapParameters(primaryKeys.reduce((params, m) => {
       Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
       return params
     }, {}))
 
-    return this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params)
-      .then(mapEntity)
+    return this.ctx.configuration.fetchData(behavior.url, { method: behavior.method }, params)
+      .then<T>(mapEntity)
       .then(res => {
         this.set.delete(item)
         return res
@@ -450,15 +463,18 @@ export default class EntitySet<T extends Object> {
       return (Promise.reject(new Error(`${object.constructor.name} 没有配置Update behavior`)))
     }
 
-    const { mapParameters = identity, mapEntity = identity } = behavior
+    const {
+      mapParameters = identity,
+      mapEntity = (res: Response) => res.json()
+    } = behavior
 
     const params = mapParameters(members.reduce((params, m) => {
       Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
       return params
     }, {}))
 
-    return (this.ctx.configuration.fetchJSON(behavior.url, { method: behavior.method }, params)
-      .then(mapEntity)
+    return (this.ctx.configuration.fetchData(behavior.url, { method: behavior.method }, params)
+      .then<T>(mapEntity)
       .then(res => {
         item.state = EntityState.Unchanged
         return res

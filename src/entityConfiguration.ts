@@ -24,10 +24,12 @@ export default abstract class EntityConfiguration {
     return newUrl
   }
 
-  public async fetchJSON (url: string, options: RequestInit, data: {}) {
+  public fetchData (url: string, options: RequestInit, data: {}) {
     const hasDollar = !!(~url.indexOf('$'))
     if (hasDollar && isEmpty(data)) {
-      return Promise.resolve(null)
+      const msg = 'fetchData时存在$变量, 但缺少数据'
+      console.error(msg) // eslint-disable-line no-console
+      throw new Error(msg)
     }
 
     const fetchTarget = this.parseUrl(url, data)
@@ -43,8 +45,8 @@ export default abstract class EntityConfiguration {
       fetchOptions.body = JSON.stringify(data)
     }
 
-    return this.fetch(fetchTarget, fetchOptions).then(res => res.json())
+    return this.fetch(fetchTarget, fetchOptions)
   }
 
-  public abstract fetch<T = any>(url: string, options?: RequestInit): Promise<T>;
+  public abstract fetch(url: string, options?: RequestInit): Promise<Response>;
 }

@@ -1,5 +1,6 @@
 import MetadataType from './metadataType';
 import Relationship from './relationship';
+import Constraints from './constraints';
 /**
  * 注解实体模型的字段元数据
  *
@@ -12,6 +13,16 @@ export interface Field {
     fieldName: string;
     /**
      * 属性名称
+     */
+    propertyName: string;
+}
+export interface MemberConstraints {
+    /**
+     * 成员值约束
+     */
+    constraints: Constraints;
+    /**
+     * 属性名
      */
     propertyName: string;
 }
@@ -80,9 +91,10 @@ export { MetadataType, Relationship };
 declare class EntityMetadataManager {
     private managedModel;
     private managedContext;
-    register<T extends Member | PrimaryKey | ForeignKey | Behavior | Navigator | EntitySet>(prototype: Object, type: MetadataType, meta: T): number | Navigator | Behavior<any> | undefined;
+    register<T extends Member | MemberConstraints | PrimaryKey | ForeignKey | Behavior | Navigator | EntitySet>(prototype: Object, type: MetadataType, meta: T): number | Navigator | Behavior<any> | Record<string, Constraints | undefined> | undefined;
     unregister(prototype: Object): void;
     getMembers(prototype: Object): Member[];
+    getMemberConstraints(prototype: Object): Record<string, Constraints | undefined>;
     getPrimaryKeys(prototype: Object): PrimaryKey[];
     getForeignKeys(prototype: Object): ForeignKey[];
     getBehavior(prototype: Object, behaviorName: BehaviorName): Behavior | undefined;

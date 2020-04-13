@@ -177,7 +177,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       bName: string = ''
 
-      @EF.navigator(EF.Relationship.One, 'bar')
+      @EF.navigator(EF.Relationships.One, 'bar')
       bar?: Bar
     }
 
@@ -227,7 +227,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       jid: number[] = []
 
-      @EF.navigator(EF.Relationship.Many, 'jar')
+      @EF.navigator(EF.Relationships.Many, 'jar')
       jar?: Jar[]
     }
 
@@ -291,7 +291,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       jid: number[] = []
 
-      @EF.navigator(EF.Relationship.Many, 'jar')
+      @EF.navigator(EF.Relationships.Many, 'jar')
       jar?: Jar[]
 
       @EF.foreign(Bar, 'bar', 'id')
@@ -302,7 +302,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       bName: string = ''
 
-      @EF.navigator(EF.Relationship.One, 'bar')
+      @EF.navigator(EF.Relationships.One, 'bar')
       bar?: Bar
     }
 
@@ -363,7 +363,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       zid: number = 0
 
-      @EF.navigator(EF.Relationship.One, 'zar')
+      @EF.navigator(EF.Relationships.One, 'zar')
       zar?: Zar
     }
 
@@ -384,7 +384,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       bName: string = ''
 
-      @EF.navigator(EF.Relationship.One, 'bar')
+      @EF.navigator(EF.Relationships.One, 'bar')
       bar?: Bar
     }
 
@@ -441,7 +441,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       zid: number = 0
 
-      @EF.navigator(EF.Relationship.One, 'zar')
+      @EF.navigator(EF.Relationships.One, 'zar')
       zar?: Zar
     }
 
@@ -472,10 +472,10 @@ describe('Behavior-driven development', () => {
       @EF.member()
       jid: number[] = []
 
-      @EF.navigator(EF.Relationship.One, 'bar')
+      @EF.navigator(EF.Relationships.One, 'bar')
       bar?: Bar
 
-      @EF.navigator(EF.Relationship.Many, 'jar')
+      @EF.navigator(EF.Relationships.Many, 'jar')
       jar?: Jar[]
     }
 
@@ -559,7 +559,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       zid: number = 0
 
-      @EF.navigator(EF.Relationship.One, 'zar')
+      @EF.navigator(EF.Relationships.One, 'zar')
       zar?: Zar
     }
 
@@ -589,10 +589,10 @@ describe('Behavior-driven development', () => {
       @EF.member()
       jid: number[] = []
 
-      @EF.navigator(EF.Relationship.One, 'bar')
+      @EF.navigator(EF.Relationships.One, 'bar')
       bar?: Bar
 
-      @EF.navigator(EF.Relationship.Many, 'jar')
+      @EF.navigator(EF.Relationships.Many, 'jar')
       jar?: Jar[]
     }
 
@@ -881,7 +881,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       bid: number = 0
 
-      @EF.navigator(EF.Relationship.One, 'bar')
+      @EF.navigator(EF.Relationships.One, 'bar')
       bar?: Bar
     }
 
@@ -932,7 +932,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       jid: number[] = []
 
-      @EF.navigator(EF.Relationship.Many, 'jar')
+      @EF.navigator(EF.Relationships.Many, 'jar')
       jar?: Jar[]
     }
 
@@ -984,7 +984,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       zid: number = 0
 
-      @EF.navigator(EF.Relationship.One, 'zar')
+      @EF.navigator(EF.Relationships.One, 'zar')
       zar?: Zar
     }
 
@@ -1001,7 +1001,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       bid: number = 0
 
-      @EF.navigator(EF.Relationship.One, 'bar')
+      @EF.navigator(EF.Relationships.One, 'bar')
       bar?: Bar
     }
 
@@ -1059,7 +1059,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       zid: number = 0
 
-      @EF.navigator(EF.Relationship.One, 'zar')
+      @EF.navigator(EF.Relationships.One, 'zar')
       zar?: Zar
     }
 
@@ -1110,7 +1110,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       zid: number = 0
 
-      @EF.navigator(EF.Relationship.One, 'zar')
+      @EF.navigator(EF.Relationships.One, 'zar')
       zar?: Zar
     }
 
@@ -1126,7 +1126,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       jid: number[] = []
 
-      @EF.navigator(EF.Relationship.Many, 'jar')
+      @EF.navigator(EF.Relationships.Many, 'jar')
       jar?: Jar[]
     }
 
@@ -1180,7 +1180,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       zid: number = 0
 
-      @EF.navigator(EF.Relationship.One, 'zar')
+      @EF.navigator(EF.Relationships.One, 'zar')
       zar?: Zar
     }
 
@@ -1197,7 +1197,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       jid: number[] = []
 
-      @EF.navigator(EF.Relationship.Many, 'jar')
+      @EF.navigator(EF.Relationships.Many, 'jar')
       jar?: Jar[]
     }
 
@@ -1263,7 +1263,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       zid: number = 0
 
-      @EF.navigator(EF.Relationship.One, 'zar')
+      @EF.navigator(EF.Relationships.One, 'zar')
       zar?: Zar
     }
 
@@ -1280,7 +1280,7 @@ describe('Behavior-driven development', () => {
       @EF.member()
       jid: number[] = []
 
-      @EF.navigator(EF.Relationship.Many, 'jar')
+      @EF.navigator(EF.Relationships.Many, 'jar')
       jar?: Jar[]
     }
 

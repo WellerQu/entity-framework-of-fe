@@ -7,8 +7,8 @@ import set from './annotations/property/set'
 import constraint from './annotations/property/constraint'
 import metadataManager from './annotations/entityMetadataManager'
 import MetadataType from './annotations/metadataType'
-import Relationship from './annotations/relationship'
-import Constraints from './annotations/constraints'
+import Relationships from './constants/relationship'
+import Constraints from './constants/constraints'
 import EntityConfiguration from './entityConfiguration'
 import EntityContext from './entityContext'
 import EntitySet from './entitySet'
@@ -25,7 +25,7 @@ export {
   Constraints,
   metadataManager,
   MetadataType,
-  Relationship,
+  Relationships as Relationship,
   EntityConfiguration,
   EntityContext,
   EntitySet,

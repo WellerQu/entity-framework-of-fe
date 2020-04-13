@@ -1,10 +1,10 @@
 import EntityContext from './entityContext'
 import EntityState from './entityState'
 import EntityTrace from './entityTrace'
-import Relationship from './annotations/relationship'
+import Relationships from './constants/relationship'
 import metadata from './annotations/entityMetadataManager'
 import isEmpty from './utils/isEmpty'
-import Constraints from './annotations/constraints'
+import Constraints from './constants/constraints'
 
 export type OriginJSON = Promise<any>
 
@@ -104,9 +104,9 @@ export default class EntitySet<T extends Object> {
             return
           }
 
-          if (nav.relationship === Relationship.One) {
+          if (nav.relationship === Relationships.One) {
             entitySet.remove(entry)
-          } else if (nav.relationship === Relationship.Many) {
+          } else if (nav.relationship === Relationships.Many) {
             entitySet.remove(...entry)
           } else {
             throw new Error('未定义的Relationship')
@@ -311,7 +311,7 @@ export default class EntitySet<T extends Object> {
       const parameters = getRequestParameters(entity)
       const set = this.otherNavigators.reduce((es, nav) => es.include(nav), entitySet)
 
-      if (navigator.relationship === Relationship.One) {
+      if (navigator.relationship === Relationships.One) {
         // 请求关联实体的数据
         return set.load(...parameters).then((data) => {
           const relatedEntity = set.find(...parameters)
@@ -319,7 +319,7 @@ export default class EntitySet<T extends Object> {
 
           return data
         })
-      } else if (navigator.relationship === Relationship.Many) {
+      } else if (navigator.relationship === Relationships.Many) {
         // 提升参数parameters使用逻辑
         const useParameters = (exec: (primaryKey: any) => any) => (parameters: any[]) => {
           return parameters.filter(params => !!params)

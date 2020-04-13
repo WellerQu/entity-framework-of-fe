@@ -1,6 +1,6 @@
 import MetadataType from './metadataType';
-import Relationship from './relationship';
-import Constraints from './constraints';
+import Relationships from '../constants/relationship';
+import Constraints from '../constants/constraints';
 /**
  * 注解实体模型的字段元数据
  *
@@ -66,7 +66,7 @@ export interface Navigator extends Field {
     /**
      * 实体间关系
      */
-    relationship: Relationship;
+    relationship: Relationships;
     /**
      * 导航字段
      */
@@ -83,7 +83,7 @@ export interface Behavior<T = any> {
     mapEntity?: (a: any) => any;
 }
 export declare type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-export { MetadataType, Relationship };
+export { MetadataType, Relationships as Relationship };
 /**
  * @module annotations
  * @class MetadataManager

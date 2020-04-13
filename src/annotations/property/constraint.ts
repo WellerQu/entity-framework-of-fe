@@ -1,5 +1,5 @@
 import manager, { MetadataType, MemberConstraints } from '../entityMetadataManager'
-import Constraints from '../constraints'
+import Constraints from '../../constants/constraints'
 
 /**
  * 用来注解实体模型中的外键字段

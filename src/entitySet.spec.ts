@@ -5,7 +5,7 @@ import foreign from './annotations/property/foreign'
 import member from './annotations/property/member'
 import behavior from './annotations/object/behavior'
 import navigator from './annotations/property/navigator'
-import Relationship from './annotations/relationship'
+import Relationships from './constants/relationship'
 import EntityConfiguration from './entityConfiguration'
 import set from './annotations/property/set'
 
@@ -44,7 +44,7 @@ describe('EntitySet', () => {
     @member()
     zid: number = 0
 
-    @navigator(Relationship.One, 'zar')
+    @navigator(Relationships.One, 'zar')
     zar?: Zar
   }
 
@@ -93,11 +93,11 @@ describe('EntitySet', () => {
     jid: number[] = []
 
     // 导航属性
-    @navigator(Relationship.One, 'bar')
+    @navigator(Relationships.One, 'bar')
     bar?: Bar
 
     // 导航属性
-    @navigator(Relationship.Many, 'jar-alias')
+    @navigator(Relationships.Many, 'jar-alias')
     jar?: Jar[]
   }
 

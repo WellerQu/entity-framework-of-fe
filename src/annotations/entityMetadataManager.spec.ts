@@ -1,5 +1,5 @@
 import manager, { MetadataType, Relationship, Member, PrimaryKey, ForeignKey, Navigator, MemberConstraints } from './entityMetadataManager'
-import Constraint from './constraints'
+import Constraint from '../constants/constraints'
 
 describe('Metadata Manager', () => {
   class Foo {

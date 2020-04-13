@@ -1,5 +1,5 @@
 import * as EF from './index'
-import Constraints from './annotations/constraints'
+import Constraints from './constants/constraints'
 
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)

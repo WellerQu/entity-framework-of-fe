@@ -25,7 +25,7 @@ export {
   Constraints,
   metadataManager,
   MetadataType,
-  Relationships as Relationship,
+  Relationships,
   EntityConfiguration,
   EntityContext,
   EntitySet,

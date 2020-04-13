@@ -13,4 +13,4 @@ import EntityConfiguration from './entityConfiguration';
 import EntityContext from './entityContext';
 import EntitySet from './entitySet';
 import EntityState from './entityState';
-export { behavior, foreign, primary, navigator, member, set, constraint, Constraints, metadataManager, MetadataType, Relationships as Relationship, EntityConfiguration, EntityContext, EntitySet, EntityState };
+export { behavior, foreign, primary, navigator, member, set, constraint, Constraints, metadataManager, MetadataType, Relationships, EntityConfiguration, EntityContext, EntitySet, EntityState };

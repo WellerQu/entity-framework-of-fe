@@ -178,8 +178,8 @@
         "signature": "e26e5e5bdb95e910ead0475011ca40e753b9f7190a8fcb355766f69ae1b8670d"
       },
       "/users/qiuwei/workspace/entity-framework/src/index.ts": {
-        "version": "3068dbab45854c3856cccaecd4cd40a8a23f0986575a00c6aeac9df27dcef2c8",
-        "signature": "5fca1da09fb3fb21361e4ea4e5ead39d7a99fc8ba937f4a00bf5c3a1cd49cd00"
+        "version": "962f79290c787305563819581be523a1379c09221166c94bf6083842ea392e3e",
+        "signature": "efe26cb514440591f53522627dc45c9639713fb152a3d652c61699c4f0ac00c2"
       },
       "/users/qiuwei/workspace/entity-framework/@types/index.d.ts": {
         "version": "bfd9d6ee866f900f84250222fbb483c38acf1706aa11ed5332ae674be1e5a0ec",
@@ -1276,8 +1276,28 @@
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "/users/qiuwei/workspace/entity-framework/src/annotations/entitymetadatamanager.ts": [
+        "/users/qiuwei/workspace/entity-framework/src/annotations/metadatatype.ts",
+        "/users/qiuwei/workspace/entity-framework/src/constants/relationship.ts",
+        "/users/qiuwei/workspace/entity-framework/src/constants/constraints.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/src/entitytrace.ts": [
+        "/users/qiuwei/workspace/entity-framework/src/entitystate.ts"
+      ],
       "/users/qiuwei/workspace/entity-framework/src/entityset.ts": [
         "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts": [
+        "/users/qiuwei/workspace/entity-framework/src/entityconfiguration.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/src/annotations/object/behavior.ts": [
+        "/users/qiuwei/workspace/entity-framework/src/annotations/entitymetadatamanager.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/src/annotations/property/navigator.ts": [
+        "/users/qiuwei/workspace/entity-framework/src/annotations/entitymetadatamanager.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/src/annotations/property/constraint.ts": [
+        "/users/qiuwei/workspace/entity-framework/src/constants/constraints.ts"
       ],
       "/users/qiuwei/workspace/entity-framework/src/index.ts": [
         "/users/qiuwei/workspace/entity-framework/src/annotations/object/behavior.ts",
@@ -1294,26 +1314,6 @@
         "/users/qiuwei/workspace/entity-framework/src/entityconfiguration.ts",
         "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts",
         "/users/qiuwei/workspace/entity-framework/src/entityset.ts",
-        "/users/qiuwei/workspace/entity-framework/src/entitystate.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts": [
-        "/users/qiuwei/workspace/entity-framework/src/entityconfiguration.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/src/annotations/entitymetadatamanager.ts": [
-        "/users/qiuwei/workspace/entity-framework/src/annotations/metadatatype.ts",
-        "/users/qiuwei/workspace/entity-framework/src/constants/relationship.ts",
-        "/users/qiuwei/workspace/entity-framework/src/constants/constraints.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/src/annotations/property/constraint.ts": [
-        "/users/qiuwei/workspace/entity-framework/src/constants/constraints.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/src/annotations/property/navigator.ts": [
-        "/users/qiuwei/workspace/entity-framework/src/annotations/entitymetadatamanager.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/src/annotations/object/behavior.ts": [
-        "/users/qiuwei/workspace/entity-framework/src/annotations/entitymetadatamanager.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/src/entitytrace.ts": [
         "/users/qiuwei/workspace/entity-framework/src/entitystate.ts"
       ],
       "/users/qiuwei/workspace/entity-framework/@types/index.d.ts": [
@@ -1355,6 +1355,282 @@
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/assert.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/async_hooks.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/buffer.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/child_process.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/net.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/cluster.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/child_process.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/net.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/console.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/constants.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/crypto.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/dgram.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/net.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/dns.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/dns.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/domain.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/url.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/http.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/url.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/net.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/http2.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/net.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/tls.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/url.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/http.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/https.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/tls.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/http.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/url.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/inspector.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/module.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/net.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/dns.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/os.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/path.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/perf_hooks.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/async_hooks.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/process.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/tty.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/punycode.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/querystring.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/readline.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/repl.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/readline.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/vm.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/string_decoder.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/timers.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/tls.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/crypto.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/dns.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/net.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/trace_events.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/tty.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/net.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/url.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/querystring.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/v8.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/vm.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/worker_threads.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/vm.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/zlib.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
@@ -1404,221 +1680,8 @@
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/index.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/base.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/globals.d.ts",
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts": [
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/async_hooks.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/perf_hooks.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/async_hooks.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/buffer.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/child_process.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/net.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/cluster.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/child_process.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/net.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/console.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/constants.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/crypto.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/tls.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/crypto.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/dns.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/net.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/https.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/tls.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/http.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/url.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/http2.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/net.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/tls.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/url.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/http.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/dgram.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/net.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/dns.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/dns.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/net.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/dns.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/tty.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/net.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/process.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/tty.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/http.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/url.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/net.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/domain.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/worker_threads.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/vm.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/zlib.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/v8.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/readline.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/repl.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/readline.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/vm.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/stream.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/url.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/globals.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/globals.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -1627,83 +1690,20 @@
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts"
       ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/vm.d.ts": [
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/globals.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/globals.d.ts",
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/index.d.ts": [
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/base.d.ts",
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/url.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/querystring.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts",
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/globals.d.ts",
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/trace_events.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/timers.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/string_decoder.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/querystring.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/punycode.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/path.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/os.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/module.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/inspector.d.ts": [
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/events.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",
-        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts"
+        "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
@@ -1751,7 +1751,6 @@
       "/users/qiuwei/workspace/entity-framework/src/annotations/property/member.ts",
       "/users/qiuwei/workspace/entity-framework/src/annotations/property/set.ts",
       "/users/qiuwei/workspace/entity-framework/src/annotations/property/constraint.ts",
-      "/users/qiuwei/workspace/entity-framework/src/index.ts",
       "/users/qiuwei/workspace/entity-framework/@types/index.d.ts",
       "/users/qiuwei/workspace/entity-framework/@types/json.d.ts",
       "/users/qiuwei/workspace/entity-framework/node_modules/jest-diff/build/types.d.ts",
@@ -1801,7 +1800,8 @@
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts",
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/globals.d.ts",
-      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/index.d.ts"
+      "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/index.d.ts",
+      "/users/qiuwei/workspace/entity-framework/src/index.ts"
     ]
   },
   "version": "3.5.3"

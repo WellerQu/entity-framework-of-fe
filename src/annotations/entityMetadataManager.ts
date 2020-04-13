@@ -1,6 +1,6 @@
 import MetadataType from './metadataType'
 import Relationship from './relationship'
-import Constraints from './constraint'
+import Constraints from './constraints'
 
 /**
  * 注解实体模型的字段元数据

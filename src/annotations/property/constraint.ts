@@ -1,5 +1,5 @@
 import manager, { MetadataType, MemberConstraints } from '../entityMetadataManager'
-import Constraint from '../constraint'
+import Constraints from '../constraints'
 
 /**
  * 用来注解实体模型中的外键字段
@@ -14,7 +14,7 @@ import Constraint from '../constraint'
  *
  * @param  {string} 字段别名
  */
-const constraint = (constraints: Constraint) => (target: Object, propertyName: string) => {
+const constraint = (constraints: Constraints) => (target: Object, propertyName: string) => {
   manager.register<MemberConstraints>(target, MetadataType.Constraint, {
     constraints,
     propertyName

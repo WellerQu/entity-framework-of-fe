@@ -4,7 +4,7 @@ import EntityTrace from './entityTrace'
 import Relationship from './annotations/relationship'
 import metadata from './annotations/entityMetadataManager'
 import isEmpty from './utils/isEmpty'
-import Constraint from './annotations/constraint'
+import Constraints from './annotations/constraints'
 
 export type OriginJSON = Promise<any>
 
@@ -426,7 +426,7 @@ export default class EntitySet<T extends Object> {
         return params
       }
 
-      if ((allConstraints & Constraint.NON_EMPTY_ON_ADDED) === Constraint.NON_EMPTY_ON_ADDED && !isEmpty(value)) {
+      if ((allConstraints & Constraints.NON_EMPTY_ON_ADDED) === Constraints.NON_EMPTY_ON_ADDED && !isEmpty(value)) {
         Reflect.set(params, m.fieldName, value)
         return params
       }
@@ -505,7 +505,7 @@ export default class EntitySet<T extends Object> {
         return params
       }
 
-      if ((allConstraints & Constraint.NON_EMPTY_ON_MODIFIED) === Constraint.NON_EMPTY_ON_MODIFIED && !isEmpty(value)) {
+      if ((allConstraints & Constraints.NON_EMPTY_ON_MODIFIED) === Constraints.NON_EMPTY_ON_MODIFIED && !isEmpty(value)) {
         Reflect.set(params, m.fieldName, value)
         return params
       }

@@ -1,5 +1,5 @@
 import * as EF from './index'
-import Constraint from './annotations/constraint'
+import Constraints from './annotations/constraints'
 
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
@@ -667,7 +667,7 @@ describe('Behavior-driven development', () => {
       id: number = 0
 
       @EF.member()
-      @EF.constraint(Constraint.NON_EMPTY_ON_ADDED)
+      @EF.constraint(Constraints.NON_EMPTY_ON_ADDED)
       name: string = ''
     }
 
@@ -701,7 +701,7 @@ describe('Behavior-driven development', () => {
       id: number = 0
 
       @EF.member()
-      @EF.constraint(Constraint.NON_EMPTY_ON_MODIFIED)
+      @EF.constraint(Constraints.NON_EMPTY_ON_MODIFIED)
       name: string = ''
 
       @EF.member()

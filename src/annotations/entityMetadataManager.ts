@@ -1,5 +1,6 @@
 import MetadataType from './metadataType'
 import Relationship from './relationship'
+import Constraints from './constraint'
 
 /**
  * 注解实体模型的字段元数据
@@ -15,6 +16,17 @@ export interface Field {
    * 属性名称
    */
   propertyName: string;
+}
+
+export interface MemberConstraints {
+  /**
+   * 成员值约束
+   */
+  constraints: Constraints,
+  /**
+   * 属性名
+   */
+  propertyName: string
 }
 
 /**
@@ -91,21 +103,23 @@ class EntityMetadataManager {
     primaryKeys: PrimaryKey[],
     foreignKeys: ForeignKey[],
     behaviors: Behaviors,
-    navigators: Navigators
+    navigators: Navigators,
+    constraints: Record<string, Constraints | undefined>,
   }>()
 
   private managedContext = new WeakMap<Object, {
     entities: EntitySet[]
   }>()
 
-  register<T extends Member | PrimaryKey | ForeignKey | Behavior | Navigator | EntitySet> (prototype: Object, type: MetadataType, meta: T) {
+  register<T extends Member | MemberConstraints | PrimaryKey | ForeignKey | Behavior | Navigator | EntitySet> (prototype: Object, type: MetadataType, meta: T) {
     if (type !== MetadataType.Entity && !this.managedModel.has(prototype)) {
       this.managedModel.set(prototype, {
         members: [],
         primaryKeys: [],
         foreignKeys: [],
         behaviors: {},
-        navigators: {}
+        navigators: {},
+        constraints: {}
       })
     }
     if (type === MetadataType.Entity && !this.managedContext.has(prototype)) {
@@ -116,6 +130,18 @@ class EntityMetadataManager {
 
     if (type === MetadataType.Member) {
       return this.managedModel.get(prototype)!.members.push(meta as Member)
+    }
+    if (type === MetadataType.Constraint) {
+      const newMeta = meta as MemberConstraints
+      const allConstraints = this.managedModel.get(prototype)!.constraints
+
+      if (!allConstraints[newMeta.propertyName]) {
+        allConstraints[newMeta.propertyName] = Constraints.NONE
+      }
+
+      allConstraints[newMeta.propertyName]! |= newMeta.constraints
+
+      return allConstraints
     }
     if (type === MetadataType.PrimaryKey) {
       return this.managedModel.get(prototype)!.primaryKeys.push(meta as PrimaryKey)
@@ -148,6 +174,14 @@ class EntityMetadataManager {
     }
 
     return this.managedModel.get(prototype)!.members
+  }
+
+  getMemberConstraints (prototype: Object) {
+    if (!this.managedModel.has(prototype)) {
+      return {}
+    }
+
+    return this.managedModel.get(prototype)!.constraints
   }
 
   getPrimaryKeys (prototype: Object): PrimaryKey[] {

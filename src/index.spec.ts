@@ -1,4 +1,5 @@
 import * as EF from './index'
+import Constraint from './annotations/constraint'
 
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
@@ -656,6 +657,85 @@ describe('Behavior-driven development', () => {
     ctx.foo.add(foo1, foo2)
     const res1 = await ctx.saveChanges()
     expect(res1).toEqual([foo1, foo2])
+  })
+
+  it('add a foo with member constraints', async () => {
+    @EF.behavior('add', 'http://localhost:3000/foo', 'POST')
+    class Foo {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      @EF.constraint(Constraint.NON_EMPTY_ON_ADDED)
+      name: string = ''
+    }
+
+    class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
+      @EF.set()
+      foo = new EF.EntitySet<Foo>(this, Foo)
+    }
+
+    const ctx = new Context()
+    const foo1 = ctx.foo.entry({
+      id: 8,
+      name: ''
+    })
+
+    ctx.foo.add(foo1)
+    const res1 = await ctx.saveChanges<Foo>()
+    expect(res1).toEqual([{ id: 8 }])
+    expect(res1[0].name).toBeUndefined()
+  })
+
+  it('update a bar with member constraints', async () => {
+    @EF.behavior('load', 'http://localhost:3000/bar/$id', 'GET')
+    @EF.behavior('update', 'http://localhost:3000/bar/$id', 'PATCH')
+    class Bar {
+      @EF.primary()
+      @EF.member()
+      id: number = 0
+
+      @EF.member()
+      @EF.constraint(Constraint.NON_EMPTY_ON_MODIFIED)
+      name: string = ''
+
+      @EF.member()
+      age: number = 0
+
+      @EF.member()
+      zid: number = 0
+    }
+
+    class Context extends EF.EntityContext {
+      constructor () {
+        super(new Configuration())
+      }
+
+      @EF.set()
+      bar = new EF.EntitySet<Bar>(this, Bar)
+    }
+
+    const ctx = new Context()
+    await ctx.bar.load(4)
+
+    const bar = ctx.bar.find(4)
+    const oldName = bar!.name
+    bar!.name = ''
+
+    const res = await ctx.saveChanges<Bar>()
+    expect(res).toEqual([{
+      ...bar,
+      name: oldName
+    }])
+
+    await ctx.clean().bar.load(4)
+    const bar2 = ctx.bar.find(4)
+    expect(bar2!.name).toEqual(oldName)
   })
 
   it('remove two foo from set and synchronize changes to remote', async () => {

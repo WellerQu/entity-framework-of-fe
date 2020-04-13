@@ -1,14 +1,14 @@
-import manager, { MetadataType, Relationship, Member, PrimaryKey, ForeignKey, Navigator } from './entityMetadataManager'
+import manager, { MetadataType, Relationship, Member, PrimaryKey, ForeignKey, Navigator, MemberConstraints } from './entityMetadataManager'
+import Constraint from './constraint'
 
 describe('Metadata Manager', () => {
   class Foo {
   }
 
   class Bar {
-
   }
 
-  it('register & unregister & getMembers, getPrimaryKeys, getForeignKeys', () => {
+  it('register & unregister & getMembers, getPrimaryKeys, getForeignKeys, getNavigator, getBehavior, getMemberConstraints', () => {
     manager.register<Member>(Foo.prototype, MetadataType.Member, {
       fieldName: 'newProperty',
       propertyName: 'newProperty'
@@ -18,6 +18,26 @@ describe('Metadata Manager', () => {
       propertyName: 'newProperty'
     })
     expect(manager.getMembers(Foo.prototype)).toHaveLength(2)
+
+    expect(manager.getMemberConstraints(Foo.prototype)).toEqual({})
+    expect(manager.getMemberConstraints(Foo.prototype)['newProperty']).toBeUndefined()
+    manager.register<MemberConstraints>(Foo.prototype, MetadataType.Constraint, {
+      propertyName: 'newProperty',
+      constraints: Constraint.NON_EMPTY_ON_ADDED
+    })
+    expect(manager.getMemberConstraints(Foo.prototype)).toEqual({
+      'newProperty': Constraint.NON_EMPTY_ON_ADDED
+    })
+
+    manager.register<MemberConstraints>(Foo.prototype, MetadataType.Constraint, {
+      propertyName: 'newProperty',
+      constraints: Constraint.NON_EMPTY_ON_ADDED | Constraint.NON_EMPTY_ON_MODIFIED
+    })
+
+    const allConstraints = manager.getMemberConstraints(Foo.prototype)['newProperty']
+    expect(allConstraints).toBeDefined()
+    expect(allConstraints! & Constraint.NON_EMPTY_ON_ADDED).toBe(Constraint.NON_EMPTY_ON_ADDED)
+    expect(allConstraints! & Constraint.NON_EMPTY_ON_MODIFIED).toBe(Constraint.NON_EMPTY_ON_MODIFIED)
 
     manager.register<PrimaryKey>(Foo.prototype, MetadataType.PrimaryKey, {
       fieldName: 'newProperty',

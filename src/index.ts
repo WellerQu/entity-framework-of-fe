@@ -4,6 +4,7 @@ import primary from './annotations/property/primary'
 import navigator from './annotations/property/navigator'
 import member from './annotations/property/member'
 import set from './annotations/property/set'
+import constraint from './annotations/property/constraint'
 import metadataManager from './annotations/entityMetadataManager'
 import MetadataType from './annotations/metadataType'
 import Relationship from './annotations/relationship'
@@ -19,6 +20,7 @@ export {
   navigator,
   member,
   set,
+  constraint,
   metadataManager,
   MetadataType,
   Relationship,

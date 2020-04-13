@@ -4,6 +4,7 @@ import EntityTrace from './entityTrace'
 import Relationship from './annotations/relationship'
 import metadata from './annotations/entityMetadataManager'
 import isEmpty from './utils/isEmpty'
+import Constraint from './annotations/constraint'
 
 export type OriginJSON = Promise<any>
 
@@ -405,6 +406,7 @@ export default class EntitySet<T extends Object> {
 
     const members = metadata.getMembers(object.constructor.prototype)
     const behavior = metadata.getBehavior(object.constructor.prototype, 'add')
+    const constraints = metadata.getMemberConstraints(object.constructor.prototype)
 
     if (!behavior) {
       return (Promise.reject(new Error(`${object.constructor.name} 没有配置Add behavior`)))
@@ -416,7 +418,19 @@ export default class EntitySet<T extends Object> {
     } = behavior
 
     const params = mapParameters(members.reduce((params, m) => {
-      Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
+      const value = Reflect.get(object, m.propertyName)
+      const allConstraints = constraints[m.propertyName]
+
+      if (!allConstraints) {
+        Reflect.set(params, m.fieldName, value)
+        return params
+      }
+
+      if ((allConstraints & Constraint.NON_EMPTY_ON_ADDED) === Constraint.NON_EMPTY_ON_ADDED && !isEmpty(value)) {
+        Reflect.set(params, m.fieldName, value)
+        return params
+      }
+
       return params
     }, {}))
 
@@ -471,6 +485,7 @@ export default class EntitySet<T extends Object> {
 
     const members = metadata.getMembers(object.constructor.prototype)
     const behavior = metadata.getBehavior(object.constructor.prototype, 'update')
+    const constraints = metadata.getMemberConstraints(object.constructor.prototype)
 
     if (!behavior) {
       return (Promise.reject(new Error(`${object.constructor.name} 没有配置Update behavior`)))
@@ -482,7 +497,19 @@ export default class EntitySet<T extends Object> {
     } = behavior
 
     const params = mapParameters(members.reduce((params, m) => {
-      Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
+      const value = Reflect.get(object, m.propertyName)
+      const allConstraints = constraints[m.propertyName]
+
+      if (!allConstraints) {
+        Reflect.set(params, m.fieldName, value)
+        return params
+      }
+
+      if ((allConstraints & Constraint.NON_EMPTY_ON_MODIFIED) === Constraint.NON_EMPTY_ON_MODIFIED && !isEmpty(value)) {
+        Reflect.set(params, m.fieldName, value)
+        return params
+      }
+
       return params
     }, {}))
 

@@ -16,6 +16,11 @@ export interface Field {
      */
     propertyName: string;
 }
+/**
+ * 成员数据值得约束
+ *
+ * @category annotations
+ */
 export interface MemberConstraints {
     /**
      * 成员值约束
@@ -91,10 +96,11 @@ export { MetadataType, Relationships as Relationship };
 declare class EntityMetadataManager {
     private managedModel;
     private managedContext;
-    register<T extends Member | MemberConstraints | PrimaryKey | ForeignKey | Behavior | Navigator | EntitySet>(prototype: Object, type: MetadataType, meta: T): number | Navigator | Behavior<any> | Record<string, Constraints | undefined> | undefined;
+    register<T extends Member | MemberConstraints | PrimaryKey | ForeignKey | Behavior | Navigator | EntitySet>(prototype: Object, type: MetadataType, meta: T): number | Behavior<any> | Navigator | Record<string, Constraints | undefined> | undefined;
     unregister(prototype: Object): void;
     getMembers(prototype: Object): Member[];
     getMemberConstraints(prototype: Object): Record<string, Constraints | undefined>;
+    getMemberConstraint(prototype: Object, propertyName: string): Constraints | undefined;
     getPrimaryKeys(prototype: Object): PrimaryKey[];
     getForeignKeys(prototype: Object): ForeignKey[];
     getBehavior(prototype: Object, behaviorName: BehaviorName | string): Behavior | undefined;

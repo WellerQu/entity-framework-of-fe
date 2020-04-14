@@ -1,6 +1,6 @@
 import EntityContext from './entityContext'
 import EntityState from './entityState'
-import EntityTrace from './entityTrace'
+import EntityTrace, { PropertyChangeEvent } from './entityTrace'
 import Relationships from './constants/relationship'
 import metadata from './annotations/entityMetadataManager'
 import isEmpty from './utils/isEmpty'
@@ -16,7 +16,8 @@ export default class EntitySet<T extends Object> {
     this.ownNavigatorRequests = {}
     this.otherNavigators = []
     this.entityMetadata = { type }
-    this.onPropertyChanged = this.onPropertyChanged.bind(this)
+    this.onPropertyBeforeChange = this.onPropertyBeforeChange.bind(this)
+    this.onPropertyAfterChange = this.onPropertyAfterChange.bind(this)
   }
 
   private set: Set<EntityTrace<T>>
@@ -60,7 +61,10 @@ export default class EntitySet<T extends Object> {
   }
 
   private cleanSet (): this {
-    Array.from(this.set).forEach(item => item.offPropertyChange(this.onPropertyChanged))
+    Array.from(this.set).forEach(item => {
+      item.offPropertyBeforeChange(this.onPropertyBeforeChange)
+      item.offPropertyAfterChange(this.onPropertyAfterChange)
+    })
     this.set.clear()
 
     return this
@@ -76,7 +80,8 @@ export default class EntitySet<T extends Object> {
   public add (...entities: (T| undefined)[]): this {
     entities.filter(item => !!item).forEach(addedItem => {
       const tracer = new EntityTrace<T>(addedItem!, EntityState.Added)
-      tracer.onPropertyChange(this.onPropertyChanged)
+      tracer.onPropertyBeforeChange(this.onPropertyBeforeChange)
+      tracer.onPropertyAfterChange(this.onPropertyAfterChange)
 
       this.set.add(tracer)
     })
@@ -117,7 +122,8 @@ export default class EntitySet<T extends Object> {
 
         // 删除当前传入的数据
         tracer.state = EntityState.Deleted
-        tracer.offPropertyChange(this.onPropertyChanged)
+        tracer.offPropertyBeforeChange(this.onPropertyBeforeChange)
+        tracer.offPropertyAfterChange(this.onPropertyAfterChange)
         tracer.revoke()
       }
     })
@@ -128,7 +134,8 @@ export default class EntitySet<T extends Object> {
   public attach (...entities: (T | undefined)[]): this {
     entities.filter(item => !!item).forEach(attachedItem => {
       const tracer = new EntityTrace<T>(attachedItem!, EntityState.Unchanged)
-      tracer.onPropertyChange(this.onPropertyChanged)
+      tracer.onPropertyBeforeChange(this.onPropertyBeforeChange)
+      tracer.onPropertyAfterChange(this.onPropertyAfterChange)
 
       this.set.add(tracer)
     })
@@ -146,7 +153,8 @@ export default class EntitySet<T extends Object> {
 
       if (stateTrace) {
         stateTrace.state = EntityState.Detached
-        stateTrace.offPropertyChange(this.onPropertyChanged)
+        stateTrace.offPropertyBeforeChange(this.onPropertyBeforeChange)
+        stateTrace.offPropertyAfterChange(this.onPropertyAfterChange)
         stateTrace.revoke()
       }
     })
@@ -405,8 +413,8 @@ export default class EntitySet<T extends Object> {
   }
 
   private applyConstraints (special: Constraints, rawObject: T): {} {
-    const members = metadata.getMembers(rawObject.constructor.prototype)
-    const constraints = metadata.getMemberConstraints(rawObject.constructor.prototype)
+    const members = metadata.getMembers(this.entityMetadata.type.prototype)
+    const constraints = metadata.getMemberConstraints(this.entityMetadata.type.prototype)
 
     return members.reduce((params, m) => {
       const value = Reflect.get(rawObject, m.propertyName)
@@ -414,6 +422,10 @@ export default class EntitySet<T extends Object> {
 
       if (!allConstraints) {
         Reflect.set(params, m.fieldName, value)
+        return params
+      }
+
+      if ((allConstraints & Constraints.READ_ONLY) === Constraints.READ_ONLY) {
         return params
       }
 
@@ -499,7 +511,7 @@ export default class EntitySet<T extends Object> {
       mapEntity = identity
     } = behavior
 
-    const applyConstraintsParams = this.applyConstraints(Constraints.NON_EMPTY_ON_ADDED, rawObject)
+    const applyConstraintsParams = this.applyConstraints(Constraints.NON_EMPTY_ON_MODIFIED, rawObject)
     const params = mapParameters(applyConstraintsParams)
 
     return new Promise((resolve, reject) => {
@@ -552,31 +564,18 @@ export default class EntitySet<T extends Object> {
     return promises
   }
 
-  // public triggerCustomBehavior<T extends BehaviorName | string> (behaviorName: T, data: {}, effect: (res: any) => any) {
-  //   const behavior = metadata.getBehavior(this.entityMetadata.type.prototype, behaviorName)
-  //   if (!behavior) {
-  //     throw new Error(`Behavior ${behaviorName} 不存在`)
-  //   }
+  private onPropertyBeforeChange (tracer: EntityTrace<T>, e: PropertyChangeEvent<T, EntityState>) {
+    const constraints = metadata.getMemberConstraint(this.entityMetadata.type.prototype, e.propertyName)
+    if (!constraints) {
+      return
+    }
 
-  //   const {
-  //     url,
-  //     method,
-  //     mapParameters = identity,
-  //     mapEntity = identity
-  //   } = behavior
+    if ((constraints & Constraints.READ_ONLY) === Constraints.READ_ONLY) {
+      throw new Error('无法修改一个添加了READ_ONLY约束的成员')
+    }
+  }
 
-  //   const params = mapParameters(data)
-
-  //   return new Promise((resolve, reject) => {
-  //     this.ctx.configuration.fetchData(url, { method }, params)
-  //       .then(res => res.json(), reject)
-  //       .then(effect, reject)
-  //       .then(mapEntity, reject)
-  //       .then(resolve, reject)
-  //   })
-  // }
-
-  private onPropertyChanged (tracer: EntityTrace<T>/*, e: PropertyChangeEvent<T, EntityState> */) {
+  private onPropertyAfterChange (tracer: EntityTrace<T>/*, e: PropertyChangeEvent<T, EntityState> */) {
     tracer.state = EntityState.Modified
   }
 }

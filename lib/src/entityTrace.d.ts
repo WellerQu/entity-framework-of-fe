@@ -13,7 +13,10 @@ export default class EntityTrace<T extends Object> {
     readonly rawObject: T;
     private proxy;
     revoke: () => void;
-    private propertyChangeHandlers;
-    onPropertyChange(handler: PropertyChangeHandler<T>): void;
-    offPropertyChange(handler: PropertyChangeHandler<T>): void;
+    private propertyBeforeChangeHandlers;
+    onPropertyBeforeChange(handler: PropertyChangeHandler<T>): void;
+    offPropertyBeforeChange(handler: PropertyChangeHandler<T>): void;
+    private propertyAfterChangeHandlers;
+    onPropertyAfterChange(handler: PropertyChangeHandler<T>): void;
+    offPropertyAfterChange(handler: PropertyChangeHandler<T>): void;
 }

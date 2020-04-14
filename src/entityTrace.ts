@@ -10,21 +10,22 @@ export type PropertyChangeHandler<T> = (tracer: EntityTrace<T>, e: PropertyChang
 
 export default class EntityTrace<T extends Object> {
   constructor (private origin: T, public state: EntityState = EntityState.Unchanged) {
-    const propertyChange = (propertyName: string, value: any, newValue: any) => {
-      const event = {
-        propertyName,
-        value,
-        newValue
-      }
-      this.propertyChangeHandlers.forEach(fn => fn(this, event))
-    }
+    const sender = this
 
     const { proxy, revoke } = Proxy.revocable(origin, {
       set (target: T, property: string, value: any) {
         if (property in target) {
           const oldValue = Reflect.get(target, property)
+
+          const event = {
+            propertyName: property,
+            value: oldValue,
+            newValue: value
+          }
+
+          sender.propertyBeforeChangeHandlers.forEach(fn => fn(sender, event))
           Reflect.set(target, property, value)
-          propertyChange(property, oldValue, value)
+          sender.propertyAfterChangeHandlers.forEach(fn => fn(sender, event))
           return true
         }
 
@@ -47,12 +48,19 @@ export default class EntityTrace<T extends Object> {
   private proxy: T
   public revoke: () => void
 
-  private propertyChangeHandlers: PropertyChangeHandler<T>[] = []
-
-  public onPropertyChange (handler: PropertyChangeHandler<T>) {
-    this.propertyChangeHandlers.push(handler)
+  private propertyBeforeChangeHandlers: PropertyChangeHandler<T>[] = []
+  public onPropertyBeforeChange (handler: PropertyChangeHandler<T>) {
+    this.propertyBeforeChangeHandlers.push(handler)
   }
-  public offPropertyChange (handler: PropertyChangeHandler<T>) {
-    this.propertyChangeHandlers = this.propertyChangeHandlers.filter(item => item !== handler)
+  public offPropertyBeforeChange (handler: PropertyChangeHandler<T>) {
+    this.propertyBeforeChangeHandlers = this.propertyBeforeChangeHandlers.filter(item => item !== handler)
+  }
+
+  private propertyAfterChangeHandlers: PropertyChangeHandler<T>[] = []
+  public onPropertyAfterChange (handler: PropertyChangeHandler<T>) {
+    this.propertyAfterChangeHandlers.push(handler)
+  }
+  public offPropertyAfterChange (handler: PropertyChangeHandler<T>) {
+    this.propertyAfterChangeHandlers = this.propertyAfterChangeHandlers.filter(item => item !== handler)
   }
 }

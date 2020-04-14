@@ -51,5 +51,6 @@ export default class EntitySet<T extends Object> {
     private synchronizeDeletedState;
     private synchronizeModifiedState;
     synchronizeState(): Promise<any>[];
-    private onPropertyChanged;
+    private onPropertyBeforeChange;
+    private onPropertyAfterChange;
 }

@@ -126,24 +126,24 @@
         "signature": "aaf435cb23db9a3da850cf1d4584acb20bc1592f324a8412cc6bb32cbe57f1fe"
       },
       "/users/qiuwei/workspace/entity-framework/src/constants/constraints.ts": {
-        "version": "b99cebd664ff7da7465464d21aa444bd4602ef47f02ad6ce69b4fbe2bc0f607e",
-        "signature": "e58579ac9fc4be7dd35df04fe9cc27c02e3b6cc66cdb5d0e04cefd210f0a5ef8"
+        "version": "91be7671cfd392db1afb04684ef1bbbb8b51ef0865a36d40cb70f14a5b185090",
+        "signature": "1e947998bddb414096492947c521a441f0c0dde3226000acc85b30d71e8689f7"
       },
       "/users/qiuwei/workspace/entity-framework/src/annotations/entitymetadatamanager.ts": {
-        "version": "1792830848e8ef178e0bb9d421ae7a0ee637b6fc096273c0443997567bb4bac8",
-        "signature": "d7ed9744d010177c2240fd6efffb77482e503dcd88b24c278a6adbdfa8c9587e"
+        "version": "9461b10b09596f4347246a0975229f7b6a66be4b5fe1423c5cbaf258c023d90e",
+        "signature": "d510fd82eb8e8ccfb953eccfc593ae8bde840f31a7c48b845bd6e5939d2a8110"
       },
       "/users/qiuwei/workspace/entity-framework/src/entitystate.ts": {
         "version": "c66df8965d53cb2cc67d0b7f22121ddaf6ee4bac034090a1350e81a6fcf839fb",
         "signature": "c5799ee97e82747325228dc951c00ceb3a26d4ff82b0a0727033537c3124bfe5"
       },
       "/users/qiuwei/workspace/entity-framework/src/entitytrace.ts": {
-        "version": "c3edbab41c804ccfbd79683afed6f62f4d7f68c488d36191f8f76d3fe4585fc8",
-        "signature": "560fbdbc2a276b8159986d9b432c01a303ef297467b65927978f58979c1780fe"
+        "version": "191daa178c2f83e5461465f807e6b722372548d495e3a51903df9e4ca7affddc",
+        "signature": "0b73f13f744854b5ff78a20372e1dbf25d59ddc0bbf6a38a505fb55c6db21f96"
       },
       "/users/qiuwei/workspace/entity-framework/src/entityset.ts": {
-        "version": "faade5eac3d57b1466a73ef02b9c49f7756cd83a6266497ac8c2fd892199e38d",
-        "signature": "6f0b3ee0082c13790e3a76452dedd031aa71353dffed8ef2971fdcc2754e2ebd"
+        "version": "52ed0c6419f50e6c1090d82ed4e70044699a3efb102283439ba6ff03e9934e90",
+        "signature": "d56fb757f1b3a62f92d288109147061d78457cabf25167b036fb19dafb296574"
       },
       "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts": {
         "version": "de997533b043b888166ee3ebbcaa37f36caaa5dbb78669ffc10966d5e9fd5e58",
@@ -1738,9 +1738,7 @@
       "/users/qiuwei/workspace/entity-framework/src/entityconfiguration.ts",
       "/users/qiuwei/workspace/entity-framework/src/annotations/metadatatype.ts",
       "/users/qiuwei/workspace/entity-framework/src/constants/relationship.ts",
-      "/users/qiuwei/workspace/entity-framework/src/constants/constraints.ts",
       "/users/qiuwei/workspace/entity-framework/src/entitystate.ts",
-      "/users/qiuwei/workspace/entity-framework/src/entitytrace.ts",
       "/users/qiuwei/workspace/entity-framework/@types/index.d.ts",
       "/users/qiuwei/workspace/entity-framework/@types/json.d.ts",
       "/users/qiuwei/workspace/entity-framework/node_modules/jest-diff/build/types.d.ts",
@@ -1791,7 +1789,9 @@
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts",
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/globals.d.ts",
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/index.d.ts",
+      "/users/qiuwei/workspace/entity-framework/src/constants/constraints.ts",
       "/users/qiuwei/workspace/entity-framework/src/annotations/entitymetadatamanager.ts",
+      "/users/qiuwei/workspace/entity-framework/src/entitytrace.ts",
       "/users/qiuwei/workspace/entity-framework/src/entityset.ts",
       "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts",
       "/users/qiuwei/workspace/entity-framework/src/annotations/object/behavior.ts",

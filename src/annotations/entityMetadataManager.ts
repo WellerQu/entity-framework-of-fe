@@ -18,6 +18,11 @@ export interface Field {
   propertyName: string;
 }
 
+/**
+ * 成员数据值得约束
+ *
+ * @category annotations
+ */
 export interface MemberConstraints {
   /**
    * 成员值约束
@@ -182,6 +187,10 @@ class EntityMetadataManager {
     }
 
     return this.managedModel.get(prototype)!.constraints
+  }
+
+  getMemberConstraint (prototype: Object, propertyName: string) {
+    return this.getMemberConstraints(prototype)[propertyName]
   }
 
   getPrimaryKeys (prototype: Object): PrimaryKey[] {

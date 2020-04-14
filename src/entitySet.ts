@@ -8,6 +8,8 @@ import Constraints from './constants/constraints'
 
 export type OriginJSON = Promise<any>
 
+const identity = (a: any) => a
+
 export default class EntitySet<T extends Object> {
   constructor (private ctx: EntityContext, type: { new(): T}) {
     this.set = new Set<EntityTrace<T>>()
@@ -238,7 +240,8 @@ export default class EntitySet<T extends Object> {
           const data = mapEntity(json)
           const first = Array.isArray(data) ? data[0] : data
           const entity = this.parseOriginDataToEntity(first)
-          Promise.all(requests.map(fn => fn(entity))).then(() => {
+
+          return Promise.all(requests.map(fn => fn(entity))).then(() => {
             entity && this.attach(entity)
             resolve(json)
           }, reject)
@@ -272,7 +275,8 @@ export default class EntitySet<T extends Object> {
           const promises = entities
             .map(entity => requests.map(fn => fn(entity)))
             .reduce((acc, val) => acc.concat(val), []) // 降低数组维度
-          Promise.all(promises)
+
+          return Promise.all(promises)
             .then(() => {
               this.attach(...entities as T[])
               resolve(json)
@@ -400,25 +404,12 @@ export default class EntitySet<T extends Object> {
     })
   }
 
-  private async synchronizeAddedState (item: EntityTrace<T>): Promise<any> {
-    const object = item.rawObject
-    const identity = (a: any) => a
+  private applyConstraints (special: Constraints, rawObject: T): {} {
+    const members = metadata.getMembers(rawObject.constructor.prototype)
+    const constraints = metadata.getMemberConstraints(rawObject.constructor.prototype)
 
-    const members = metadata.getMembers(object.constructor.prototype)
-    const behavior = metadata.getBehavior(object.constructor.prototype, 'add')
-    const constraints = metadata.getMemberConstraints(object.constructor.prototype)
-
-    if (!behavior) {
-      return (Promise.reject(new Error(`${object.constructor.name} 没有配置Add behavior`)))
-    }
-
-    const {
-      mapParameters = identity,
-      mapEntity = (p: Promise<any>) => p
-    } = behavior
-
-    const params = mapParameters(members.reduce((params, m) => {
-      const value = Reflect.get(object, m.propertyName)
+    return members.reduce((params, m) => {
+      const value = Reflect.get(rawObject, m.propertyName)
       const allConstraints = constraints[m.propertyName]
 
       if (!allConstraints) {
@@ -426,13 +417,30 @@ export default class EntitySet<T extends Object> {
         return params
       }
 
-      if ((allConstraints & Constraints.NON_EMPTY_ON_ADDED) === Constraints.NON_EMPTY_ON_ADDED && !isEmpty(value)) {
+      if ((allConstraints & special) === special && !isEmpty(value)) {
         Reflect.set(params, m.fieldName, value)
         return params
       }
 
       return params
-    }, {}))
+    }, {})
+  }
+
+  private async synchronizeAddedState (item: EntityTrace<T>): Promise<any> {
+    const rawObject = item.rawObject
+
+    const behavior = metadata.getBehavior(rawObject.constructor.prototype, 'add')
+    if (!behavior) {
+      return (Promise.reject(new Error(`${rawObject.constructor.name} 没有配置Add behavior`)))
+    }
+
+    const {
+      mapParameters = identity,
+      mapEntity = identity
+    } = behavior
+
+    const applyConstraintsParams = this.applyConstraints(Constraints.NON_EMPTY_ON_ADDED, rawObject)
+    const params = mapParameters(applyConstraintsParams)
 
     return new Promise((resolve, reject) => {
       this.ctx.configuration.fetchData(behavior.url, { method: behavior.method }, params)
@@ -447,23 +455,22 @@ export default class EntitySet<T extends Object> {
   }
 
   private async synchronizeDeletedState (item: EntityTrace<T>): Promise<any> {
-    const object = item.rawObject
-    const identity = (a: any) => a
+    const rawObject = item.rawObject
 
-    const primaryKeys = metadata.getPrimaryKeys(object.constructor.prototype)
-    const behavior = metadata.getBehavior(object.constructor.prototype, 'delete')
+    const primaryKeys = metadata.getPrimaryKeys(rawObject.constructor.prototype)
+    const behavior = metadata.getBehavior(rawObject.constructor.prototype, 'delete')
 
     if (!behavior) {
-      return (Promise.reject(new Error(`${object.constructor.name} 没有配置Delete behavior`)))
+      return (Promise.reject(new Error(`${rawObject.constructor.name} 没有配置Delete behavior`)))
     }
 
     const {
       mapParameters = identity,
-      mapEntity = (a: any) => a
+      mapEntity = identity
     } = behavior
 
     const params = mapParameters(primaryKeys.reduce((params, m) => {
-      Reflect.set(params, m.fieldName, Reflect.get(object, m.propertyName))
+      Reflect.set(params, m.fieldName, Reflect.get(rawObject, m.propertyName))
       return params
     }, {}))
 
@@ -480,38 +487,20 @@ export default class EntitySet<T extends Object> {
   }
 
   private async synchronizeModifiedState (item: EntityTrace<T>): Promise<any> {
-    const object = item.rawObject
-    const identity = (a: any) => a
+    const rawObject = item.rawObject
 
-    const members = metadata.getMembers(object.constructor.prototype)
-    const behavior = metadata.getBehavior(object.constructor.prototype, 'update')
-    const constraints = metadata.getMemberConstraints(object.constructor.prototype)
-
+    const behavior = metadata.getBehavior(rawObject.constructor.prototype, 'update')
     if (!behavior) {
-      return (Promise.reject(new Error(`${object.constructor.name} 没有配置Update behavior`)))
+      return (Promise.reject(new Error(`${rawObject.constructor.name} 没有配置 Update behavior`)))
     }
 
     const {
       mapParameters = identity,
-      mapEntity = (a: any) => a
+      mapEntity = identity
     } = behavior
 
-    const params = mapParameters(members.reduce((params, m) => {
-      const value = Reflect.get(object, m.propertyName)
-      const allConstraints = constraints[m.propertyName]
-
-      if (!allConstraints) {
-        Reflect.set(params, m.fieldName, value)
-        return params
-      }
-
-      if ((allConstraints & Constraints.NON_EMPTY_ON_MODIFIED) === Constraints.NON_EMPTY_ON_MODIFIED && !isEmpty(value)) {
-        Reflect.set(params, m.fieldName, value)
-        return params
-      }
-
-      return params
-    }, {}))
+    const applyConstraintsParams = this.applyConstraints(Constraints.NON_EMPTY_ON_ADDED, rawObject)
+    const params = mapParameters(applyConstraintsParams)
 
     return new Promise((resolve, reject) => {
       this.ctx.configuration.fetchData(behavior.url, { method: behavior.method }, params)
@@ -562,6 +551,30 @@ export default class EntitySet<T extends Object> {
 
     return promises
   }
+
+  // public triggerCustomBehavior<T extends BehaviorName | string> (behaviorName: T, data: {}, effect: (res: any) => any) {
+  //   const behavior = metadata.getBehavior(this.entityMetadata.type.prototype, behaviorName)
+  //   if (!behavior) {
+  //     throw new Error(`Behavior ${behaviorName} 不存在`)
+  //   }
+
+  //   const {
+  //     url,
+  //     method,
+  //     mapParameters = identity,
+  //     mapEntity = identity
+  //   } = behavior
+
+  //   const params = mapParameters(data)
+
+  //   return new Promise((resolve, reject) => {
+  //     this.ctx.configuration.fetchData(url, { method }, params)
+  //       .then(res => res.json(), reject)
+  //       .then(effect, reject)
+  //       .then(mapEntity, reject)
+  //       .then(resolve, reject)
+  //   })
+  // }
 
   private onPropertyChanged (tracer: EntityTrace<T>/*, e: PropertyChangeEvent<T, EntityState> */) {
     tracer.state = EntityState.Modified

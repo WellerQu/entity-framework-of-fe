@@ -46,6 +46,7 @@ export default class EntitySet<T extends Object> {
     include(navigatorName: string): this;
     entry(originData: {}): T;
     rawQuery(query: () => Promise<T[] | T>): Promise<T[]>;
+    private applyConstraints;
     private synchronizeAddedState;
     private synchronizeDeletedState;
     private synchronizeModifiedState;

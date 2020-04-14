@@ -79,7 +79,7 @@ export interface EntitySet extends Field { }
 
 export type BehaviorName = 'load' | 'loadAll' | 'add' | 'delete' | 'update'
 export interface Behavior<T = any> {
-  behaviorName: BehaviorName;
+  behaviorName: BehaviorName | string;
   url: string;
   method: Method;
   mapParameters?: (...args: any[]) => T,
@@ -200,7 +200,7 @@ class EntityMetadataManager {
     return this.managedModel.get(prototype)!.foreignKeys
   }
 
-  getBehavior (prototype: Object, behaviorName: BehaviorName): Behavior | undefined {
+  getBehavior (prototype: Object, behaviorName: BehaviorName | string): Behavior | undefined {
     if (!this.managedModel.has(prototype)) {
       return
     }

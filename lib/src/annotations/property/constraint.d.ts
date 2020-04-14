@@ -1,6 +1,6 @@
 import Constraints from '../../constants/constraints';
 /**
- * 用来注解实体模型中的外键字段
+ * 用来注解实体模型中的值约束
  *
  * @example
  * ```typescript
@@ -10,7 +10,7 @@ import Constraints from '../../constants/constraints';
  * }
  * ```
  *
- * @param  {string} 字段别名
+ * @param constraints {Constraints} 约束
  */
 declare const constraint: (constraints: Constraints) => (target: Object, propertyName: string) => void;
 export default constraint;

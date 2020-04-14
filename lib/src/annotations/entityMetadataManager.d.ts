@@ -76,7 +76,7 @@ export interface EntitySet extends Field {
 }
 export declare type BehaviorName = 'load' | 'loadAll' | 'add' | 'delete' | 'update';
 export interface Behavior<T = any> {
-    behaviorName: BehaviorName;
+    behaviorName: BehaviorName | string;
     url: string;
     method: Method;
     mapParameters?: (...args: any[]) => T;
@@ -97,7 +97,7 @@ declare class EntityMetadataManager {
     getMemberConstraints(prototype: Object): Record<string, Constraints | undefined>;
     getPrimaryKeys(prototype: Object): PrimaryKey[];
     getForeignKeys(prototype: Object): ForeignKey[];
-    getBehavior(prototype: Object, behaviorName: BehaviorName): Behavior | undefined;
+    getBehavior(prototype: Object, behaviorName: BehaviorName | string): Behavior | undefined;
     getNavigator(prototype: Object, navigatorName: string): Navigator | undefined;
     getNavigators(prototype: Object): Navigator[];
     getEntitySet(prototype: Object, navigatorName: string): EntitySet | undefined;

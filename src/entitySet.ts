@@ -362,17 +362,21 @@ export default class EntitySet<T extends Object> {
     return this
   }
 
-  public entry (originData: {}): T {
+  public entry (originData: {}, entity?: T): T {
+    let instance = entity
     const Type = this.entityMetadata.type
-    const instance = new Type()
+
+    if (!entity) {
+      instance = new Type()
+    }
 
     const members = metadata.getMembers(Type.prototype)
     members.forEach(item => {
       const fieldData = Reflect.get(originData, item.fieldName)
-      Reflect.set(instance, item.propertyName, fieldData)
+      Reflect.set(instance!, item.propertyName, fieldData)
     })
 
-    return instance
+    return instance!
   }
 
   public rawQuery (query: () => Promise<T[] | T>): Promise<T[]> {

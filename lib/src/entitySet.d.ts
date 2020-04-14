@@ -44,7 +44,7 @@ export default class EntitySet<T extends Object> {
     load(...args: any[]): Promise<Response>;
     loadAll<P = any>(...args: any[]): Promise<P>;
     include(navigatorName: string): this;
-    entry(originData: {}): T;
+    entry(originData: {}, entity?: T): T;
     rawQuery(query: () => Promise<T[] | T>): Promise<T[]>;
     private applyConstraints;
     private synchronizeAddedState;

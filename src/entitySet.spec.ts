@@ -8,6 +8,8 @@ import navigator from './annotations/property/navigator'
 import Relationships from './constants/relationship'
 import EntityConfiguration from './entityConfiguration'
 import set from './annotations/property/set'
+import constraint from './annotations/property/constraint'
+import Constraints from './constants/constraints'
 
 describe('EntitySet', () => {
   const domain = 'http://localhost:3000'
@@ -99,6 +101,10 @@ describe('EntitySet', () => {
     // 导航属性
     @navigator(Relationships.Many, 'jar-alias')
     jar?: Jar[]
+
+    @member()
+    @constraint(Constraints.READ_ONLY)
+    createTime: number = 0
   }
 
   class Context extends EntityContext {
@@ -299,6 +305,22 @@ describe('EntitySet', () => {
       const zar = ctx.zar.entry(originData)
       expect(zar.id).toEqual(originData.id)
       expect(zar.name).toEqual(originData.zAliasName)
+    })
+  })
+
+  describe('apply constraints', () => {
+    beforeEach(() => {
+      const foo = new Foo()
+      foo.id = 1
+      foo.name = 'Hello'
+      foo.createTime = 123467
+
+      ctx.clean().foo.attach(foo)
+    })
+
+    it('modify readonly member will get a exception', () => {
+      const foo = ctx.foo.find(1)
+      expect(() => { foo!.createTime = 2 }).toThrow('无法修改一个添加了READ_ONLY约束的成员')
     })
   })
 

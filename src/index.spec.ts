@@ -1,13 +1,29 @@
 import * as EF from './index'
 import Constraints from './constants/constraints'
 
-const util = require('util')
-const exec = util.promisify(require('child_process').exec)
+import jsonServer from 'json-server'
+import { Application } from 'express'
+import cp from 'child_process'
+import { Server } from 'net'
 
 describe('Behavior-driven development', () => {
   if (process.env.CI !== 'Github') {
-    afterAll(async () => {
-      return exec('git checkout server/db.json')
+    let app: Server | null = null
+
+    beforeAll(async (done) => {
+      const server: Application = jsonServer.create()
+      const router = jsonServer.router('server/db.json')
+      const middlewares = jsonServer.defaults()
+      server.use(middlewares)
+      server.use(router)
+      app = server.listen(3000, done)
+    })
+
+    afterAll(async (done) => {
+      cp.execSync('git checkout server/db.json')
+      if (app) {
+        app!.close(done)
+      }
     })
   }
 

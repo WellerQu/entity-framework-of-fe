@@ -43,24 +43,49 @@ describe('EntityTrace', () => {
     }).not.toThrow()
   })
 
-  it('onPropertyChange & offPropertyChange', () => {
+  it('onPropertyBeforeChange & offPropertyBeforeChange', () => {
     const foo = { id: 1, name: 'foo' }
     const trace = new EntityTrace(foo, EntityState.Added)
 
-    const handlePropertyChange = jest.fn()
+    const handlePropertyBeforeChange = jest.fn()
 
-    trace.onPropertyChange(handlePropertyChange)
+    trace.onPropertyBeforeChange(handlePropertyBeforeChange)
     trace.object.name = 'hhhhh'
-    expect(handlePropertyChange).toHaveBeenCalledTimes(1)
-    expect(handlePropertyChange).toHaveBeenCalledWith(trace, {
+    expect(handlePropertyBeforeChange).toHaveBeenCalledTimes(1)
+    expect(handlePropertyBeforeChange).toHaveBeenCalledWith(trace, {
       propertyName: 'name',
       value: 'foo',
       newValue: 'hhhhh'
     })
 
-    handlePropertyChange.mockReset()
-    trace.offPropertyChange(handlePropertyChange)
+    handlePropertyBeforeChange.mockReset()
+    expect(handlePropertyBeforeChange).toHaveBeenCalledTimes(0)
+
+    trace.offPropertyBeforeChange(handlePropertyBeforeChange)
     trace.object.name = 'foo'
-    expect(handlePropertyChange).toHaveBeenCalledTimes(0)
+    expect(handlePropertyBeforeChange).toHaveBeenCalledTimes(0)
+  })
+
+  it('onPropertyAfterChange & offPropertyAfterChange', () => {
+    const foo = { id: 1, name: 'foo' }
+    const trace = new EntityTrace(foo, EntityState.Added)
+
+    const handlePropertyAfterChange = jest.fn()
+
+    trace.onPropertyAfterChange(handlePropertyAfterChange)
+    trace.object.name = 'hhhhh'
+    expect(handlePropertyAfterChange).toHaveBeenCalledTimes(1)
+    expect(handlePropertyAfterChange).toHaveBeenCalledWith(trace, {
+      propertyName: 'name',
+      value: 'foo',
+      newValue: 'hhhhh'
+    })
+
+    handlePropertyAfterChange.mockReset()
+    expect(handlePropertyAfterChange).toHaveBeenCalledTimes(0)
+
+    trace.offPropertyAfterChange(handlePropertyAfterChange)
+    trace.object.name = 'foo'
+    expect(handlePropertyAfterChange).toHaveBeenCalledTimes(0)
   })
 })

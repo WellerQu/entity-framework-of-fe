@@ -142,7 +142,7 @@
         "signature": "0b73f13f744854b5ff78a20372e1dbf25d59ddc0bbf6a38a505fb55c6db21f96"
       },
       "/users/qiuwei/workspace/entity-framework/src/entityset.ts": {
-        "version": "56d70aa49980957491e166f63138d6bfd9b2efba3e47594d587ba8f22204fb21",
+        "version": "d9c2b64dfafa012e7b064e271878150ea16b4c851587da09b858e3791dfad39c",
         "signature": "124ddf474fe07e61215401c0bf4cf7221a355a7b46124e0e20d1efbf36ebc38c"
       },
       "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts": {
@@ -1742,6 +1742,7 @@
       "/users/qiuwei/workspace/entity-framework/src/annotations/entitymetadatamanager.ts",
       "/users/qiuwei/workspace/entity-framework/src/entitystate.ts",
       "/users/qiuwei/workspace/entity-framework/src/entitytrace.ts",
+      "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts",
       "/users/qiuwei/workspace/entity-framework/src/annotations/object/behavior.ts",
       "/users/qiuwei/workspace/entity-framework/src/annotations/property/foreign.ts",
       "/users/qiuwei/workspace/entity-framework/src/annotations/property/primary.ts",
@@ -1749,6 +1750,7 @@
       "/users/qiuwei/workspace/entity-framework/src/annotations/property/member.ts",
       "/users/qiuwei/workspace/entity-framework/src/annotations/property/set.ts",
       "/users/qiuwei/workspace/entity-framework/src/annotations/property/constraint.ts",
+      "/users/qiuwei/workspace/entity-framework/src/index.ts",
       "/users/qiuwei/workspace/entity-framework/@types/index.d.ts",
       "/users/qiuwei/workspace/entity-framework/@types/json.d.ts",
       "/users/qiuwei/workspace/entity-framework/node_modules/jest-diff/build/types.d.ts",
@@ -1799,9 +1801,7 @@
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts",
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/globals.d.ts",
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/index.d.ts",
-      "/users/qiuwei/workspace/entity-framework/src/entityset.ts",
-      "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts",
-      "/users/qiuwei/workspace/entity-framework/src/index.ts"
+      "/users/qiuwei/workspace/entity-framework/src/entityset.ts"
     ]
   },
   "version": "3.5.3"

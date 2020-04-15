@@ -377,6 +377,10 @@ export default class EntitySet<T extends Object> {
     const members = metadata.getMembers(Type.prototype)
     members.forEach(item => {
       const fieldData = Reflect.get(originData, item.fieldName)
+      if (fieldData === undefined) {
+        return
+      }
+
       Reflect.set(instance!, item.propertyName, fieldData)
     })
 
@@ -407,6 +411,9 @@ export default class EntitySet<T extends Object> {
     const members = metadata.getMembers(Type.prototype)
     members.forEach(item => {
       const fieldData = Reflect.get(originData, item.propertyName)
+      if (fieldData === undefined) {
+        return
+      }
       Reflect.set(instance!, item.propertyName, fieldData)
     })
 

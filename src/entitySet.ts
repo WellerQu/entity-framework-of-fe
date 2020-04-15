@@ -10,6 +10,10 @@ export type OriginJSON = Promise<any>
 
 const identity = (a: any) => a
 
+type Store = {
+  [key: string]: any
+}
+
 export default class EntitySet<T extends Object> {
   constructor (private ctx: EntityContext, type: { new(): T}) {
     this.set = new Set<EntityTrace<T>>()
@@ -373,6 +377,36 @@ export default class EntitySet<T extends Object> {
     const members = metadata.getMembers(Type.prototype)
     members.forEach(item => {
       const fieldData = Reflect.get(originData, item.fieldName)
+      Reflect.set(instance!, item.propertyName, fieldData)
+    })
+
+    return instance!
+  }
+
+  public reverse (entity: T): Store {
+    const Type = this.entityMetadata.type
+    const members = metadata.getMembers(Type.prototype)
+    const store: Store = {}
+
+    members.forEach(item => {
+      const fieldData = Reflect.get(entity, item.propertyName)
+      store[item.fieldName] = fieldData
+    })
+
+    return store
+  }
+
+  public fill (originData: {}, entity?: T): T {
+    let instance = entity
+    const Type = this.entityMetadata.type
+
+    if (!entity) {
+      instance = new Type()
+    }
+
+    const members = metadata.getMembers(Type.prototype)
+    members.forEach(item => {
+      const fieldData = Reflect.get(originData, item.propertyName)
       Reflect.set(instance!, item.propertyName, fieldData)
     })
 

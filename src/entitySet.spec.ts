@@ -107,6 +107,15 @@ describe('EntitySet', () => {
     createTime: number = 0
   }
 
+  class Kan {
+    @primary()
+    @member()
+    id: number = 0
+
+    @member('url_fully')
+    urlFully: string = ''
+  }
+
   class Context extends EntityContext {
     constructor () {
       super(new Configuration())
@@ -120,6 +129,8 @@ describe('EntitySet', () => {
     jar: EntitySet<Jar> = new EntitySet<Jar>(this, Jar)
     @set()
     zar: EntitySet<Zar> = new EntitySet<Zar>(this, Zar)
+    @set()
+    kan: EntitySet<Kan> = new EntitySet<Kan>(this, Kan)
   }
 
   const ctx = new Context()
@@ -305,6 +316,34 @@ describe('EntitySet', () => {
       const zar = ctx.zar.entry(originData)
       expect(zar.id).toEqual(originData.id)
       expect(zar.name).toEqual(originData.zAliasName)
+      expect(zar).not.toBe(originData)
+
+      const newZar = new Zar()
+      const zar2 = ctx.zar.entry(originData, newZar)
+      expect(zar2).toBe(newZar)
+      expect(zar2.id).toEqual(newZar.id)
+    })
+
+    it('fill', () => {
+      const originData = { id: 1, urlFully: 'hahaha.com' }
+
+      const kan = ctx.kan.fill(originData)
+      expect(kan.urlFully).toEqual(originData.urlFully)
+
+      const newKan = new Kan()
+      const kan2 = ctx.kan.fill(originData, newKan)
+      expect(kan2).toBe(newKan)
+      expect(kan2.urlFully).toEqual(newKan.urlFully)
+    })
+
+    it('reverse', () => {
+      const kan = new Kan()
+      kan.id = 2
+      kan.urlFully = 'hualala.com'
+
+      const originData = ctx.kan.reverse(kan)
+      expect(originData.url_fully).toEqual(kan.urlFully)
+      expect(originData).not.toBe(kan)
     })
   })
 

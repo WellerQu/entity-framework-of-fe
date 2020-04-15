@@ -1,5 +1,8 @@
 import EntityContext from './entityContext';
 export declare type OriginJSON = Promise<any>;
+declare type Store = {
+    [key: string]: any;
+};
 export default class EntitySet<T extends Object> {
     private ctx;
     constructor(ctx: EntityContext, type: {
@@ -45,6 +48,8 @@ export default class EntitySet<T extends Object> {
     loadAll<P = any>(...args: any[]): Promise<P>;
     include(navigatorName: string): this;
     entry(originData: {}, entity?: T): T;
+    reverse(entity: T): Store;
+    fill(originData: {}, entity?: T): T;
     rawQuery(query: () => Promise<T[] | T>): Promise<T[]>;
     private applyConstraints;
     private synchronizeAddedState;
@@ -54,3 +59,4 @@ export default class EntitySet<T extends Object> {
     private onPropertyBeforeChange;
     private onPropertyAfterChange;
 }
+export {};

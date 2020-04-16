@@ -426,7 +426,7 @@ export default class EntitySet<T extends Object> {
     return instance!
   }
 
-  public rawQuery (query: (fetch: (url: string, options: RequestInit, data: {}) => Promise<Response>) => Promise<T[] | T>): Promise<T[]> {
+  public rawQuery (query: (fetch: (url: string, options: RequestInit, data?: {}) => Promise<Response>) => Promise<T[] | T>): Promise<T[]> {
     const requests = Object.values(this.ownNavigatorRequests)
     const fetch = this.ctx.configuration.fetchData
 

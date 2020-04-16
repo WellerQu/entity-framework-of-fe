@@ -15,14 +15,15 @@ export default abstract class EntityConfiguration {
     const prototype = Object.getPrototypeOf(params)
     if (prototype === Array.prototype) {
       newUrl = params.reduce((url: string, param: any) => {
-        return url.replace(/(\$[^/&$]+)/i, param)
+        return url.replace(/(\$[^/&$]+)/i, isEmpty(param) ? '' : param)
       }, newUrl)
     } else if (prototype === Object.prototype) {
-      newUrl = Object.entries(params).reduce((url: string, param: any) => {
-        return url.replace(new RegExp(`(\\$${param[0]})\\b`, 'i'), param[1])
+      newUrl = Object.entries(params).reduce((url: string, param: [string, any]) => {
+        const [key, value] = param
+        return url.replace(new RegExp(`(\\$${key})\\b`, 'i'), isEmpty(value) ? '' : value)
       }, newUrl)
     } else {
-      newUrl = url.replace(/(\$[^/&$]+)/i, params)
+      newUrl = url.replace(/(\$[^/&$]+)/i, isEmpty(params) ? '' : params)
     }
 
     return newUrl

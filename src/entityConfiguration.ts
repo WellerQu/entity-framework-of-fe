@@ -48,5 +48,5 @@ export default abstract class EntityConfiguration {
     return this.fetch(fetchTarget, fetchOptions)
   }
 
-  public abstract fetch(url: string, options?: RequestInit): Promise<Response>;
+  protected abstract fetch(url: string, options?: RequestInit): Promise<Response>;
 }

@@ -400,6 +400,12 @@ export default class EntitySet<T extends Object> {
     return store
   }
 
+  /**
+   * 将同构数据填充到实体实例, 如果默认实体实例为空, 则会创建新实例
+   * @param originData 与 T 同构的数据
+   * @param entity 实体实例
+   * @returns 实体实例
+   */
   public fill (originData: {}, entity?: T): T {
     let instance = entity
     const Type = this.entityMetadata.type

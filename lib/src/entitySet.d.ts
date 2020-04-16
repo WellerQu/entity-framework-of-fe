@@ -49,6 +49,12 @@ export default class EntitySet<T extends Object> {
     include(navigatorName: string): this;
     entry(originData: {}, entity?: T): T;
     reverse(entity: T): Store;
+    /**
+     * 将同构数据填充到实体实例, 如果默认实体实例为空, 则会创建新实例
+     * @param originData 与 T 同构的数据
+     * @param entity 实体实例
+     * @returns 实体实例
+     */
     fill(originData: {}, entity?: T): T;
     rawQuery(query: () => Promise<T[] | T>): Promise<T[]>;
     private applyConstraints;

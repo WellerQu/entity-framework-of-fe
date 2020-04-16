@@ -114,8 +114,8 @@
         "signature": "df7a7340a4e8055605d2bf2563fa0365493f2ad8f3939e1587e68b515a305774"
       },
       "/users/qiuwei/workspace/entity-framework/src/entityconfiguration.ts": {
-        "version": "a5bff5a9e2c30ddfc39652e4cb8551587a5e0586dcccc348b5beafc7284aabb4",
-        "signature": "514733f7d929858642f424113f0b38349b752967e618638ef859ebd37751da12"
+        "version": "ca62197142755189c06647252d263f0498f79596055df5f7f374d16257906053",
+        "signature": "533f675055ae7401fff34068012fdee4ea1d0a778cf85ed8ff81805d38e60d33"
       },
       "/users/qiuwei/workspace/entity-framework/src/annotations/metadatatype.ts": {
         "version": "f3f3f2bf437f169eee371f38de19ddce205757a13ab6ad215963655c969be29a",
@@ -142,8 +142,8 @@
         "signature": "0b73f13f744854b5ff78a20372e1dbf25d59ddc0bbf6a38a505fb55c6db21f96"
       },
       "/users/qiuwei/workspace/entity-framework/src/entityset.ts": {
-        "version": "0b9a0e54a951d0ea5583cb546746e0dc461c6513f8536cccf9ebb10a012ab16f",
-        "signature": "9c12edfb7fc636140b4a2f1fe7be6d520107bfd752a1fe08595f2f72e2e6ad8b"
+        "version": "f91993c0bec0c71e3e99977f496e6d0585c65b9eb3e8a95d05b2422ae43a1b96",
+        "signature": "ffbf89911e090eb9913052e4663c22312e9144dc1f38f5d13a51c96019907507"
       },
       "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts": {
         "version": "de997533b043b888166ee3ebbcaa37f36caaa5dbb78669ffc10966d5e9fd5e58",

@@ -24,7 +24,7 @@ export default abstract class EntityConfiguration {
     return newUrl
   }
 
-  public fetchData (url: string, options: RequestInit, data: {}) {
+  public fetchData (url: string, options: RequestInit, data?: {}) {
     const hasDollar = !!(~url.indexOf('$'))
     if (hasDollar && isEmpty(data)) {
       const msg = 'fetchData时存在$变量, 但缺少数据'

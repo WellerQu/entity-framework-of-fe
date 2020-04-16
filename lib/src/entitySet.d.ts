@@ -56,7 +56,7 @@ export default class EntitySet<T extends Object> {
      * @returns 实体实例
      */
     fill(originData: {}, entity?: T): T;
-    rawQuery(query: () => Promise<T[] | T>): Promise<T[]>;
+    rawQuery(query: (fetch: (url: string, options: RequestInit, data: {}) => Promise<Response>) => Promise<T[] | T>): Promise<T[]>;
     private applyConstraints;
     private synchronizeAddedState;
     private synchronizeDeletedState;

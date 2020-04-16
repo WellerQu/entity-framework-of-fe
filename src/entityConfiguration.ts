@@ -1,6 +1,10 @@
 import isEmpty from './utils/isEmpty'
 
 export default abstract class EntityConfiguration {
+  constructor () {
+    this.fetchData = this.fetchData.bind(this)
+  }
+
   protected parseUrl (url: string, params: any): string {
     if (isEmpty(params)) {
       return url

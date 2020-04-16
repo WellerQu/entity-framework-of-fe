@@ -428,10 +428,10 @@ export default class EntitySet<T extends Object> {
 
   public rawQuery (query: (fetch: (url: string, options: RequestInit, data?: {}) => Promise<Response>) => Promise<T[] | T>): Promise<T[]> {
     const requests = Object.values(this.ownNavigatorRequests)
-    const fetch = this.ctx.configuration.fetchData
+    const fetchData = this.ctx.configuration.fetchData
 
     return new Promise((resolve, reject) => {
-      query(fetch)
+      query(fetchData)
         .then(originData => {
           const entities: T[] = []
 

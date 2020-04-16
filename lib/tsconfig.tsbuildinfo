@@ -114,8 +114,8 @@
         "signature": "df7a7340a4e8055605d2bf2563fa0365493f2ad8f3939e1587e68b515a305774"
       },
       "/users/qiuwei/workspace/entity-framework/src/entityconfiguration.ts": {
-        "version": "ca62197142755189c06647252d263f0498f79596055df5f7f374d16257906053",
-        "signature": "533f675055ae7401fff34068012fdee4ea1d0a778cf85ed8ff81805d38e60d33"
+        "version": "5618a78d035b23e0ff25b6fe9fd078cca161c9ce769fd5229384cc7b6398e943",
+        "signature": "07d7f98ff39d4440a83dd2f078598f863b78e695ca62987cb7b0262eeb553315"
       },
       "/users/qiuwei/workspace/entity-framework/src/annotations/metadatatype.ts": {
         "version": "f3f3f2bf437f169eee371f38de19ddce205757a13ab6ad215963655c969be29a",
@@ -142,7 +142,7 @@
         "signature": "0b73f13f744854b5ff78a20372e1dbf25d59ddc0bbf6a38a505fb55c6db21f96"
       },
       "/users/qiuwei/workspace/entity-framework/src/entityset.ts": {
-        "version": "85b2e3c9ac87ae0f168d9acde26aa079ff3764318074dbefc8374a8d462993f3",
+        "version": "b070225907888c3ccabb954ff1c833ab0e7e98fc4ba90e8e7118ac7bb62bc752",
         "signature": "0ce5e4dc34e02225e3bc216e326ddbb6e7327ff9273fcf2cb69bb9e87a307ae1"
       },
       "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts": {
@@ -1735,7 +1735,6 @@
       "/users/qiuwei/workspace/entity-framework/node_modules/typescript/lib/lib.esnext.intl.d.ts",
       "/users/qiuwei/workspace/entity-framework/node_modules/typescript/lib/lib.esnext.bigint.d.ts",
       "/users/qiuwei/workspace/entity-framework/src/utils/isempty.ts",
-      "/users/qiuwei/workspace/entity-framework/src/entityconfiguration.ts",
       "/users/qiuwei/workspace/entity-framework/src/annotations/metadatatype.ts",
       "/users/qiuwei/workspace/entity-framework/src/constants/relationship.ts",
       "/users/qiuwei/workspace/entity-framework/src/constants/constraints.ts",
@@ -1799,6 +1798,7 @@
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts",
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/globals.d.ts",
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/index.d.ts",
+      "/users/qiuwei/workspace/entity-framework/src/entityconfiguration.ts",
       "/users/qiuwei/workspace/entity-framework/src/entityset.ts",
       "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts",
       "/users/qiuwei/workspace/entity-framework/src/index.ts"

@@ -545,6 +545,11 @@ describe('Behavior-driven development', () => {
 
     expect(ctx.foo.size).toEqual(2)
 
+    const rawQueryCallback = jest.fn(() => Promise.resolve([{ id: 1, name: 'cat', nothing: 'nothing' }]))
+    await ctx.foo.rawQuery(rawQueryCallback)
+    const fetchData = ctx.configuration.fetchData
+    expect(rawQueryCallback).toBeCalledWith(fetchData)
+
     const foo = ctx.foo.find(1)
     expect(foo).toEqual({ id: 1, name: 'cat' })
     expect(foo).not.toHaveProperty('nothing')

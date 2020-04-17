@@ -10,22 +10,24 @@ export default abstract class EntityConfiguration {
       return url
     }
 
-    let newUrl = url
-
     const prototype = Object.getPrototypeOf(params)
+
     if (prototype === Array.prototype) {
-      newUrl = params.reduce((url: string, param: any) => {
+      const newUrl = params.reduce((url: string, param: any) => {
         return url.replace(/(\$[^/&$]+)/i, isEmpty(param) ? '' : param)
-      }, newUrl)
-    } else if (prototype === Object.prototype) {
-      newUrl = Object.entries(params).reduce((url: string, param: [string, any]) => {
-        const [key, value] = param
-        return url.replace(new RegExp(`(\\$${key})\\b`, 'i'), isEmpty(value) ? '' : value)
-      }, newUrl)
-    } else {
-      newUrl = url.replace(/(\$[^/&$]+)/i, isEmpty(params) ? '' : params)
+      }, url)
+      return newUrl
     }
 
+    if (prototype === Object.prototype) {
+      const newUrl = Object.entries(params).reduce((url: string, param: [string, any]) => {
+        const [key, value] = param
+        return url.replace(new RegExp(`(\\$${key})\\b`, 'i'), isEmpty(value) ? '' : value)
+      }, url)
+      return newUrl
+    }
+
+    const newUrl = url.replace(/(\$[^/&$]+)/i, isEmpty(params) ? '' : params)
     return newUrl
   }
 

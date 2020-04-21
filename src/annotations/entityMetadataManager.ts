@@ -272,8 +272,9 @@ class EntityMetadataManager {
 
       members.forEach(item => {
         const memberFieldData = Reflect.get(data, isomorphism ? item.propertyName : item.fieldName)
-        if (!memberFieldData) {
-          return Reflect.set(instance, item.propertyName, memberFieldData)
+        if (memberFieldData === undefined) {
+          // return Reflect.set(instance, item.propertyName, memberFieldData)
+          return
         }
 
         if (!item.dataType) {

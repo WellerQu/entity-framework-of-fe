@@ -1,6 +1,6 @@
 {
   "name": "entity-framework",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "用于前端的实体关系框架, 解决存在关联关系的实体之间的CRUD",
   "keywords": [
     "entity",

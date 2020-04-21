@@ -14,12 +14,6 @@ import Constraints from './constants/constraints'
 describe('EntitySet', () => {
   const domain = 'http://localhost:3000'
 
-  class Configuration extends EntityConfiguration {
-    public fetch<T = any> (url: string, options?: RequestInit | undefined): Promise<T> {
-      return require('node-fetch')(url, options)
-    }
-  }
-
   @behavior('loadAll', `${domain}/zar`, 'GET', a => a, a => a)
   @behavior('load', `${domain}/zar/$id`, 'GET', a => a, a => a)
   class Zar {
@@ -54,6 +48,22 @@ describe('EntitySet', () => {
   @behavior('load', `${domain}/jar/$id`, 'GET', a => a, a => a)
   class Jar {
     @primary()
+    @member()
+    id: number = 0
+
+    @member()
+    name: string = ''
+  }
+
+  class Bdr {
+    @member()
+    id: number = 0
+
+    @member('bname')
+    name: string = ''
+  }
+
+  class Jfu {
     @member()
     id: number = 0
 
@@ -116,6 +126,23 @@ describe('EntitySet', () => {
     urlFully: string = ''
   }
 
+  class Fna {
+    @member(undefined, Bdr)
+    bdr: Partial<Bdr> = {}
+    @member(undefined, Jfu)
+    jfu: Partial<Jfu>[] = []
+    @member()
+    pao: string[] = []
+    @member()
+    id: number = 1
+  }
+
+  class Configuration extends EntityConfiguration {
+    public fetch<T = any> (url: string, options?: RequestInit | undefined): Promise<T> {
+      return require('node-fetch')(url, options)
+    }
+  }
+
   class Context extends EntityContext {
     constructor () {
       super(new Configuration())
@@ -131,6 +158,8 @@ describe('EntitySet', () => {
     zar: EntitySet<Zar> = new EntitySet<Zar>(this, Zar)
     @set()
     kan: EntitySet<Kan> = new EntitySet<Kan>(this, Kan)
+    @set()
+    fna: EntitySet<Fna> = new EntitySet<Fna>(this, Fna)
   }
 
   const ctx = new Context()
@@ -322,6 +351,50 @@ describe('EntitySet', () => {
       const zar2 = ctx.zar.entry(originData, newZar)
       expect(zar2).toBe(newZar)
       expect(zar2.id).toEqual(newZar.id)
+    })
+
+    it.only('entry complex data', () => {
+      const fna = {
+        bdr: {
+          id: 1,
+          bname: 'bar name'
+        },
+        jfu: [{
+          id: 1,
+          name: 'jaz name 1'
+        }, {
+          id: 2,
+          name: 'jaz name 2'
+        }],
+        pao: ['1', '2']
+      }
+
+      const en1 = ctx.fna.entry(fna)
+      expect(en1).toBeDefined()
+
+      expect(en1.bdr).toBeDefined()
+      expect(en1.bdr!.id).toEqual(fna.bdr.id)
+      expect(en1.bdr!.name).toEqual(fna.bdr.bname)
+
+      expect(en1.jfu).toBeDefined()
+      expect(en1.jfu).toHaveLength(2)
+      expect(en1.jfu![0]).toEqual(fna.jfu[0])
+      expect(en1.jfu![1]).toEqual(fna.jfu[1])
+
+      expect(en1.pao).toBe(fna.pao)
+
+      const en2 = new Fna()
+      ctx.fna.entry(fna, en2)
+      expect(en2.bdr).toBeDefined()
+      expect(en2.bdr!.id).toEqual(fna.bdr.id)
+      expect(en2.bdr!.name).toEqual(fna.bdr.bname)
+
+      expect(en2.jfu).toBeDefined()
+      expect(en2.jfu).toHaveLength(2)
+      expect(en2.jfu![0]).toEqual(fna.jfu[0])
+      expect(en2.jfu![1]).toEqual(fna.jfu[1])
+
+      expect(en2.pao).toBe(fna.pao)
     })
 
     it('fill', () => {

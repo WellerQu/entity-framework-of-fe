@@ -366,25 +366,26 @@ export default class EntitySet<T extends Object> {
     return this
   }
 
+  /**
+   * 将异构数据填充到实体实例, 如果默认实体实例为空, 则会创建新实例
+   * @param originData 已经映射关系的异构数据
+   * @param entity 实体实例
+   * @returns 填充数据的实例
+   */
   public entry (originData: {}, entity?: T): T {
-    let instance = entity
-    const Type = this.entityMetadata.type
+    const instance = metadata.entry(originData, this.entityMetadata.type)
 
     if (!entity) {
-      instance = new Type()
+      return instance as T
     }
 
-    const members = metadata.getMembers(Type.prototype)
-    members.forEach(item => {
-      const fieldData = Reflect.get(originData, item.fieldName)
-      if (fieldData === undefined) {
-        return
-      }
-
-      Reflect.set(instance!, item.propertyName, fieldData)
+    const keys = Object.keys(instance)
+    keys.forEach(key => {
+      const data = Reflect.get(instance, key)
+      Reflect.set(entity, key, data)
     })
 
-    return instance!
+    return entity
   }
 
   public reverse (entity: T): Store {
@@ -404,7 +405,7 @@ export default class EntitySet<T extends Object> {
    * 将同构数据填充到实体实例, 如果默认实体实例为空, 则会创建新实例
    * @param originData 与 T 同构的数据
    * @param entity 实体实例
-   * @returns 实体实例
+   * @returns 填充数据的实例
    */
   public fill (originData: {}, entity?: T): T {
     let instance = entity

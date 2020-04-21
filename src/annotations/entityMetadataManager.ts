@@ -39,7 +39,9 @@ export interface MemberConstraints {
  *
  * @category annotations
  */
-export interface Member extends Field { }
+export interface Member extends Field {
+  dataType?: { new(): object }
+}
 
 /**
  * 注解实体模型的主键字段元数据, 通过添加注解 @[[primary]]() 产生
@@ -248,6 +250,44 @@ class EntityMetadataManager {
 
     return this.managedContext.get(prototype)!.entities
   }
+
+  entry (originData: {}, Type: { new(): object }): object | object[] {
+    if (!Array.isArray(originData)) {
+      const first = (this.entry([originData], Type) as object[])[0]
+      return first
+    }
+
+    const members = this.getMembers(Type.prototype)
+    if (!members) {
+      return originData
+    }
+
+    return originData.map(data => {
+      const instance = new Type()
+
+      members.forEach(item => {
+        const fieldData = Reflect.get(data, item.fieldName)
+        if (fieldData === undefined) {
+          return
+        }
+
+        if (!item.dataType) {
+          return Reflect.set(instance, item.propertyName, fieldData)
+        }
+
+        const SubType = item.dataType
+        const subInstance = this.entry(fieldData, SubType)
+
+        return Reflect.set(instance, item.propertyName, subInstance)
+      })
+
+      return instance
+    })
+  }
+
+  reverse () {}
+
+  fill () {}
 }
 
 const manager = new EntityMetadataManager()

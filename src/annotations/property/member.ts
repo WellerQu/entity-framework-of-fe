@@ -4,6 +4,7 @@ import manager, { MetadataType, Member } from '../entityMetadataManager'
  * 用来注解实体模型中的成员字段
  *
  * @param fieldName {string} 字段别名
+ * @param dataType {{new(): object}} 非基本数据类型
  *
  * @example
  *
@@ -19,8 +20,8 @@ import manager, { MetadataType, Member } from '../entityMetadataManager'
  * // foo is {name: 'fooName'}
  * ```
  */
-const member = (fieldName?: string) => (target: Object, propertyName: string) => {
-  manager.register<Member>(target, MetadataType.Member, { fieldName: fieldName || propertyName, propertyName })
+const member = (fieldName?: string, dataType?: { new(): object }) => (target: Object, propertyName: string) => {
+  manager.register<Member>(target, MetadataType.Member, { fieldName: fieldName || propertyName, propertyName, dataType })
 }
 
 export default member

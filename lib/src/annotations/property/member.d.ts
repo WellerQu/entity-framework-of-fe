@@ -2,6 +2,7 @@
  * 用来注解实体模型中的成员字段
  *
  * @param fieldName {string} 字段别名
+ * @param dataType {{new(): object}} 非基本数据类型
  *
  * @example
  *
@@ -17,5 +18,5 @@
  * // foo is {name: 'fooName'}
  * ```
  */
-declare const member: (fieldName?: string | undefined) => (target: Object, propertyName: string) => void;
+declare const member: (fieldName?: string | undefined, dataType?: (new () => object) | undefined) => (target: Object, propertyName: string) => void;
 export default member;

@@ -114,7 +114,7 @@
         "signature": "df7a7340a4e8055605d2bf2563fa0365493f2ad8f3939e1587e68b515a305774"
       },
       "/users/qiuwei/workspace/entity-framework/src/entityconfiguration.ts": {
-        "version": "25927bb9d3f1a693bd7bfd63ae7d5eb514aa1fddc5c6fc088b38c17088a912fa",
+        "version": "5beab1ed528e7c535d97093432b0cbd744a8d742ace8c940004b36ea3f6f2cc5",
         "signature": "07d7f98ff39d4440a83dd2f078598f863b78e695ca62987cb7b0262eeb553315"
       },
       "/users/qiuwei/workspace/entity-framework/src/annotations/metadatatype.ts": {
@@ -130,8 +130,8 @@
         "signature": "1e947998bddb414096492947c521a441f0c0dde3226000acc85b30d71e8689f7"
       },
       "/users/qiuwei/workspace/entity-framework/src/annotations/entitymetadatamanager.ts": {
-        "version": "9461b10b09596f4347246a0975229f7b6a66be4b5fe1423c5cbaf258c023d90e",
-        "signature": "d510fd82eb8e8ccfb953eccfc593ae8bde840f31a7c48b845bd6e5939d2a8110"
+        "version": "0d5333c916247c5d9d843866d92fe916b676b33f42db01a872e4d32c9635b13b",
+        "signature": "32d4a21d101da1aa5adebb068d4c652b29b9eaf29ed792a982c2ef6f7c9fe39a"
       },
       "/users/qiuwei/workspace/entity-framework/src/entitystate.ts": {
         "version": "c66df8965d53cb2cc67d0b7f22121ddaf6ee4bac034090a1350e81a6fcf839fb",
@@ -142,8 +142,8 @@
         "signature": "0b73f13f744854b5ff78a20372e1dbf25d59ddc0bbf6a38a505fb55c6db21f96"
       },
       "/users/qiuwei/workspace/entity-framework/src/entityset.ts": {
-        "version": "b070225907888c3ccabb954ff1c833ab0e7e98fc4ba90e8e7118ac7bb62bc752",
-        "signature": "0ce5e4dc34e02225e3bc216e326ddbb6e7327ff9273fcf2cb69bb9e87a307ae1"
+        "version": "fc009292c362a3a1ca1d4f368c146a3f7232a4783051ce8247d2a3e829c44ad5",
+        "signature": "454fde292875170723ccb7ae021e2b2ff7e12dd89235b421d04d590d48f13765"
       },
       "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts": {
         "version": "de997533b043b888166ee3ebbcaa37f36caaa5dbb78669ffc10966d5e9fd5e58",
@@ -166,8 +166,8 @@
         "signature": "28eefcb90a48a7bddc1102c9c4b9bd1001673cd91345dbd5e553dd8a63d7e38f"
       },
       "/users/qiuwei/workspace/entity-framework/src/annotations/property/member.ts": {
-        "version": "f39b3c9763ec088ca84ccfc75002e0bd3b7667c9f85e468537f2475e42fd3210",
-        "signature": "b907435d54969b9a86214e9adac95d02cd96bf064f09d06b462ba4fb46983f5b"
+        "version": "954c3dc1926ee203a3f3118f5d21b2695071f51f6d7b7e77a7c96b0b77ade556",
+        "signature": "f0a36a1eb5d2439bedf35897dc4cb372f07527980c1b1f5096eab9a2a98bf844"
       },
       "/users/qiuwei/workspace/entity-framework/src/annotations/property/set.ts": {
         "version": "3281fb85ca974ce613cc18439432478a80871995f31d1e5cf7f420c5f574d162",
@@ -1285,7 +1285,8 @@
         "/users/qiuwei/workspace/entity-framework/src/entitystate.ts"
       ],
       "/users/qiuwei/workspace/entity-framework/src/entityset.ts": [
-        "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts"
+        "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts",
+        "/users/qiuwei/workspace/entity-framework/src/annotations/entitymetadatamanager.ts"
       ],
       "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts": [
         "/users/qiuwei/workspace/entity-framework/src/entityconfiguration.ts"
@@ -1738,19 +1739,8 @@
       "/users/qiuwei/workspace/entity-framework/src/annotations/metadatatype.ts",
       "/users/qiuwei/workspace/entity-framework/src/constants/relationship.ts",
       "/users/qiuwei/workspace/entity-framework/src/constants/constraints.ts",
-      "/users/qiuwei/workspace/entity-framework/src/annotations/entitymetadatamanager.ts",
       "/users/qiuwei/workspace/entity-framework/src/entitystate.ts",
       "/users/qiuwei/workspace/entity-framework/src/entitytrace.ts",
-      "/users/qiuwei/workspace/entity-framework/src/entityset.ts",
-      "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts",
-      "/users/qiuwei/workspace/entity-framework/src/annotations/object/behavior.ts",
-      "/users/qiuwei/workspace/entity-framework/src/annotations/property/foreign.ts",
-      "/users/qiuwei/workspace/entity-framework/src/annotations/property/primary.ts",
-      "/users/qiuwei/workspace/entity-framework/src/annotations/property/navigator.ts",
-      "/users/qiuwei/workspace/entity-framework/src/annotations/property/member.ts",
-      "/users/qiuwei/workspace/entity-framework/src/annotations/property/set.ts",
-      "/users/qiuwei/workspace/entity-framework/src/annotations/property/constraint.ts",
-      "/users/qiuwei/workspace/entity-framework/src/index.ts",
       "/users/qiuwei/workspace/entity-framework/@types/index.d.ts",
       "/users/qiuwei/workspace/entity-framework/@types/json.d.ts",
       "/users/qiuwei/workspace/entity-framework/node_modules/jest-diff/build/types.d.ts",
@@ -1801,7 +1791,18 @@
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/util.d.ts",
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/globals.d.ts",
       "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/index.d.ts",
-      "/users/qiuwei/workspace/entity-framework/src/entityconfiguration.ts"
+      "/users/qiuwei/workspace/entity-framework/src/entityconfiguration.ts",
+      "/users/qiuwei/workspace/entity-framework/src/annotations/entitymetadatamanager.ts",
+      "/users/qiuwei/workspace/entity-framework/src/entityset.ts",
+      "/users/qiuwei/workspace/entity-framework/src/entitycontext.ts",
+      "/users/qiuwei/workspace/entity-framework/src/annotations/object/behavior.ts",
+      "/users/qiuwei/workspace/entity-framework/src/annotations/property/foreign.ts",
+      "/users/qiuwei/workspace/entity-framework/src/annotations/property/primary.ts",
+      "/users/qiuwei/workspace/entity-framework/src/annotations/property/navigator.ts",
+      "/users/qiuwei/workspace/entity-framework/src/annotations/property/member.ts",
+      "/users/qiuwei/workspace/entity-framework/src/annotations/property/set.ts",
+      "/users/qiuwei/workspace/entity-framework/src/annotations/property/constraint.ts",
+      "/users/qiuwei/workspace/entity-framework/src/index.ts"
     ]
   },
   "version": "3.5.3"

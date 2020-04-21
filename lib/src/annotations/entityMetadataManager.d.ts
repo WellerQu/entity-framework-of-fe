@@ -1,6 +1,9 @@
 import MetadataType from './metadataType';
 import Relationships from '../constants/relationship';
 import Constraints from '../constants/constraints';
+export declare type Store = {
+    [key: string]: any;
+};
 /**
  * 注解实体模型的字段元数据
  *
@@ -37,6 +40,9 @@ export interface MemberConstraints {
  * @category annotations
  */
 export interface Member extends Field {
+    dataType?: {
+        new (): object;
+    };
 }
 /**
  * 注解实体模型的主键字段元数据, 通过添加注解 @[[primary]]() 产生
@@ -96,7 +102,7 @@ export { MetadataType, Relationships as Relationship };
 declare class EntityMetadataManager {
     private managedModel;
     private managedContext;
-    register<T extends Member | MemberConstraints | PrimaryKey | ForeignKey | Behavior | Navigator | EntitySet>(prototype: Object, type: MetadataType, meta: T): number | Behavior<any> | Navigator | Record<string, Constraints | undefined> | undefined;
+    register<T extends Member | MemberConstraints | PrimaryKey | ForeignKey | Behavior | Navigator | EntitySet>(prototype: Object, type: MetadataType, meta: T): number | Navigator | Behavior<any> | Record<string, Constraints | undefined> | undefined;
     unregister(prototype: Object): void;
     getMembers(prototype: Object): Member[];
     getMemberConstraints(prototype: Object): Record<string, Constraints | undefined>;
@@ -108,6 +114,12 @@ declare class EntityMetadataManager {
     getNavigators(prototype: Object): Navigator[];
     getEntitySet(prototype: Object, navigatorName: string): EntitySet | undefined;
     getEntitySets(prototype: Object): EntitySet[];
+    entry(originData: {}, Type: {
+        new (): object;
+    }, isomorphism?: boolean): object | object[];
+    reverse(instance: object | object[], Type: {
+        new (): object;
+    }): object | object[];
 }
 declare const manager: EntityMetadataManager;
 export default manager;

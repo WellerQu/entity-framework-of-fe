@@ -353,7 +353,7 @@ describe('EntitySet', () => {
       expect(zar2.id).toEqual(newZar.id)
     })
 
-    it.only('entry complex data', () => {
+    it('entry complex data', () => {
       const fna = {
         bdr: {
           id: 1,
@@ -371,6 +371,7 @@ describe('EntitySet', () => {
 
       const en1 = ctx.fna.entry(fna)
       expect(en1).toBeDefined()
+      expect(en1).toBeInstanceOf(Fna)
 
       expect(en1.bdr).toBeDefined()
       expect(en1.bdr!.id).toEqual(fna.bdr.id)
@@ -409,6 +410,51 @@ describe('EntitySet', () => {
       expect(kan2.urlFully).toEqual(newKan.urlFully)
     })
 
+    it('fill complex data', () => {
+      const fna = {
+        bdr: {
+          id: 1,
+          name: 'bar name'
+        },
+        jfu: [{
+          id: 1,
+          name: 'jaz name 1'
+        }, {
+          id: 2,
+          name: 'jaz name 2'
+        }],
+        pao: ['1', '2']
+      }
+
+      const en1 = ctx.fna.fill(fna)
+      expect(en1).toBeDefined()
+      expect(en1).toBeInstanceOf(Fna)
+
+      expect(en1.bdr).toBeDefined()
+      expect(en1.bdr!.id).toEqual(fna.bdr.id)
+      expect(en1.bdr!.name).toEqual(fna.bdr.name)
+
+      expect(en1.jfu).toBeDefined()
+      expect(en1.jfu).toHaveLength(2)
+      expect(en1.jfu![0]).toEqual(fna.jfu[0])
+      expect(en1.jfu![1]).toEqual(fna.jfu[1])
+
+      expect(en1.pao).toBe(fna.pao)
+
+      const en2 = new Fna()
+      ctx.fna.fill(fna, en2)
+      expect(en2.bdr).toBeDefined()
+      expect(en2.bdr!.id).toEqual(fna.bdr.id)
+      expect(en2.bdr!.name).toEqual(fna.bdr.name)
+
+      expect(en2.jfu).toBeDefined()
+      expect(en2.jfu).toHaveLength(2)
+      expect(en2.jfu![0]).toEqual(fna.jfu[0])
+      expect(en2.jfu![1]).toEqual(fna.jfu[1])
+
+      expect(en2.pao).toBe(fna.pao)
+    })
+
     it('reverse', () => {
       const kan = new Kan()
       kan.id = 2
@@ -417,6 +463,31 @@ describe('EntitySet', () => {
       const originData = ctx.kan.reverse(kan)
       expect(originData.url_fully).toEqual(kan.urlFully)
       expect(originData).not.toBe(kan)
+    })
+
+    it('reverse complex data', () => {
+      const fna = new Fna()
+      fna.bdr.id = 1
+      fna.bdr.name = 'bdr name'
+      fna.id = 1
+
+      const jfu = new Jfu()
+      jfu.id = 1
+      jfu.name = 'jfu name'
+      fna.jfu.push(jfu)
+
+      fna.pao = ['a', 'b']
+
+      const originData = ctx.fna.reverse(fna)
+      expect(originData).toBeDefined()
+      expect(originData.bdr.id).toEqual(fna.bdr.id)
+      expect(originData.bdr.bname).toEqual(fna.bdr.name)
+
+      expect(originData.jfu).toBeDefined()
+      expect(originData.jfu).toHaveLength(1)
+      expect(originData.jfu![0]).toEqual(fna.jfu[0])
+
+      expect(originData.pao).toBe(fna.pao)
     })
   })
 

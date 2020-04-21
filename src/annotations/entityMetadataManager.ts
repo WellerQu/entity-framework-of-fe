@@ -2,6 +2,10 @@ import MetadataType from './metadataType'
 import Relationships from '../constants/relationship'
 import Constraints from '../constants/constraints'
 
+export type Store = {
+  [key: string]: any
+}
+
 /**
  * 注解实体模型的字段元数据
  *
@@ -99,6 +103,8 @@ type Behaviors = Record<string, Behavior>
 type Navigators = Record<string, Navigator>
 
 export { MetadataType, Relationships as Relationship }
+
+const UNREGISTER_DATATYPE = '未注册的数据类型'
 
 /**
  * @module annotations
@@ -251,43 +257,67 @@ class EntityMetadataManager {
     return this.managedContext.get(prototype)!.entities
   }
 
-  entry (originData: {}, Type: { new(): object }): object | object[] {
-    if (!Array.isArray(originData)) {
-      const first = (this.entry([originData], Type) as object[])[0]
-      return first
-    }
-
+  entry (originData: {}, Type: { new(): object }, isomorphism = false): object | object[] {
     const members = this.getMembers(Type.prototype)
     if (!members) {
-      return originData
+      throw new Error(UNREGISTER_DATATYPE)
+    }
+
+    if (!Array.isArray(originData)) {
+      return (this.entry([originData], Type, isomorphism) as object[])[0]
     }
 
     return originData.map(data => {
       const instance = new Type()
 
       members.forEach(item => {
-        const fieldData = Reflect.get(data, item.fieldName)
-        if (fieldData === undefined) {
-          return
+        const memberFieldData = Reflect.get(data, isomorphism ? item.propertyName : item.fieldName)
+        if (!memberFieldData) {
+          return Reflect.set(instance, item.propertyName, memberFieldData)
         }
 
         if (!item.dataType) {
-          return Reflect.set(instance, item.propertyName, fieldData)
+          return Reflect.set(instance, item.propertyName, memberFieldData)
         }
 
-        const SubType = item.dataType
-        const subInstance = this.entry(fieldData, SubType)
-
-        return Reflect.set(instance, item.propertyName, subInstance)
+        const memberInstance = this.entry(memberFieldData, item.dataType, isomorphism)
+        return Reflect.set(instance, item.propertyName, memberInstance)
       })
 
       return instance
     })
   }
 
-  reverse () {}
+  reverse (instance: object | object[], Type: { new(): object }): object|object[] {
+    const members = this.getMembers(Type.prototype)
+    if (!members) {
+      throw new Error(UNREGISTER_DATATYPE)
+    }
 
-  fill () {}
+    if (!Array.isArray(instance)) {
+      return (this.reverse([instance], Type) as object[])[0]
+    }
+
+    return instance.map(item => {
+      const store: Store = {}
+
+      members.forEach(member => {
+        const data = Reflect.get(item, member.propertyName)
+        if (!data) {
+          return Reflect.set(store, member.fieldName, data)
+        }
+
+        if (!member.dataType) {
+          return Reflect.set(store, member.fieldName, data)
+        }
+
+        const memberData = this.reverse(data, member.dataType)
+        return Reflect.set(store, member.fieldName, memberData)
+      })
+
+      return store
+    })
+  }
 }
 
 const manager = new EntityMetadataManager()

@@ -2,17 +2,13 @@ import EntityContext from './entityContext'
 import EntityState from './entityState'
 import EntityTrace, { PropertyChangeEvent } from './entityTrace'
 import Relationships from './constants/relationship'
-import metadata from './annotations/entityMetadataManager'
+import metadata, { Store } from './annotations/entityMetadataManager'
 import isEmpty from './utils/isEmpty'
 import Constraints from './constants/constraints'
 
 export type OriginJSON = Promise<any>
 
 const identity = (a: any) => a
-
-type Store = {
-  [key: string]: any
-}
 
 export default class EntitySet<T extends Object> {
   constructor (private ctx: EntityContext, type: { new(): T}) {
@@ -373,7 +369,7 @@ export default class EntitySet<T extends Object> {
    * @returns 填充数据的实例
    */
   public entry (originData: {}, entity?: T): T {
-    const instance = metadata.entry(originData, this.entityMetadata.type)
+    const instance = metadata.entry(originData, this.entityMetadata.type, false)
 
     if (!entity) {
       return instance as T
@@ -388,19 +384,6 @@ export default class EntitySet<T extends Object> {
     return entity
   }
 
-  public reverse (entity: T): Store {
-    const Type = this.entityMetadata.type
-    const members = metadata.getMembers(Type.prototype)
-    const store: Store = {}
-
-    members.forEach(item => {
-      const fieldData = Reflect.get(entity, item.propertyName)
-      store[item.fieldName] = fieldData
-    })
-
-    return store
-  }
-
   /**
    * 将同构数据填充到实体实例, 如果默认实体实例为空, 则会创建新实例
    * @param originData 与 T 同构的数据
@@ -408,23 +391,28 @@ export default class EntitySet<T extends Object> {
    * @returns 填充数据的实例
    */
   public fill (originData: {}, entity?: T): T {
-    let instance = entity
-    const Type = this.entityMetadata.type
+    const instance = metadata.entry(originData, this.entityMetadata.type, true)
 
     if (!entity) {
-      instance = new Type()
+      return instance as T
     }
 
-    const members = metadata.getMembers(Type.prototype)
-    members.forEach(item => {
-      const fieldData = Reflect.get(originData, item.propertyName)
-      if (fieldData === undefined) {
-        return
-      }
-      Reflect.set(instance!, item.propertyName, fieldData)
+    const keys = Object.keys(instance)
+    keys.forEach(key => {
+      const data = Reflect.get(instance, key)
+      Reflect.set(entity, key, data)
     })
 
-    return instance!
+    return entity
+  }
+
+  /**
+   * 从实体实例中反向提取原始数据
+   * @param entity 数据来源实体实例
+   * @returns 原始数据
+   */
+  public reverse (entity: T): Store {
+    return metadata.reverse(entity, this.entityMetadata.type)
   }
 
   public rawQuery (query: (fetch: (url: string, options: RequestInit, data?: {}) => Promise<Response>) => Promise<T[] | T>): Promise<T[]> {

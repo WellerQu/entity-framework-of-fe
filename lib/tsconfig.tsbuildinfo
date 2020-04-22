@@ -130,7 +130,7 @@
         "signature": "1e947998bddb414096492947c521a441f0c0dde3226000acc85b30d71e8689f7"
       },
       "/users/qiuwei/workspace/entity-framework/src/annotations/entitymetadatamanager.ts": {
-        "version": "0ef8f31a8e802bca74659611b15552612fbfaa0112c33f1ec169fd10f524a742",
+        "version": "3d868decb7be18727b988a002e2c34f2c0181e5d5c0dc2d46d2353a75a35425d",
         "signature": "2d3334534b6d497325f637848e82b78a77399cc0b2f52e62d5c6ad787a358005"
       },
       "/users/qiuwei/workspace/entity-framework/src/entitystate.ts": {
@@ -612,7 +612,6 @@
         "/users/qiuwei/workspace/entity-framework/src/annotations/metadatatype.ts",
         "/users/qiuwei/workspace/entity-framework/src/constants/relationship.ts",
         "/users/qiuwei/workspace/entity-framework/src/constants/constraints.ts",
-        "/users/qiuwei/workspace/entity-framework/src/utils/isempty.ts",
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/fs.d.ts",
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/ts3.2/fs.d.ts",
         "/users/qiuwei/workspace/entity-framework/node_modules/@types/node/util.d.ts",

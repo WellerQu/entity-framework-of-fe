@@ -1,7 +1,6 @@
 import MetadataType from './metadataType'
 import Relationships from '../constants/relationship'
 import Constraints from '../constants/constraints'
-import isEmpty from '../utils/isEmpty'
 
 export type Store = {
   [key: string]: any
@@ -272,17 +271,13 @@ class EntityMetadataManager {
       const instance = new Type()
 
       members.forEach(item => {
-        if (typeof data !== 'object' || isEmpty(data)) {
-          return
-        }
-
         const memberFieldData = Reflect.get(data, isomorphism ? item.propertyName : item.fieldName)
         if (memberFieldData === undefined) {
           // return Reflect.set(instance, item.propertyName, memberFieldData)
           return
         }
 
-        if (!item.dataType) {
+        if (!item.dataType || memberFieldData === null) {
           return Reflect.set(instance, item.propertyName, memberFieldData)
         }
 
@@ -305,10 +300,6 @@ class EntityMetadataManager {
     }
 
     return instances.map(item => {
-      if (typeof item !== 'object' || isEmpty(item)) {
-        return undefined
-      }
-
       const store: Store = {}
 
       members.forEach(member => {

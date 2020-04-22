@@ -9,7 +9,7 @@ export default class EntityTrace<T extends Object> {
     private origin;
     state: EntityState;
     constructor(origin: T, state?: EntityState);
-    readonly object: T;
+    readonly proxyObject: T;
     readonly rawObject: T;
     private proxy;
     revoke: () => void;

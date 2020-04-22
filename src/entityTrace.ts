@@ -13,19 +13,27 @@ export default class EntityTrace<T extends Object> {
     const sender = this
 
     const { proxy, revoke } = Proxy.revocable(origin, {
-      set (target: T, property: string, value: any) {
+      isExtensible: () => false,
+      set (target: T, property: string, newValue: any) {
         if (property in target) {
-          const oldValue = Reflect.get(target, property)
+          const value = Reflect.get(target, property)
 
           const event = {
             propertyName: property,
-            value: oldValue,
-            newValue: value
+            value,
+            newValue
           }
 
-          sender.propertyBeforeChangeHandlers.forEach(fn => fn(sender, event))
-          Reflect.set(target, property, value)
-          sender.propertyAfterChangeHandlers.forEach(fn => fn(sender, event))
+          try {
+            sender.propertyBeforeChangeHandlers.forEach(fn => fn(sender, event))
+            Reflect.set(target, property, newValue)
+            sender.propertyAfterChangeHandlers.forEach(fn => fn(sender, event))
+          } catch (e) {
+            if (process.env.NODE_ENV === 'development') {
+              // eslint-disable-next-line no-console
+              console.warn(e.message)
+            }
+          }
           return true
         }
 
@@ -37,7 +45,7 @@ export default class EntityTrace<T extends Object> {
     this.revoke = revoke
   }
 
-  public get object () {
+  public get proxyObject () {
     return this.proxy
   }
 

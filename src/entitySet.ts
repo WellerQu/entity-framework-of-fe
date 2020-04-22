@@ -26,6 +26,7 @@ export default class EntitySet<T extends Object> {
   private entityMetadata: {
     type: { new() : T },
   }
+  private wMap = new WeakMap<T, T>()
 
   private parseOriginDataToEntity (originData: {}): T | null {
     // 无数据
@@ -78,13 +79,16 @@ export default class EntitySet<T extends Object> {
   }
 
   public add (...entities: (T| undefined)[]): this {
-    entities.filter(item => !!item).forEach(addedItem => {
+    const addedItems = entities.filter(item => !!item)
+    for (let i = 0; i < addedItems.length; i++) {
+      const addedItem = addedItems[i]
       const tracer = new EntityTrace<T>(addedItem!, EntityState.Added)
       tracer.onPropertyBeforeChange(this.onPropertyBeforeChange)
       tracer.onPropertyAfterChange(this.onPropertyAfterChange)
 
+      this.wMap.set(tracer.proxyObject, tracer.rawObject)
       this.set.add(tracer)
-    })
+    }
 
     return this
   }
@@ -94,7 +98,7 @@ export default class EntitySet<T extends Object> {
 
     entities.filter(item => !!item).forEach(removedItem => {
       const tracer = Array.from(this.set)
-        .find(item => (item.rawObject === removedItem || item.object === removedItem) &&
+        .find(item => (item.rawObject === removedItem || item.proxyObject === removedItem) &&
           item.state !== EntityState.Deleted &&
           item.state !== EntityState.Detached)
 
@@ -132,32 +136,38 @@ export default class EntitySet<T extends Object> {
   }
 
   public attach (...entities: (T | undefined)[]): this {
-    entities.filter(item => !!item).forEach(attachedItem => {
+    const attachedItems = entities.filter(item => !!item)
+    for (let i = 0; i < attachedItems.length; i++) {
+      const attachedItem = attachedItems[i]
       const tracer = new EntityTrace<T>(attachedItem!, EntityState.Unchanged)
       tracer.onPropertyBeforeChange(this.onPropertyBeforeChange)
       tracer.onPropertyAfterChange(this.onPropertyAfterChange)
 
+      this.wMap.set(tracer.proxyObject, tracer.rawObject)
       this.set.add(tracer)
-    })
+    }
 
     return this
   }
 
   public detach (...entities: (T | undefined)[]): this {
-    entities.filter(item => !!item).forEach(detachedItem => {
+    const detachedItems = entities.filter(item => !!item)
+    for (let i = 0; i < detachedItems.length; i++) {
+      const detachedItem = detachedItems[i]
       const stateTrace = Array.from(this.set)
         .find(item =>
-          (item.object === detachedItem || item.rawObject === detachedItem) &&
+          (item.proxyObject === detachedItem || item.rawObject === detachedItem) &&
           item.state !== EntityState.Detached &&
           item.state !== EntityState.Deleted)
 
       if (stateTrace) {
+        this.wMap.delete(detachedItem!)
         stateTrace.state = EntityState.Detached
         stateTrace.offPropertyBeforeChange(this.onPropertyBeforeChange)
         stateTrace.offPropertyAfterChange(this.onPropertyAfterChange)
         stateTrace.revoke()
       }
-    })
+    }
 
     return this
   }
@@ -183,7 +193,7 @@ export default class EntitySet<T extends Object> {
    */
   public find (...primaryKeys: any[]): T | undefined {
     const stateTrace = Array.from(this.set).find(item => {
-      const keys = metadata.getPrimaryKeys(item.object.constructor.prototype)
+      const keys = metadata.getPrimaryKeys(item.proxyObject.constructor.prototype)
       if (keys.length === 0) {
         return false
       }
@@ -195,7 +205,7 @@ export default class EntitySet<T extends Object> {
       }
 
       return keys.every((meta, index) => {
-        return Reflect.get(item.object, meta.fieldName) === primaryKeys[index]
+        return Reflect.get(item.proxyObject, meta.fieldName) === primaryKeys[index]
       })
     })
 
@@ -203,7 +213,7 @@ export default class EntitySet<T extends Object> {
       return
     }
 
-    return stateTrace.object
+    return stateTrace.proxyObject
   }
 
   public filter (fn: (n: T) => boolean): T[] {
@@ -215,14 +225,14 @@ export default class EntitySet<T extends Object> {
         return false
       }
 
-      return fn(Object.freeze(item.object))
+      return fn(Object.freeze(item.proxyObject))
     })
 
-    return stateTraces.map(item => item.object)
+    return stateTraces.map(item => item.proxyObject)
   }
 
   public toList (): T[] {
-    return Array.from(this.set).map(item => Object.freeze(item.object))
+    return Array.from(this.set).map(item => Object.freeze(item.proxyObject))
   }
 
   public async load (...args: any[]): Promise<Response> {
@@ -378,7 +388,8 @@ export default class EntitySet<T extends Object> {
     const keys = Object.keys(instance)
     keys.forEach(key => {
       const data = Reflect.get(instance, key)
-      Reflect.set(entity, key, data)
+
+      Reflect.set(this.wMap.get(entity) || entity, key, data)
     })
 
     return entity
@@ -400,7 +411,7 @@ export default class EntitySet<T extends Object> {
     const keys = Object.keys(instance)
     keys.forEach(key => {
       const data = Reflect.get(instance, key)
-      Reflect.set(entity, key, data)
+      Reflect.set(this.wMap.get(entity) || entity, key, data)
     })
 
     return entity
@@ -612,7 +623,7 @@ export default class EntitySet<T extends Object> {
     }
 
     if ((constraints & Constraints.READ_ONLY) === Constraints.READ_ONLY) {
-      throw new Error('无法修改一个添加了READ_ONLY约束的成员')
+      throw new Error(`无法修改一个添加了READ_ONLY约束的成员: ${e.propertyName}`)
     }
   }
 

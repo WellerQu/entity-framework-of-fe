@@ -10,6 +10,7 @@ export default class EntitySet<T extends Object> {
     private ownNavigatorRequests;
     private otherNavigators;
     private entityMetadata;
+    private wMap;
     private parseOriginDataToEntity;
     private getRelatedEntitySet;
     readonly size: number;

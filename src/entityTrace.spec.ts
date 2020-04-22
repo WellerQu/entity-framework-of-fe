@@ -22,7 +22,7 @@ describe('EntityTrace', () => {
     const foo = { id: 1, name: 'foo' }
     const trace = new EntityTrace(foo, EntityState.Added)
 
-    expect(trace.object).toEqual(foo)
+    expect(trace.proxyObject).toEqual(foo)
     expect(trace.rawObject).toEqual(foo)
   })
 
@@ -35,7 +35,7 @@ describe('EntityTrace', () => {
     }).not.toThrow()
 
     expect(() => {
-      trace.object.id = 2
+      trace.proxyObject.id = 2
     }).toThrow()
 
     expect(() => {
@@ -50,7 +50,7 @@ describe('EntityTrace', () => {
     const handlePropertyBeforeChange = jest.fn()
 
     trace.onPropertyBeforeChange(handlePropertyBeforeChange)
-    trace.object.name = 'hhhhh'
+    trace.proxyObject.name = 'hhhhh'
     expect(handlePropertyBeforeChange).toHaveBeenCalledTimes(1)
     expect(handlePropertyBeforeChange).toHaveBeenCalledWith(trace, {
       propertyName: 'name',
@@ -62,7 +62,7 @@ describe('EntityTrace', () => {
     expect(handlePropertyBeforeChange).toHaveBeenCalledTimes(0)
 
     trace.offPropertyBeforeChange(handlePropertyBeforeChange)
-    trace.object.name = 'foo'
+    trace.proxyObject.name = 'foo'
     expect(handlePropertyBeforeChange).toHaveBeenCalledTimes(0)
   })
 
@@ -73,7 +73,7 @@ describe('EntityTrace', () => {
     const handlePropertyAfterChange = jest.fn()
 
     trace.onPropertyAfterChange(handlePropertyAfterChange)
-    trace.object.name = 'hhhhh'
+    trace.proxyObject.name = 'hhhhh'
     expect(handlePropertyAfterChange).toHaveBeenCalledTimes(1)
     expect(handlePropertyAfterChange).toHaveBeenCalledWith(trace, {
       propertyName: 'name',
@@ -85,7 +85,7 @@ describe('EntityTrace', () => {
     expect(handlePropertyAfterChange).toHaveBeenCalledTimes(0)
 
     trace.offPropertyAfterChange(handlePropertyAfterChange)
-    trace.object.name = 'foo'
+    trace.proxyObject.name = 'foo'
     expect(handlePropertyAfterChange).toHaveBeenCalledTimes(0)
   })
 })

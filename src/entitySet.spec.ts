@@ -503,7 +503,9 @@ describe('EntitySet', () => {
 
     it('modify readonly member will get a exception', () => {
       const foo = ctx.foo.find(1)
-      expect(() => { foo!.createTime = 2 }).toThrow('无法修改一个添加了READ_ONLY约束的成员')
+      // expect(() => { foo!.createTime = 2 }).toThrow('无法修改一个添加了READ_ONLY约束的成员')
+      foo!.createTime = 2
+      expect(foo!.createTime).toEqual(123467)
     })
   })
 

@@ -342,19 +342,21 @@ describe('EntitySet', () => {
         zAliasName: 'ZarName'
       }
 
-      const zar = ctx.zar.entry(originData)
-      expect(zar.id).toEqual(originData.id)
-      expect(zar.name).toEqual(originData.zAliasName)
-      expect(zar).not.toBe(originData)
+      const zar = new Zar()
+      ctx.zar.add(zar)
+      const proxyZar = ctx.zar.entry(originData, zar)
+      expect(proxyZar.id).toEqual(originData.id)
+      expect(proxyZar.name).toEqual(originData.zAliasName)
+      expect(proxyZar).not.toBe(originData)
 
       const newZar = new Zar()
-      const zar2 = ctx.zar.entry(originData, newZar)
-      expect(zar2).toBe(newZar)
-      expect(zar2.id).toEqual(newZar.id)
+      expect(() => {
+        ctx.zar.entry(originData, newZar)
+      }).toThrow('实例不在上下文中')
     })
 
     it('entry complex data', () => {
-      const fna = {
+      const fnaOrigin = {
         bdr: {
           id: 1,
           bname: 'bar name'
@@ -369,45 +371,30 @@ describe('EntitySet', () => {
         pao: ['1', '2']
       }
 
-      const en1 = ctx.fna.entry(fna)
+      const fna = new Fna()
+      ctx.fna.add(fna)
+      const en1 = ctx.fna.entry(fnaOrigin, fna)
       expect(en1).toBeDefined()
       expect(en1).toBeInstanceOf(Fna)
 
       expect(en1.bdr).toBeDefined()
-      expect(en1.bdr!.id).toEqual(fna.bdr.id)
-      expect(en1.bdr!.name).toEqual(fna.bdr.bname)
+      expect(en1.bdr!.id).toEqual(fnaOrigin.bdr.id)
+      expect(en1.bdr!.name).toEqual(fnaOrigin.bdr.bname)
 
       expect(en1.jfu).toBeDefined()
       expect(en1.jfu).toHaveLength(2)
-      expect(en1.jfu![0]).toEqual(fna.jfu[0])
-      expect(en1.jfu![1]).toEqual(fna.jfu[1])
+      expect(en1.jfu![0]).toEqual(fnaOrigin.jfu[0])
+      expect(en1.jfu![1]).toEqual(fnaOrigin.jfu[1])
 
-      expect(en1.pao).toBe(fna.pao)
-
-      const en2 = new Fna()
-      ctx.fna.entry(fna, en2)
-      expect(en2.bdr).toBeDefined()
-      expect(en2.bdr!.id).toEqual(fna.bdr.id)
-      expect(en2.bdr!.name).toEqual(fna.bdr.bname)
-
-      expect(en2.jfu).toBeDefined()
-      expect(en2.jfu).toHaveLength(2)
-      expect(en2.jfu![0]).toEqual(fna.jfu[0])
-      expect(en2.jfu![1]).toEqual(fna.jfu[1])
-
-      expect(en2.pao).toBe(fna.pao)
+      expect(en1.pao).toBe(fnaOrigin.pao)
     })
 
     it('fill', () => {
       const originData = { id: 1, urlFully: 'hahaha.com' }
 
-      const kan = ctx.kan.fill(originData)
+      const kan = ctx.kan.fill(originData, true)
       expect(kan.urlFully).toEqual(originData.urlFully)
-
-      const newKan = new Kan()
-      const kan2 = ctx.kan.fill(originData, newKan)
-      expect(kan2).toBe(newKan)
-      expect(kan2.urlFully).toEqual(newKan.urlFully)
+      expect(kan).toBeInstanceOf(Kan)
     })
 
     it('fill complex data', () => {
@@ -426,7 +413,7 @@ describe('EntitySet', () => {
         pao: ['1', '2']
       }
 
-      const en1 = ctx.fna.fill(fna)
+      const en1 = ctx.fna.fill(fna, true)
       expect(en1).toBeDefined()
       expect(en1).toBeInstanceOf(Fna)
 
@@ -440,19 +427,6 @@ describe('EntitySet', () => {
       expect(en1.jfu![1]).toEqual(fna.jfu[1])
 
       expect(en1.pao).toBe(fna.pao)
-
-      const en2 = new Fna()
-      ctx.fna.fill(fna, en2)
-      expect(en2.bdr).toBeDefined()
-      expect(en2.bdr!.id).toEqual(fna.bdr.id)
-      expect(en2.bdr!.name).toEqual(fna.bdr.name)
-
-      expect(en2.jfu).toBeDefined()
-      expect(en2.jfu).toHaveLength(2)
-      expect(en2.jfu![0]).toEqual(fna.jfu[0])
-      expect(en2.jfu![1]).toEqual(fna.jfu[1])
-
-      expect(en2.pao).toBe(fna.pao)
     })
 
     it('reverse', () => {

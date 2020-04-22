@@ -34,7 +34,7 @@ export default class EntitySet<T extends Object> {
       return null
     }
 
-    const entity = this.entry(originData)
+    const entity = this.fill(originData)
 
     return entity
   }
@@ -373,48 +373,46 @@ export default class EntitySet<T extends Object> {
   }
 
   /**
-   * 将异构数据填充到实体实例, 如果默认实体实例为空, 则会创建新实例
+   * 将异构数据填充到实体实例
    * @param originData 已经映射关系的异构数据
    * @param entity 实体实例
-   * @returns 填充数据的实例
+   * @returns 填充数据的实例的代理对象 Proxy(entity)
    */
-  public entry (originData: {}, entity?: T): T {
-    const instance = metadata.entry(originData, this.entityMetadata.type, false)
-
-    if (!entity) {
-      return instance as T
+  public entry (originData: {}, entity: T): T {
+    const target = Array.from(this.set).find(item => item.rawObject === entity || item.proxyObject === entity)
+    if (!target) {
+      throw new Error('实例不在上下文中')
     }
 
+    const instance = metadata.entry(originData, this.entityMetadata.type, false)
+
     const keys = Object.keys(instance)
+    const rawObject = target.rawObject
+
     keys.forEach(key => {
       const data = Reflect.get(instance, key)
-
-      Reflect.set(this.wMap.get(entity) || entity, key, data)
+      Reflect.set(rawObject, key, data)
     })
 
-    return entity
+    return target.proxyObject
   }
 
   /**
-   * 将同构数据填充到实体实例, 如果默认实体实例为空, 则会创建新实例
-   * @param originData 与 T 同构的数据
-   * @param entity 实体实例
+   * 将数据填充到实体新实例
+   * @param originData 原始数据
+   * @param isomorphism 是否是同构数据, 默认为异构
    * @returns 填充数据的实例
    */
-  public fill (originData: {}, entity?: T): T {
-    const instance = metadata.entry(originData, this.entityMetadata.type, true)
-
-    if (!entity) {
-      return instance as T
-    }
+  public fill (originData: {}, isomorphism = false): T {
+    const instance = metadata.entry(originData, this.entityMetadata.type, isomorphism)
 
     const keys = Object.keys(instance)
     keys.forEach(key => {
       const data = Reflect.get(instance, key)
-      Reflect.set(this.wMap.get(entity) || entity, key, data)
+      Reflect.set(instance, key, data)
     })
 
-    return entity
+    return instance as T
   }
 
   /**

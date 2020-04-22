@@ -47,19 +47,19 @@ export default class EntitySet<T extends Object> {
     loadAll<P = any>(...args: any[]): Promise<P>;
     include(navigatorName: string): this;
     /**
-     * 将异构数据填充到实体实例, 如果默认实体实例为空, 则会创建新实例
+     * 将异构数据填充到实体实例
      * @param originData 已经映射关系的异构数据
      * @param entity 实体实例
-     * @returns 填充数据的实例
+     * @returns 填充数据的实例的代理对象 Proxy(entity)
      */
-    entry(originData: {}, entity?: T): T;
+    entry(originData: {}, entity: T): T;
     /**
-     * 将同构数据填充到实体实例, 如果默认实体实例为空, 则会创建新实例
-     * @param originData 与 T 同构的数据
-     * @param entity 实体实例
+     * 将数据填充到实体新实例
+     * @param originData 原始数据
+     * @param isomorphism 是否是同构数据, 默认为异构
      * @returns 填充数据的实例
      */
-    fill(originData: {}, entity?: T): T;
+    fill(originData: {}, isomorphism?: boolean): T;
     /**
      * 从实体实例中反向提取原始数据
      * @param entity 数据来源实体实例

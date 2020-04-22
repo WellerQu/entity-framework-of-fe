@@ -56,7 +56,7 @@ describe('Behavior-driven development', () => {
     }
 
     const ctx = new Context()
-    await ctx.foo.load(1)
+    const res = await ctx.foo.load(1)
     const foo = ctx.foo.find(1)
 
     expect(foo).toBeDefined()
@@ -666,11 +666,11 @@ describe('Behavior-driven development', () => {
     }
 
     const ctx = new Context()
-    const foo1 = ctx.foo.entry({
+    const foo1 = ctx.foo.fill({
       id: 6,
       name: '巫行云'
     })
-    const foo2 = ctx.foo.entry({
+    const foo2 = ctx.foo.fill({
       id: 7,
       name: '李秋水'
     })
@@ -702,7 +702,7 @@ describe('Behavior-driven development', () => {
     }
 
     const ctx = new Context()
-    const foo1 = ctx.foo.entry({
+    const foo1 = ctx.foo.fill({
       id: 8,
       name: ''
     })

@@ -271,6 +271,10 @@ class EntityMetadataManager {
       const instance = new Type()
 
       members.forEach(item => {
+        if (typeof data !== 'object') {
+          return
+        }
+
         const memberFieldData = Reflect.get(data, isomorphism ? item.propertyName : item.fieldName)
         if (memberFieldData === undefined) {
           // return Reflect.set(instance, item.propertyName, memberFieldData)
@@ -289,17 +293,21 @@ class EntityMetadataManager {
     })
   }
 
-  reverse (instance: object | object[], Type: { new(): object }): object|object[] {
+  reverse (instances: object | object[], Type: { new(): object }): object|object[] {
     const members = this.getMembers(Type.prototype)
     if (!members) {
       throw new Error(UNREGISTER_DATATYPE)
     }
 
-    if (!Array.isArray(instance)) {
-      return (this.reverse([instance], Type) as object[])[0]
+    if (!Array.isArray(instances)) {
+      return (this.reverse([instances], Type) as object[])[0]
     }
 
-    return instance.map(item => {
+    return instances.map(item => {
+      if (typeof item !== 'object') {
+        return undefined
+      }
+
       const store: Store = {}
 
       members.forEach(member => {

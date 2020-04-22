@@ -117,7 +117,7 @@ declare class EntityMetadataManager {
     entry(originData: {}, Type: {
         new (): object;
     }, isomorphism?: boolean): object | object[];
-    reverse(instance: object | object[], Type: {
+    reverse(instances: object | object[], Type: {
         new (): object;
     }): object | object[];
 }

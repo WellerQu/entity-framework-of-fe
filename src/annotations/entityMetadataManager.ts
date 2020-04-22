@@ -1,6 +1,7 @@
 import MetadataType from './metadataType'
 import Relationships from '../constants/relationship'
 import Constraints from '../constants/constraints'
+import isEmpty from '../utils/isEmpty'
 
 export type Store = {
   [key: string]: any
@@ -271,7 +272,7 @@ class EntityMetadataManager {
       const instance = new Type()
 
       members.forEach(item => {
-        if (typeof data !== 'object') {
+        if (typeof data !== 'object' || isEmpty(data)) {
           return
         }
 
@@ -304,7 +305,7 @@ class EntityMetadataManager {
     }
 
     return instances.map(item => {
-      if (typeof item !== 'object') {
+      if (typeof item !== 'object' || isEmpty(item)) {
         return undefined
       }
 

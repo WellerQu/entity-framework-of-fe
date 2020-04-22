@@ -225,14 +225,14 @@ export default class EntitySet<T extends Object> {
         return false
       }
 
-      return fn(Object.freeze(item.proxyObject))
+      return fn(item.proxyObject)
     })
 
     return stateTraces.map(item => item.proxyObject)
   }
 
   public toList (): T[] {
-    return Array.from(this.set).map(item => Object.freeze(item.proxyObject))
+    return Array.from(this.set).map(item => item.proxyObject)
   }
 
   public async load (...args: any[]): Promise<Response> {

@@ -8,5 +8,6 @@
     "typedoc",
     "xargs",
     "zars"
-  ]
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

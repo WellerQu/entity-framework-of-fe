@@ -11,7 +11,6 @@ import EntityConfiguration from './entityConfiguration';
 export default class EntityContext {
     constructor(configuration: EntityConfiguration);
     private _configuration;
-    readonly configuration: EntityConfiguration;
-    clean(): this;
-    saveChanges<T = any>(): Promise<T[]>;
+    get configuration(): EntityConfiguration;
+    fetch(url: string, options: RequestInit, data?: {}): Promise<Response>;
 }

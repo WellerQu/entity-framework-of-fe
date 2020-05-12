@@ -1,4 +1,5 @@
-import manager, { MetadataType, Member } from '../entityMetadataManager'
+import manager, { Member } from '../entityMetadataManager'
+import MetadataType from '../metadataType'
 
 /**
  * 用来注解实体模型中的成员字段
@@ -20,8 +21,12 @@ import manager, { MetadataType, Member } from '../entityMetadataManager'
  * // foo is {name: 'fooName'}
  * ```
  */
-const member = (fieldName?: string, dataType?: { new(): object }) => (target: Object, propertyName: string) => {
-  manager.register<Member>(target, MetadataType.Member, { fieldName: fieldName || propertyName, propertyName, dataType })
+const member = (fieldName?: string, dataType?: () => { new(): object }) => (target: Object, propertyName: string) => {
+  manager.register<Member>(target, MetadataType.Member, {
+    fieldName: fieldName || propertyName,
+    propertyName,
+    dataType: dataType
+  })
 }
 
 export default member

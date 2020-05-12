@@ -20,7 +20,7 @@
  * isEmpty(undefined) // => true
  */
 const isEmpty = (value: any) => {
-  if (value === void 0) {
+  if (value === undefined) {
     return true
   }
 

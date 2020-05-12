@@ -7,7 +7,7 @@ import Constraints from '../../constants/constraints'
  * @example
  * ```typescript
  * class Foo {
- *   @constraint(Constraint.NON_EMPTY_ON_ADDED | Constraint.NON_EMPTY_ON_MODIFIED)
+ *   @constraint(Constraint.NON_EMPTY)
  *   bid: number = 0
  * }
  * ```

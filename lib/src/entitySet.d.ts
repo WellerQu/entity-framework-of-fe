@@ -1,77 +1,20 @@
-import EntityContext from './entityContext';
-import { Store } from './annotations/entityMetadataManager';
-export declare type OriginJSON = Promise<any>;
+import { Store, Constraints } from './annotations/entityMetadataManager';
 export default class EntitySet<T extends Object> {
-    private ctx;
-    constructor(ctx: EntityContext, type: {
+    constructor(type: {
         new (): T;
     });
-    private set;
-    private ownNavigatorRequests;
-    private otherNavigators;
     private entityMetadata;
-    private wMap;
-    private parseOriginDataToEntity;
-    private getRelatedEntitySet;
-    readonly size: number;
-    clean(): this;
-    private cleanSet;
-    private cleanNavigators;
-    add(...entities: (T | undefined)[]): this;
-    remove(...entities: (T | undefined)[]): this;
-    attach(...entities: (T | undefined)[]): this;
-    detach(...entities: (T | undefined)[]): this;
     /**
-     * 通过传入的主键在数据集中查询实体实例, 参数的顺序为实体模型中被注解为 @[[primary]]() 的字段的顺序
-     *
-     * @example
-     * ```typescript
-     * class Foo {
-     *   @primary()
-     *   id: number = 0
-     *   @primary()
-     *   version: number = 0
-     * }
-     *
-     * ctx.foo.find(1, 2)
-     * // 参数 1 作为id, 参数 2 作为version
-     * ```
-     *
-     * @param primaryKeys {...any[]} 主键字段
-     * @returns
-     */
-    find(...primaryKeys: any[]): T | undefined;
-    filter(fn: (n: T) => boolean): T[];
-    toList(): T[];
-    load(...args: any[]): Promise<Response>;
-    loadAll<P = any>(...args: any[]): Promise<P>;
-    include(navigatorName: string): this;
-    /**
-     * 将异构数据填充到实体实例
-     * @param originData 已经映射关系的异构数据
-     * @param entity 实体实例
-     * @returns 填充数据的实例的代理对象 Proxy(entity)
-     */
-    entry(originData: {}, entity: T): T;
-    /**
-     * 将数据填充到实体新实例
+     * 将原始JSON数据反序列化成 Entity 实例
      * @param originData 原始数据
      * @param isomorphism 是否是同构数据, 默认为异构
      * @returns 填充数据的实例
      */
-    fill(originData: {}, isomorphism?: boolean): T;
+    deserialize(originData: {} | undefined, isomorphism?: boolean): T | T[] | undefined;
     /**
-     * 从实体实例中反向提取原始数据
+     * 将 Entity 实例序列化成JSON数据
      * @param entity 数据来源实体实例
      * @returns 原始数据
      */
-    reverse(entity: T): Store;
-    rawQuery(query: (fetch: (url: string, options: RequestInit, data?: {}) => Promise<Response>) => Promise<T[] | T>): Promise<T[]>;
-    private applyConstraints;
-    private synchronizeAddedState;
-    private synchronizeDeletedState;
-    private synchronizeModifiedState;
-    synchronizeState(): Promise<any>[];
-    private onPropertyBeforeChange;
-    private onPropertyAfterChange;
+    serialize(entity: T, constraints?: Constraints): Store;
 }

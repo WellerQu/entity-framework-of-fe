@@ -1,18 +1,18 @@
 {
   "name": "entity-framework",
   "version": "3.0.1",
-  "description": "用于前端的实体关系框架, 解决存在关联关系的实体之间的CRUD",
+  "description": "用于前端的实体关系框架, 提供正反序列化",
   "keywords": [
     "entity",
     "framework",
-    "load data",
-    "save data"
+    "serialize",
+    "deserialize",
+    "model"
   ],
   "main": "lib/src/index.js",
   "dependencies": {},
   "devDependencies": {
     "@types/jest": "^24.0.23",
-    "@types/json-server": "^0.14.2",
     "@types/node": "^12.12.21",
     "@types/node-fetch": "^2.5.5",
     "@typescript-eslint/eslint-plugin": "^1.13.0",
@@ -24,7 +24,6 @@
     "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-standard": "^4.0.0",
     "jest": "^25.3.0",
-    "json-server": "^0.15.1",
     "node-fetch": "^2.6.0",
     "rollup": "^1.17.0",
     "rollup-plugin-buble": "^0.19.8",
@@ -37,14 +36,12 @@
     "tslib": "^1.10.0",
     "typedoc": "^0.15.5",
     "typedoc-plugin-external-module-name": "^2.1.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.8.3"
   },
   "scripts": {
     "test": "jest --detectOpenHandles",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch --notify",
-    "json-server": "json-server server/db.json",
-    "kill-server": "ps -ef | grep json-server | grep -v grep | awk '{print $2}' | xargs kill -9",
     "docs": "typedoc --out docs",
     "build": "node_modules/.bin/rollup -c ./build/rollup.config.prod.js",
     "start": "node_modules/.bin/rollup -w -c ./build/rollup.config.dev.js"

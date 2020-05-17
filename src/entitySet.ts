@@ -1,5 +1,4 @@
-import metadata, { Store, Constraints } from './annotations/entityMetadataManager'
-import isEmpty from './utils/isEmpty'
+import metadata, { Store, ConstraintOption } from './annotations/entityMetadataManager'
 
 export default class EntitySet<T extends Object> {
   constructor (type: { new(): T}) {
@@ -16,8 +15,8 @@ export default class EntitySet<T extends Object> {
    * @param isomorphism 是否是同构数据, 默认为异构
    * @returns 填充数据的实例
    */
-  public deserialize (originData: {} | undefined, isomorphism = false): T | T[] | undefined {
-    if (isEmpty(originData)) {
+  public deserialize (originData: object | undefined, isomorphism = false): T | T[] | undefined {
+    if (!originData) {
       return undefined
     }
 
@@ -29,7 +28,7 @@ export default class EntitySet<T extends Object> {
    * @param entity 数据来源实体实例
    * @returns 原始数据
    */
-  public serialize (entity: T, constraints?: Constraints): Store {
-    return metadata.reverse(entity, this.entityMetadata.type, constraints)
+  public serialize (entity: T, constraints?: ConstraintOption): Store {
+    return metadata.revert(entity, this.entityMetadata.type, constraints)
   }
 }

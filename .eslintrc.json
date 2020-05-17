@@ -12,30 +12,33 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "extends": ["eslint:recommended", "standard"],
+  "extends": [
+    "eslint:recommended",
+    "standard"
+  ],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly",
-    "jest": "readonly",
     "it": "readonly",
     "expect": "readonly",
-    "describe": "readonly",
-    "beforeEach": "readonly",
-    "beforeAll": "readonly",
-    "afterEach": "readonly",
-    "afterAll": "readonly"
+    "describe": "readonly"
   },
   "plugins": [
     "@typescript-eslint"
   ],
   "rules": {
     "@typescript-eslint/no-unused-vars": "error",
-    "comma-dangle": ["warn", {
-      "arrays": "never",
-      "objects": "never",
-      "imports": "never",
-      "exports": "never",
-      "functions": "ignore"
-    }]
+    "no-console": "error",
+    "no-unused-vars": "off",
+    "comma-dangle": [
+      "warn",
+      {
+        "arrays": "never",
+        "objects": "never",
+        "imports": "never",
+        "exports": "never",
+        "functions": "ignore"
+      }
+    ]
   }
 }

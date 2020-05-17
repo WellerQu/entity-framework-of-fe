@@ -25,7 +25,7 @@ const member = (fieldName?: string, dataType?: () => { new(): object }) => (targ
   manager.register<Member>(target, MetadataType.Member, {
     fieldName: fieldName || propertyName,
     propertyName,
-    dataType: dataType
+    propertyDataType: dataType
   })
 }
 

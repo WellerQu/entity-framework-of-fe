@@ -1,5 +1,5 @@
-import manager, { MetadataType, MemberConstraints } from '../entityMetadataManager'
-import Constraints from '../../constants/constraints'
+import manager, { MetadataType, Constraints } from '../entityMetadataManager'
+import ConstraintOption from '../../constants/constraintOption'
 
 /**
  * 用来注解实体模型中的值约束
@@ -12,10 +12,10 @@ import Constraints from '../../constants/constraints'
  * }
  * ```
  *
- * @param constraints {Constraints} 约束
+ * @param constraints {ConstraintOption} 约束
  */
-const constraint = (constraints: Constraints) => (target: Object, propertyName: string) => {
-  manager.register<MemberConstraints>(target, MetadataType.Constraint, {
+const constraint = (constraints: ConstraintOption) => (target: Object, propertyName: string) => {
+  manager.register<Constraints>(target, MetadataType.Constraint, {
     constraints,
     propertyName
   })

@@ -1,23 +1,19 @@
 import MetadataType from './metadataType'
 import isEmpty from '../utils/isEmpty'
-import Constraints from '../constants/constraints'
+import ConstraintOption from '../constants/constraintOption'
 
 export type Store = {
   [key: string]: any
 }
 
-export { MetadataType, Constraints }
+export { MetadataType, ConstraintOption }
 
 /**
  * 注解实体模型的字段元数据
  *
  * @category annotations
  */
-export interface Field {
-  /**
-   * 字段名称
-   */
-  fieldName: string;
+export interface Property {
   /**
    * 属性名称
    */
@@ -29,8 +25,22 @@ export interface Field {
  *
  * @category annotations
  */
-export interface Member extends Field {
-  dataType?: () => { new(): object }
+export interface Member extends Property {
+  /**
+   * 字段名称
+   */
+  fieldName: string;
+  /**
+   * 属性类型
+   */ 
+  propertyDataType?: () => { new(): object }
+}
+
+export interface Mapping extends Property {
+  /**
+   * object中的位置
+   */
+  path: string;
 }
 
 /**
@@ -38,11 +48,11 @@ export interface Member extends Field {
  *
  * @category annotations
  */
-export interface MemberConstraints {
+export interface Constraints {
   /**
    * 成员值约束
    */
-  constraints: Constraints,
+  constraints: ConstraintOption,
   /**
    * 属性名
    */
@@ -58,10 +68,10 @@ const UNREGISTER_DATATYPE = '未注册的数据类型'
 class EntityMetadataManager {
   private managedModel = new WeakMap<Object, {
     members: Member[],
-    constraints: Record<string, Constraints | undefined>,
+    constraints: Record<string, ConstraintOption | undefined>,
   }>()
 
-  register<T extends Member | MemberConstraints> (prototype: Object, type: MetadataType, meta: T) {
+  register<T extends Member | Constraints | Mapping> (prototype: object, type: MetadataType, meta: T) {
     if (!this.managedModel.has(prototype)) {
       this.managedModel.set(prototype, {
         members: [],
@@ -70,11 +80,11 @@ class EntityMetadataManager {
     }
 
     if (type === MetadataType.Constraint) {
-      const newMeta = meta as MemberConstraints
+      const newMeta = meta as Constraints
       const allConstraints = this.managedModel.get(prototype)!.constraints
 
       if (!allConstraints[newMeta.propertyName]) {
-        allConstraints[newMeta.propertyName] = Constraints.NONE
+        allConstraints[newMeta.propertyName] = ConstraintOption.NONE
       }
 
       allConstraints[newMeta.propertyName]! |= newMeta.constraints
@@ -87,11 +97,11 @@ class EntityMetadataManager {
     }
   }
 
-  unregister (prototype: Object) {
+  unregister (prototype: object) {
     this.managedModel.has(prototype) && this.managedModel.delete(prototype)
   }
 
-  getMembers (prototype: Object): Member[] {
+  getMembers (prototype: object): Member[] {
     if (!this.managedModel.has(prototype)) {
       return []
     }
@@ -99,7 +109,7 @@ class EntityMetadataManager {
     return this.managedModel.get(prototype)!.members
   }
 
-  getMemberConstraints (prototype: Object) {
+  getMemberConstraints (prototype: object) {
     if (!this.managedModel.has(prototype)) {
       return {}
     }
@@ -107,11 +117,11 @@ class EntityMetadataManager {
     return this.managedModel.get(prototype)!.constraints
   }
 
-  getMemberConstraint (prototype: Object, propertyName: string) {
+  getMemberConstraint (prototype: object, propertyName: string) {
     return this.getMemberConstraints(prototype)[propertyName]
   }
 
-  entry (originData: {} | undefined, Type: { new(): object }, isomorphism = false): object | object[] {
+  entry (originData: object | undefined, Type: { new(): object }, isomorphism = false): object | object[] | never {
     const members = this.getMembers(Type.prototype)
     if (!members) {
       throw new Error(UNREGISTER_DATATYPE)
@@ -134,11 +144,11 @@ class EntityMetadataManager {
           return
         }
 
-        if (!item.dataType) {
+        if (!item.propertyDataType) {
           return Reflect.set(instance, item.propertyName, memberFieldData)
         }
 
-        const memberInstance = this.entry(memberFieldData, item.dataType(), isomorphism)
+        const memberInstance = this.entry(memberFieldData, item.propertyDataType(), isomorphism)
         Reflect.set(instance, item.propertyName, memberInstance)
       })
 
@@ -146,7 +156,7 @@ class EntityMetadataManager {
     })
   }
 
-  reverse (instances: object | object[], Type: { new(): object }, constraints = Constraints.NONE): object|object[] {
+  revert(instances: object | object[], Type: { new(): object }, constraints = ConstraintOption.NONE): object | object[] | never {
     const members = this.getMembers(Type.prototype)
     if (!members) {
       throw new Error(UNREGISTER_DATATYPE)
@@ -157,28 +167,28 @@ class EntityMetadataManager {
     }
 
     if (!Array.isArray(instances)) {
-      return (this.reverse([instances], Type, constraints) as object[])[0]
+      return (this.revert([instances], Type, constraints) as object[])[0]
     }
 
     return instances.map(record => {
       const store: Store = {}
 
       members.forEach(member => {
-        const memberConstraints = this.getMemberConstraint(Type.prototype, member.propertyName) ?? Constraints.NONE
-        if ((constraints & Constraints.READ_ONLY) === Constraints.READ_ONLY && (memberConstraints & Constraints.READ_ONLY) === Constraints.READ_ONLY) {
+        const memberConstraints = this.getMemberConstraint(Type.prototype, member.propertyName) ?? ConstraintOption.NONE
+        if ((constraints & ConstraintOption.READ_ONLY) === ConstraintOption.READ_ONLY && (memberConstraints & ConstraintOption.READ_ONLY) === ConstraintOption.READ_ONLY) {
           return
         }
 
         const data = Reflect.get(record, member.propertyName)
-        if ((constraints & Constraints.NON_EMPTY) === Constraints.NON_EMPTY && (memberConstraints & Constraints.NON_EMPTY) === Constraints.NON_EMPTY && isEmpty(data)) {
+        if ((constraints & ConstraintOption.NON_EMPTY) === ConstraintOption.NON_EMPTY && (memberConstraints & ConstraintOption.NON_EMPTY) === ConstraintOption.NON_EMPTY && isEmpty(data)) {
           return
         }
 
-        if (!member.dataType) {
+        if (!member.propertyDataType) {
           return Reflect.set(store, member.fieldName, data)
         }
 
-        const memberData = this.reverse(data, member.dataType(), constraints)
+        const memberData = this.revert(data, member.propertyDataType(), constraints)
         return Reflect.set(store, member.fieldName, memberData)
       })
 

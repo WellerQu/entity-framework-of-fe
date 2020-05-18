@@ -1,4 +1,4 @@
-import manager, { MetadataType, Constraints } from '../entityMetadataManager'
+import context, { MetadataType } from '../MetadataContext'
 import ConstraintOption from '../../constants/constraintOption'
 
 /**
@@ -7,7 +7,7 @@ import ConstraintOption from '../../constants/constraintOption'
  * @example
  * ```typescript
  * class Foo {
- *   @constraint(Constraint.NON_EMPTY)
+ *   @constraint(ConstraintOption.NON_EMPTY)
  *   bid: number = 0
  * }
  * ```
@@ -15,7 +15,7 @@ import ConstraintOption from '../../constants/constraintOption'
  * @param constraints {ConstraintOption} 约束
  */
 const constraint = (constraints: ConstraintOption) => (target: Object, propertyName: string) => {
-  manager.register<Constraints>(target, MetadataType.Constraint, {
+  context.register<Constraints>(target, MetadataType.Constraint, {
     constraints,
     propertyName
   })

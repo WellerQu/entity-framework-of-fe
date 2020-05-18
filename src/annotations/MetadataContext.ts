@@ -1,71 +1,16 @@
-import MetadataType from './metadataType'
+import MetadataType from '../constants/metadataType'
 import isEmpty from '../utils/isEmpty'
 import ConstraintOption from '../constants/constraintOption'
 
-export type Store = {
-  [key: string]: any
-}
-
 export { MetadataType, ConstraintOption }
-
-/**
- * 注解实体模型的字段元数据
- *
- * @category annotations
- */
-export interface Property {
-  /**
-   * 属性名称
-   */
-  propertyName: string;
-}
-
-/**
- * 注解实体模型的成员字段元数据, 通过添加注解 @[[member]]() 产生
- *
- * @category annotations
- */
-export interface Member extends Property {
-  /**
-   * 字段名称
-   */
-  fieldName: string;
-  /**
-   * 属性类型
-   */ 
-  propertyDataType?: () => { new(): object }
-}
-
-export interface Mapping extends Property {
-  /**
-   * object中的位置
-   */
-  path: string;
-}
-
-/**
- * 成员数据值得约束
- *
- * @category annotations
- */
-export interface Constraints {
-  /**
-   * 成员值约束
-   */
-  constraints: ConstraintOption,
-  /**
-   * 属性名
-   */
-  propertyName: string
-}
 
 const UNREGISTER_DATATYPE = '未注册的数据类型'
 
 /**
  * @module annotations
- * @class MetadataManager
+ * @class MetadataContext
  */
-class EntityMetadataManager {
+export class MetadataContext {
   private managedModel = new WeakMap<Object, {
     members: Member[],
     constraints: Record<string, ConstraintOption | undefined>,
@@ -197,6 +142,3 @@ class EntityMetadataManager {
   }
 }
 
-const manager = new EntityMetadataManager()
-
-export default manager

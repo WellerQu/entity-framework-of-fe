@@ -1,4 +1,4 @@
-import metadata, { Store, ConstraintOption } from './annotations/entityMetadataManager'
+import context, { ConstraintOption } from './annotations'
 
 export default class EntitySet<T extends Object> {
   constructor (type: { new(): T}) {
@@ -20,7 +20,7 @@ export default class EntitySet<T extends Object> {
       return undefined
     }
 
-    return metadata.entry(originData, this.entityMetadata.type, isomorphism) as T | T[]
+    return context.entry(originData, this.entityMetadata.type, isomorphism) as T | T[]
   }
 
   /**
@@ -28,7 +28,11 @@ export default class EntitySet<T extends Object> {
    * @param entity 数据来源实体实例
    * @returns 原始数据
    */
-  public serialize (entity: T, constraints?: ConstraintOption): Store {
-    return metadata.revert(entity, this.entityMetadata.type, constraints)
+  public serialize (entity: T | undefined, constraints?: ConstraintOption): Store | undefined {
+    if (!entity) {
+      return undefined
+    }
+
+    return context.revert(entity, this.entityMetadata.type, constraints)
   }
 }

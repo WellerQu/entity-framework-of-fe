@@ -1,16 +1,16 @@
 import member from './annotations/property/member'
-import metadataManager, { Constraints } from './annotations/entityMetadataManager'
-import MetadataType from './annotations/metadataType'
+import context, { ConstraintOption } from './annotations'
+import MetadataType from './constants/metadataType'
 import EntityConfiguration from './entityConfiguration'
 import EntityContext from './entityContext'
 import EntitySet from './entitySet'
 import constraint from './annotations/property/constraint'
 
 export {
-  Constraints,
+  context as metadata,
   member,
   constraint,
-  metadataManager,
+  ConstraintOption,
   MetadataType,
   EntityConfiguration,
   EntityContext,

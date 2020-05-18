@@ -48,3 +48,19 @@ interface Constraints extends Property {
    */
   constraints: ConstraintOption,
 }
+
+enum MetadataType {
+  Member = 1,
+  Constraint = 2,
+  Mapping = 3
+}
+
+interface IMetadataContext {
+  model: WeakMap<object, {}>
+}
+
+interface IMetadata<T> {
+  next?: IMetadata<{}>
+  setData(type: MetadataType, prototype: object, meta: T)
+  getData(type: MetadataType, prototype: object, ...args: any[])
+}

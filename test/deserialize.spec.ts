@@ -1,4 +1,4 @@
-import { member, EntityContext, EntitySet, EntityConfiguration } from '../src'
+import { member, EntityContext, EntitySet, EntityConfiguration, mapping } from '../src'
 
 describe('deserialize', () => {
   class MyConfiguration extends EntityConfiguration {
@@ -81,6 +81,35 @@ describe('deserialize', () => {
     expect(foo.id).toEqual('234')
     expect(foo.name).toEqual('Hello Foo')
     expect(foo.redundant).toEqual(0)
+  })
+
+  it('simple model: mapping', () => {
+    class Simple {
+      @member()
+      id: string = ''
+
+      @member()
+      name: string = ''
+
+      @member()
+      @mapping('a.b.c')
+      age: number = 0
+    }
+
+    class MyContext extends EntityContext {
+      constructor () {
+        super(new MyConfiguration())
+      }
+
+      simpleSet = new EntitySet(Simple)
+    }
+
+    const ctx = new MyContext()
+    const foo = ctx.simpleSet.deserialize({ id: '1', name: 'foo', a: { b: { c: { age: 8 } } } }) as Simple
+    expect(foo).toBeInstanceOf(Simple)
+    expect(foo.id).toEqual('1')
+    expect(foo.name).toEqual('foo')
+    expect(foo.age).toEqual(8)
   })
 
   it('composite model: the property name is same with field name', () => {

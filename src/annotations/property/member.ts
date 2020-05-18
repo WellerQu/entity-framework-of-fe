@@ -21,7 +21,7 @@ import MetadataType from '../../constants/metadataType'
  * // foo is {name: 'fooName'}
  * ```
  */
-const member = (fieldName?: string, dataType?: () => { new(): object }) => (target: Object, propertyName: string) => {
+const member = (fieldName?: string, dataType?: () => { new(): object }) => (target: object, propertyName: string) => {
   context.register<Member>(target, MetadataType.Member, {
     fieldName: fieldName || propertyName,
     propertyName,

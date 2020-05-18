@@ -1,4 +1,4 @@
-import { member, EntityContext, EntitySet, EntityConfiguration } from '../src/index'
+import { member, EntityContext, EntitySet, EntityConfiguration, mapping } from '../src/index'
 
 describe('serialize', () => {
   class MyConfiguration extends EntityConfiguration {
@@ -87,6 +87,37 @@ describe('serialize', () => {
     expect(serialized).toEqual({ id: '234', name: 'Hello Foo' })
   })
 
+  it('simple model: mapping', () => {
+    class Simple {
+      @member()
+      id: string = ''
+
+      @member()
+      name: string = ''
+
+      @member()
+      @mapping('a.b.c')
+      age: number = 0
+    }
+
+    class MyContext extends EntityContext {
+      constructor () {
+        super(new MyConfiguration())
+      }
+
+      simpleSet = new EntitySet(Simple)
+    }
+
+    const ctx = new MyContext()
+    const foo = new Simple()
+    foo.id = '234'
+    foo.name = 'Hello Foo'
+    foo.age = 8
+
+    const serialized = ctx.simpleSet.serialize(foo)
+    expect(serialized).toEqual({ id: '234', name: 'Hello Foo', a: { b: { c: { age: 8 } } } })
+  })
+
   it('composite model: the property name is same with field name', () => {
     class Foo {
       @member()
@@ -163,6 +194,6 @@ describe('serialize', () => {
     foo.foo.name = 'oof'
 
     const serialized = ctx.fooSet.serialize(foo)
-    expect(serialized).toEqual({ id: '123', name: 'foo', foo: { id: '321', name: 'oof' } })
+    expect(serialized).toEqual({ id: '123', name: 'foo', foo: { id: '321', name: 'oof', foo: {} } })
   })
 })

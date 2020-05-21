@@ -122,7 +122,7 @@
         "signature": "df7a7340a4e8055605d2bf2563fa0365493f2ad8f3939e1587e68b515a305774"
       },
       "../src/entityconfiguration.ts": {
-        "version": "4d25afbb62034f02d20b727cd079568b3731dc6510db4c04f751673f5dfe06e7",
+        "version": "d9c71e056b8110b0985a4d2dd186d5881f32895edf6b89aaeaed434e86b5aca2",
         "signature": "07d7f98ff39d4440a83dd2f078598f863b78e695ca62987cb7b0262eeb553315"
       },
       "../src/entitycontext.ts": {
@@ -138,11 +138,11 @@
         "signature": "78eb0373fffb16eac42a0d43dd27973ecb904735d9ea78b78c3b6f285e8f3957"
       },
       "../src/utils/keypath.ts": {
-        "version": "1d6916573a10bc55d6ac59454eb1d159240b56e644c6040d161c111faa2b1dc9",
+        "version": "14bab3bb1889a1cdb7e298bbfe648491239ed04592ccbce8ef9fecd3da8ad289",
         "signature": "2e505075be5bda9e2d9b46946ec70ab0c1c57f5d6f1a89f94973898a7ab6247a"
       },
       "../src/annotations/metadatacontext.ts": {
-        "version": "bb40077130e9d3a1535ddd242d6df54ebda1591b3cf92e1497ce16b2c0f34036",
+        "version": "93144a6fd5ae67493b3babe5fffbb6bfd16334231e49320097159b18326cf2df",
         "signature": "f6d8c6ab8c451d5849e66b5570bfee6bd4d71a32a3885a061d34e5558c179c16"
       },
       "../src/annotations/constraintmetadata.ts": {
@@ -1736,11 +1736,10 @@
       "../node_modules/typescript/lib/lib.esnext.intl.d.ts",
       "../src/entity.framework.d.ts",
       "../src/utils/isempty.ts",
+      "../src/entityconfiguration.ts",
       "../src/entitycontext.ts",
       "../src/constants/metadatatype.ts",
       "../src/constants/constraintoption.ts",
-      "../src/utils/keypath.ts",
-      "../src/annotations/metadatacontext.ts",
       "../src/annotations/constraintmetadata.ts",
       "../src/annotations/membermetadata.ts",
       "../src/annotations/mappingmetadata.ts",
@@ -1800,7 +1799,8 @@
       "../node_modules/@types/node/ts3.2/util.d.ts",
       "../node_modules/@types/node/ts3.2/globals.d.ts",
       "../node_modules/@types/node/ts3.2/index.d.ts",
-      "../src/entityconfiguration.ts"
+      "../src/utils/keypath.ts",
+      "../src/annotations/metadatacontext.ts"
     ]
   },
   "version": "3.8.3"

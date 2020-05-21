@@ -5,9 +5,11 @@ export const keyPathGetter = <T = any>(keyPath: string, defaultValue?: T) => {
     return (keyPath
       .split('.')
       .reduce(
-        (middle: any, key: string) => middle ? middle[key] : undefined,
+        (middle: any, key: string) => {
+          return middle ? middle[key] : undefined
+        },
         target
-      ) || defaultValue) as T
+      ) ?? defaultValue) as T
   }
 }
 

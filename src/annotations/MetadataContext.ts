@@ -68,10 +68,8 @@ export class MetadataContext {
         const path = mapping?.path.split('.').concat([key]).join('.') ?? key
         const getter = keyPathGetter(path)
 
-        // const memberFieldData = Reflect.get(data, isomorphism ? item.propertyName : item.fieldName)
         const memberFieldData = getter(data)
         if (memberFieldData === undefined || memberFieldData === null) {
-          // return Reflect.set(instance, item.propertyName, memberFieldData)
           return
         }
 

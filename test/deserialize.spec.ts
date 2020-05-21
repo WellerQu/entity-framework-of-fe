@@ -14,6 +14,9 @@ describe('deserialize', () => {
 
       @member()
       name: string = ''
+
+      @member()
+      default: any = ''
     }
 
     class MyContext extends EntityContext {
@@ -25,10 +28,11 @@ describe('deserialize', () => {
     }
 
     const ctx = new MyContext()
-    const foo = ctx.simpleSet.deserialize({ id: '1', name: 'foo' }) as Simple
+    const foo = ctx.simpleSet.deserialize({ id: '1', name: 'foo', default: false }) as Simple
     expect(foo).toBeInstanceOf(Simple)
     expect(foo.id).toEqual('1')
     expect(foo.name).toEqual('foo')
+    expect(foo.default).toEqual(false)
   })
 
   it('simple model: the property name is different with field name', () => {

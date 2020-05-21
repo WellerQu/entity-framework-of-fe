@@ -48,7 +48,7 @@ export default abstract class EntityConfiguration {
       }
     }
 
-    if (fetchOptions.method !== 'GET') {
+    if (fetchOptions.method !== 'GET' && fetchOptions.headers['Content-Type'] === 'application/json') {
       fetchOptions.body = JSON.stringify(data)
     }
 

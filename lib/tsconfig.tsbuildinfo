@@ -122,7 +122,7 @@
         "signature": "df7a7340a4e8055605d2bf2563fa0365493f2ad8f3939e1587e68b515a305774"
       },
       "../src/entityconfiguration.ts": {
-        "version": "bda037a168e5aec9ce5b970ab418baa1cf84414ef80e3631853d30c5b3c4a2e6",
+        "version": "4d25afbb62034f02d20b727cd079568b3731dc6510db4c04f751673f5dfe06e7",
         "signature": "07d7f98ff39d4440a83dd2f078598f863b78e695ca62987cb7b0262eeb553315"
       },
       "../src/entitycontext.ts": {
@@ -1274,8 +1274,30 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "../src/entity.framework.d.ts": [
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
       "../src/entitycontext.ts": [
         "../src/entityconfiguration.ts"
+      ],
+      "../src/annotations/metadatacontext.ts": [
+        "../src/constants/metadatatype.ts",
+        "../src/constants/constraintoption.ts"
+      ],
+      "../src/annotations/constraintmetadata.ts": [
+        "../src/constants/metadatatype.ts"
+      ],
+      "../src/annotations/membermetadata.ts": [
+        "../src/constants/metadatatype.ts"
+      ],
+      "../src/annotations/mappingmetadata.ts": [
+        "../src/constants/metadatatype.ts"
+      ],
+      "../src/annotations/index.ts": [
+        "../src/annotations/metadatacontext.ts"
       ],
       "../src/entityset.ts": [
         "../src/annotations/index.ts"
@@ -1681,28 +1703,6 @@
         "../node_modules/@types/node/ts3.2/globals.d.ts",
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/util.d.ts"
-      ],
-      "../src/entity.framework.d.ts": [
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "../src/annotations/mappingmetadata.ts": [
-        "../src/constants/metadatatype.ts"
-      ],
-      "../src/annotations/index.ts": [
-        "../src/annotations/metadatacontext.ts"
-      ],
-      "../src/annotations/membermetadata.ts": [
-        "../src/constants/metadatatype.ts"
-      ],
-      "../src/annotations/constraintmetadata.ts": [
-        "../src/constants/metadatatype.ts"
-      ],
-      "../src/annotations/metadatacontext.ts": [
-        "../src/constants/metadatatype.ts",
-        "../src/constants/constraintoption.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
@@ -1736,7 +1736,6 @@
       "../node_modules/typescript/lib/lib.esnext.intl.d.ts",
       "../src/entity.framework.d.ts",
       "../src/utils/isempty.ts",
-      "../src/entityconfiguration.ts",
       "../src/entitycontext.ts",
       "../src/constants/metadatatype.ts",
       "../src/constants/constraintoption.ts",
@@ -1800,7 +1799,8 @@
       "../node_modules/@types/node/ts3.2/fs.d.ts",
       "../node_modules/@types/node/ts3.2/util.d.ts",
       "../node_modules/@types/node/ts3.2/globals.d.ts",
-      "../node_modules/@types/node/ts3.2/index.d.ts"
+      "../node_modules/@types/node/ts3.2/index.d.ts",
+      "../src/entityconfiguration.ts"
     ]
   },
   "version": "3.8.3"

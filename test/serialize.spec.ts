@@ -194,6 +194,6 @@ describe('serialize', () => {
     foo.foo.name = 'oof'
 
     const serialized = ctx.fooSet.serialize(foo)
-    expect(serialized).toEqual({ id: '123', name: 'foo', foo: { id: '321', name: 'oof', foo: {} } })
+    expect(serialized).toEqual({ id: '123', name: 'foo', foo: { id: '321', name: 'oof', foo: undefined } })
   })
 })

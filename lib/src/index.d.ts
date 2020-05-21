@@ -1,8 +1,9 @@
-import member from './annotations/property/member';
-import metadataManager, { Constraints } from './annotations/entityMetadataManager';
-import MetadataType from './annotations/metadataType';
+import context, { ConstraintOption } from './annotations';
+import MetadataType from './constants/metadataType';
 import EntityConfiguration from './entityConfiguration';
 import EntityContext from './entityContext';
 import EntitySet from './entitySet';
+import member from './annotations/property/member';
 import constraint from './annotations/property/constraint';
-export { Constraints, member, constraint, metadataManager, MetadataType, EntityConfiguration, EntityContext, EntitySet };
+import mapping from './annotations/property/mapping';
+export { context as metadata, member, constraint, mapping, ConstraintOption, MetadataType, EntityConfiguration, EntityContext, EntitySet };

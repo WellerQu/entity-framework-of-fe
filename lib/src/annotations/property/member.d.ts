@@ -18,5 +18,5 @@
  * // foo is {name: 'fooName'}
  * ```
  */
-declare const member: (fieldName?: string | undefined, dataType?: (() => new () => object) | undefined) => (target: Object, propertyName: string) => void;
+declare const member: (fieldName?: string | undefined, dataType?: (() => new () => object) | undefined) => (target: object, propertyName: string) => void;
 export default member;

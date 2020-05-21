@@ -43,8 +43,8 @@ export default abstract class EntityConfiguration {
     const fetchOptions = {
       ...options,
       headers: {
-        ...options.headers,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        ...options.headers
       }
     }
 

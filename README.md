@@ -64,9 +64,9 @@ const ctx = new Context()
 const foo = ctx.deserialize(originData)
 
 expect(foo).toInstanceOf(Foo)
-expect(foo.a).toEquals(origin.a)
-expect(foo.b).toEquals(origin.b)
-expect(foo.d).toEquals(origin.c.d)
+expect(foo.a).toEquals(originData.a)
+expect(foo.b).toEquals(originData.b)
+expect(foo.d).toEquals(originData.c.d)
 ```
 
 ## 概念介绍
@@ -76,3 +76,5 @@ expect(foo.d).toEquals(origin.c.d)
 - 数据集
 - 序列化
 - 反序列化
+
+## 未来计划

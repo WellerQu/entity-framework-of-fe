@@ -39,7 +39,8 @@ export default abstract class EntityConfiguration {
       throw new Error(msg)
     }
 
-    const headers = new Headers(Object.entries(options.headers ?? {}))
+    const headers = new Headers(options.headers)
+    const contentType = headers.get('Content-Type') ?? 'application/json'
 
     const fetchTarget = this.parseUrl(url, data)
     const fetchOptions = {
@@ -47,7 +48,6 @@ export default abstract class EntityConfiguration {
       headers: options.headers ? headers: undefined
     }
 
-    const contentType = headers.get('Content-Type')
     if (fetchOptions.method !== 'GET' && contentType === 'application/json') {
       fetchOptions.body = JSON.stringify(data)
     } else if (fetchOptions.method !== 'GET') {

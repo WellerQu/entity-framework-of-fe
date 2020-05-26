@@ -1,6 +1,6 @@
 {
   "name": "entity-framework",
-  "version": "4.1.5",
+  "version": "4.1.6",
   "description": "用于前端的实体关系框架, 提供正反序列化",
   "keywords": [
     "entity",

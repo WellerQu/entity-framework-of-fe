@@ -7,7 +7,7 @@
 设: 原始数据模型 OriginModel, 如下所示
 
 ```typescript
-const originFoo = { a: 1, b: "2", c: { d: 2 } }
+const originFoo = { a: 1, b: "2", c: { d: { e: 2 } } }
 ```
 
 创建对应的实体数据模型 EntityModel, 并描述关系
@@ -22,8 +22,8 @@ class Foo {
   @member()
   b: string = "b"
 
-  @member()
-  @mapping("c")
+  @member('e')
+  @mapping("c.d")
   d: number = 0
 }
 ```

@@ -47,7 +47,7 @@ foo.b = "b"
 foo.d = 2
 
 const ctx = new Context()
-const origin = ctx.serialize(foo)
+const origin = ctx.fooSet.serialize(foo)
 
 expect(origin).toInstanceOf(Object)
 expect(origin.a).toEquals(foo.a)
@@ -61,7 +61,7 @@ expect(origin.c.d).toEquals(foo.d)
 const originData = originFoo
 
 const ctx = new Context()
-const foo = ctx.deserialize(originData)
+const foo = ctx.fooSet.deserialize(originData)
 
 expect(foo).toInstanceOf(Foo)
 expect(foo.a).toEquals(originData.a)

@@ -52,7 +52,7 @@ const origin = ctx.fooSet.serialize(foo)
 expect(origin).toInstanceOf(Object)
 expect(origin.a).toEquals(foo.a)
 expect(origin.b).toEquals(foo.b)
-expect(origin.c.d).toEquals(foo.d)
+expect(origin.c.d.e).toEquals(foo.d)
 ```
 
 反序列化: 将原始数据模型(OriginModal)的实例转换成实体数据模型(EntityModel)的实例
@@ -66,7 +66,7 @@ const foo = ctx.fooSet.deserialize(originData)
 expect(foo).toInstanceOf(Foo)
 expect(foo.a).toEquals(originData.a)
 expect(foo.b).toEquals(originData.b)
-expect(foo.d).toEquals(originData.c.d)
+expect(foo.d).toEquals(originData.c.d.e)
 ```
 
 ## 概念介绍

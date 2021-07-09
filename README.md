@@ -1,5 +1,7 @@
 # Entity Framework
 
+** 项目已废弃** 请查看新版本的实现 https://github.com/WellerQu/entity-framework
+
 ![CI status](https://github.com/WellerQu/entity-framework-of-fe/workflows/Node%20CI/badge.svg)
 
 ## 基本用法
